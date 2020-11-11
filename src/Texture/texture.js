@@ -1,9 +1,11 @@
 const Texture = function ( width, height ){
 
-    this.width = width ? width : 0
-    this.height = height ? height : 0
+    this.width = width ? width : 1
+    this.height = height ? height : 1
     this.vertices = []
     this.map = []
+    this.path = []
+
 }
 
 
@@ -22,6 +24,13 @@ Texture.prototype.generate = function( width, height ){
     })
 
     this.map = new Array(this.width * this.height ).fill(0)
+
+    this.path = new Array(this.width * this.height ).fill(0).map( (e, i) => {
+
+        const yCount = Math.floor(i/this.width)
+        const index = (yCount%2 === 0) ? i : i + (this.width - 1 - i%this.width)
+        return index 
+    })
 
     return this
 }
