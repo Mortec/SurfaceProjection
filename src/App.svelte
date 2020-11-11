@@ -3,8 +3,8 @@ let name = 'Surface Projection'
 
 let format = {width: 216, height: 279}
 
-let vertices = 100;
-let lines = 100;
+let vertices = 50;
+let lines = 50;
 
 let texture = new Array(lines * vertices).fill(0).map( (e, i) => {
 
@@ -43,7 +43,7 @@ $: path = getpath( texture, format )
 
 
 
-<h1>Hello {name}!</h1>
+<h1>{name}</h1>
 
 
 <div class="canva" bind:clientWidth={format.width} bind:clientHeight={format.height}>
