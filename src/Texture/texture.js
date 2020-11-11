@@ -5,7 +5,6 @@ const Texture = function ( width, height ){
     this.vertices = []
     this.map = []
     this.path = []
-
 }
 
 
