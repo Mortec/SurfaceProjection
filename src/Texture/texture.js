@@ -37,18 +37,23 @@ Texture.prototype.generate = function( width, height ){
 }
 
 
-Texture.prototype.loadMap = function( pixels, option ){
+Texture.prototype.loadMap = function( ctxt, option ){
 
     this.vertices.forEach( (e, i, a) => {
-        const pixel = pixels.get( e.x * pixels.width, e.y * pixels.height )
-        this.map[i] = pixel.red/255
+
+        const x = Math.floor(e.x * ctxt.canvas.clientWidth*1.1)
+        const y = Math.floor(e.y * ctxt.canvas.clientHeight/2.2)
+
+        const pixel = ctxt.getImageData( x, y, 1, 1 )
+        // console.log( {x, y}, pixel.data[0] )
+        this.map[i] = pixel.data[0]/255.0 //RED val
     }, this)
 }
 
 
 Texture.prototype.process = function( func ){
 
-    this.vertices.forEach( (e, i, a) =>  this.vertices[i] = func( e, this.map[i], i, a ), this )
+    this.vertices.forEach( (e, i, a) =>  this.vertices[i] = func( e.x, e.y, this.map[i], i, a ), this )
 }
 
 
