@@ -1,4 +1,4 @@
-const Texture = function ( width, height ){
+const Surface = function ( width, height ){
 
     this.width = width ? width : 1
     this.height = height ? height : 1
@@ -9,7 +9,7 @@ const Texture = function ( width, height ){
 }
 
 
-Texture.prototype.generate = function( width, height ){
+Surface.prototype.generate = function( width, height ){
 
     if (width && height){
         this.width = width
@@ -37,7 +37,7 @@ Texture.prototype.generate = function( width, height ){
 }
 
 
-Texture.prototype.loadMap = function( ctxt, option ){
+Surface.prototype.loadMap = function( ctxt, option ){
 
     this.vertices.forEach( (e, i, a) => {
 
@@ -51,14 +51,14 @@ Texture.prototype.loadMap = function( ctxt, option ){
 }
 
 
-Texture.prototype.process = function( func ){
+Surface.prototype.process = function( func ){
 
     this.vertices.forEach( (e, i, a) =>  this.vertices[i] = func( e.x, e.y, this.map[i], i, a ), this )
 }
 
 
 
-Texture.prototype.getSVGpath = function( format) {
+Surface.prototype.getSVGpath = function( format) {
 
     let svgString = this.path.map( e => {
 
@@ -66,7 +66,7 @@ Texture.prototype.getSVGpath = function( format) {
 		let Y = this.vertices[e].y * format.height 
 
 		let str = (e === 0) ? 'M' + X + ' ' + Y
-				// : ( e === texture.size-1 ) ? 'L' + X + ' ' + Y  + ' ' + 'Z'
+				// : ( e === this.size-1 ) ? 'L' + X + ' ' + Y  + ' ' + 'Z'
 				: 'L' + X + ' ' + Y
 		
 		return str
@@ -75,4 +75,4 @@ Texture.prototype.getSVGpath = function( format) {
 	return svgString
 }
 
-export {Texture}
+export { Surface }

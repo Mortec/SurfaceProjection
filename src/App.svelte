@@ -1,15 +1,16 @@
 <script>
 import { onMount } from 'svelte';
-import { Texture } from './Texture/texture'
+import PictureView from './components/PictureView.svelte'
+import { Surface } from './libs/surface'
 
-let title = '~'
+let title = 'surface projection'
 
 let format = {width: 216, height: 279}
 
 let vertices = 55;
 let lines = Math.floor( vertices * 1.3 );
 
-let texture = new Texture( vertices, lines ).generate()
+let surface = new Surface( vertices, lines ).generate()
 
 let svgPath 
 
@@ -26,14 +27,14 @@ onMount( () => {
     pictureContext = document.getElementById('canvas').getContext('2d')
 	picture.onload = ()=>{
 		pictureContext.drawImage(picture, 0, 0, pictureContext.canvas.width, pictureContext.canvas.height) 
-		texture.loadMap( pictureContext)
+		surface.loadMap( pictureContext)
 
-		texture.process( ( x, y, v )=>{
+		surface.process( ( x, y, v )=>{
 			const newx = x
 			const newy = y + ( ( 1-v + 0.5 )*0.01 )	- 0.01
 			return { x: newx, y: newy  }
 		})
-		svgPath = texture.getSVGpath( format )
+		svgPath = surface.getSVGpath( format )
 	}
  })
 
@@ -44,7 +45,7 @@ onMount( () => {
 
 $: (()=>{
 
-		svgPath = texture.getSVGpath( format )
+		svgPath = surface.getSVGpath( format )
 	}
 )()
 
@@ -61,12 +62,14 @@ $: (()=>{
 		<canvas id="canvas" ></canvas>
 	</div>
 
+	<PictureView></PictureView>
+
 
 	<div class="svgCanvas" bind:clientWidth={format.width} bind:clientHeight={format.height}>
 		<svg xmlns="http://www.w3.org/2000/svg">
 		<path d={svgPath} />
 
-		<!-- {#each texture.vertices as { x, y }, i}
+		<!-- {#each surface.vertices as { x, y }, i}
 		<circle cx={x*format.width} cy={y*format.height} r="2" stroke="none" stroke-width="1" fill="red" />
 		{/each} -->
 
