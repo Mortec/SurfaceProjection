@@ -42,6 +42,13 @@ function createPicture() {
 
         tune: ( param )  => {
             update( s =>( { ...s, ...param } ) )
+        },
+        drag: ( pos )  => {
+            update( s =>{ 
+                const x = pos.x + s.x
+                const y = pos.y + s.y
+                return { ...s, ...{x, y} }
+            } )
         }
 	}
 }

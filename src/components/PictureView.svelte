@@ -16,36 +16,38 @@
     picture.subscribe( s =>{
 
       const offset = {
-        x: Math.floor( (s.buffer.getContext('2d').canvas.width - s.width/s.zoom)/2 ) - s.x,
-        y: Math.floor( (s.buffer.getContext('2d').canvas.height - s.height/s.zoom)/2 ) - s.y
+        x: Math.floor( (s.buffer.getContext('2d').canvas.width - s.width/s.zoom)/2 - s.x ),
+        y: Math.floor( (s.buffer.getContext('2d').canvas.height - s.height/s.zoom)/2 - s.y )
       }
       s.ctxt.canvas.width = s.width
       s.ctxt.canvas.height = s.height
-      
       s.ctxt.filter =`brightness(${s.brightness}) contrast(${s.contrast}) saturate(${s.saturation}) blur(${s.blur*5}px)`
       s.ctxt.drawImage(s.buffer, offset.x, offset.y, s.width/s.zoom, s.height/s.zoom, 0, 0, s.width, s.height )
     })
   })
 
-  let dragRef ={x: 0, y: 0}
+  let dragRef = {x: 0, y: 0}
+  let offset = {x: 0, y: 0}
   let locked = false
 
   function mousedown( e ){
     locked = true
     dragRef = {x: e.x, y: e.y}
   }
-  function mouseup(){
+  
+  function mouseup(e){
+    offset.x = e.x - dragRef.x
+    offset.y = e.y - dragRef.y
     locked = false
   }
   
   function drag( e ) {
     if (locked) {
       const position = {
-        x: e.x - dragRef.x,
-        y: e.y - dragRef.y
+        x: e.x - dragRef.x + offset.x, 
+        y: e.y - dragRef.y + offset.y
       }
-      // console.log( position )
-      
+  
       picture.tune( {x: position.x, y: position.y}  )
     }
   }
