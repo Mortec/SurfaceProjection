@@ -7,12 +7,14 @@
   export let src = "./assets/images/Michael-Faraday.jpg"
 
   const id = "pictureCanvas"
-
+  let params = {brightness: 1, contrast: 1, saturation: 1, zoom: 1, blur: 0}
   let pwidth, pheight
   
   onMount(() => { 
     picture.init(src, id);
     
+    params = { ...get(picture) }
+
     picture.subscribe( s =>{
 
       const offset = {
@@ -50,6 +52,12 @@
   }
 
   $: picture.tune( {width: pwidth, height: pheight})
+  $: picture.tune( {brightness: params.brightness} )
+  $: picture.tune( {contrast: params.contrast} )
+  $: picture.tune( {saturation: params.saturation} )
+  $: picture.tune( {blur: params.blur} )
+  $: picture.tune( {zoom: params.zoom} )
+
 
 </script>
 
@@ -68,8 +76,36 @@
   }
 </style>
 
-<!-- HTML -------------------------------------------------------- -->
+<!-- pseudoHTML -------------------------------------------------------- -->
+<div>
 
 <div class="picture" bind:clientWidth={pwidth} bind:clientHeight={pheight}>
   <canvas {id} {pwidth} {pheight} on:mousedown={ mousedown }  on:mouseup={ mouseup } on:mouseout={ mouseup } on:mousemove={ drag }/>
+</div>
+
+<label>
+	<input type=range bind:value={params.brightness} min=0.0 max=3.0 step="0.1">
+	<input type=number bind:value={params.brightness} min=0.0 max=3.0 step="0.05">
+</label>
+
+<label>
+	<input type=range bind:value={params.contrast} min=0.0 max=3.0 step="0.1">
+	<input type=number bind:value={params.contrast} min=0.0 max=3.0 step="0.05">
+</label>
+
+<label>
+	<input type=range bind:value={params.saturation} min=0.0 max=1.0 step="0.1">
+	<input type=number bind:value={params.saturation} min=0.0 max=1.0 step="0.05">
+</label>
+
+<label>
+	<input type=range bind:value={params.blur} min=0.0 max=1.0 step="0.1">
+	<input type=number bind:value={params.blur} min=0.0 max=1.0 step="0.05">
+</label>
+
+<label>
+	<input type=range bind:value={params.zoom} min=0.0 max=3.0 step="0.1">
+	<input type=number bind:value={params.zoom} min=0.0 max=3.0 step="0.05">
+</label>
+
 </div>
