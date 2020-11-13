@@ -21,11 +21,11 @@ function createPicture() {
                 const height = ctxt.canvas.height
                 const x = 0
                 const y = 0
-                const brightness= 1.5
+                const brightness= 1.0
                 const contrast= 1.0
                 const saturation= 1.0
-                const blur = 0.2
-                const zoom = 1
+                const blur = 0
+                const zoom = 1.0
                 const image = new Image()
                 const buffer = s.buffer
                 image.onload = () => {
@@ -42,13 +42,6 @@ function createPicture() {
 
         tune: ( param )  => {
             update( s =>( { ...s, ...param } ) )
-        },
-        drag: ( pos )  => {
-            update( s =>{ 
-                const x = pos.x + s.x
-                const y = pos.y + s.y
-                return { ...s, ...{x, y} }
-            } )
         }
 	}
 }

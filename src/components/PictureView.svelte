@@ -1,9 +1,9 @@
 <script>
 
-
+  import { get } from 'svelte/store';
   import { onMount } from "svelte"
   import { picture } from "../stores/Picture.js"
-
+  
   export let src = "./assets/images/Michael-Faraday.jpg"
 
   const id = "pictureCanvas"
@@ -16,8 +16,8 @@
     picture.subscribe( s =>{
 
       const offset = {
-        x: Math.floor( (s.buffer.getContext('2d').canvas.width - s.width/s.zoom)/2 - s.x ),
-        y: Math.floor( (s.buffer.getContext('2d').canvas.height - s.height/s.zoom)/2 - s.y )
+        x: (s.buffer.getContext('2d').canvas.width - s.width/s.zoom)/2 - s.x/s.zoom ,
+        y: (s.buffer.getContext('2d').canvas.height - s.height/s.zoom)/2 - s.y/s.zoom 
       }
       s.ctxt.canvas.width = s.width
       s.ctxt.canvas.height = s.height
@@ -27,25 +27,22 @@
   })
 
   let dragRef = {x: 0, y: 0}
-  let offset = {x: 0, y: 0}
   let locked = false
 
   function mousedown( e ){
     locked = true
-    dragRef = {x: e.x, y: e.y}
+    dragRef = {x: e.x - get(picture).x, y: e.y - get(picture).y }
   }
-  
+
   function mouseup(e){
-    offset.x = e.x - dragRef.x
-    offset.y = e.y - dragRef.y
     locked = false
   }
   
   function drag( e ) {
     if (locked) {
       const position = {
-        x: e.x - dragRef.x + offset.x, 
-        y: e.y - dragRef.y + offset.y
+        x: e.x - dragRef.x, 
+        y: e.y - dragRef.y
       }
   
       picture.tune( {x: position.x, y: position.y}  )
