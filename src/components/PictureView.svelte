@@ -74,6 +74,20 @@
     padding: none;
     margin: none;
   }
+
+  .params{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 1em;
+    width: calc(100vh / 400 * 216 / 2);
+    height: calc(100vh / 400 * 216 / 2);
+    -webkit-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+  }
 </style>
 
 <!-- pseudoHTML -------------------------------------------------------- -->
@@ -83,29 +97,31 @@
   <canvas {id} {pwidth} {pheight} on:mousedown={ mousedown }  on:mouseup={ mouseup } on:mouseout={ mouseup } on:mousemove={ drag }/>
 </div>
 
+<div class="params">
 <label>
 	<input type=range bind:value={params.brightness} min=0.0 max=3.0 step="0.1">
-	<input type=number bind:value={params.brightness} min=0.0 max=3.0 step="0.05">
+	<!-- <input type=number bind:value={params.brightness} min=0.0 max=3.0 step="0.05"> -->
 </label>
 
 <label>
 	<input type=range bind:value={params.contrast} min=0.0 max=3.0 step="0.1">
-	<input type=number bind:value={params.contrast} min=0.0 max=3.0 step="0.05">
+	<!-- <input type=number bind:value={params.contrast} min=0.0 max=3.0 step="0.05"> -->
 </label>
 
 <label>
 	<input type=range bind:value={params.saturation} min=0.0 max=1.0 step="0.1">
-	<input type=number bind:value={params.saturation} min=0.0 max=1.0 step="0.05">
+	<!-- <input type=number bind:value={params.saturation} min=0.0 max=1.0 step="0.05"> -->
 </label>
 
 <label>
 	<input type=range bind:value={params.blur} min=0.0 max=1.0 step="0.1">
-	<input type=number bind:value={params.blur} min=0.0 max=1.0 step="0.05">
+	<!-- <input type=number bind:value={params.blur} min=0.0 max=1.0 step="0.05"> -->
 </label>
 
 <label>
-	<input type=range bind:value={params.zoom} min=0.0 max=3.0 step="0.1">
-	<input type=number bind:value={params.zoom} min=0.0 max=3.0 step="0.05">
+	<input type=range bind:value={params.zoom} min=0.1 max=3.0 step="0.1">
+	<!-- <input type=number bind:value={params.zoom} min=0.1 max=3.0 step="0.05"> -->
 </label>
+</div>
 
 </div>
