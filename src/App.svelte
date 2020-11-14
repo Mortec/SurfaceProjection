@@ -1,6 +1,8 @@
 <script>
 import { onMount } from 'svelte';
 import PictureView from './components/PictureView.svelte'
+import { pictureStore } from "./stores/stores.js"
+
 import { Surface } from './libs/surface'
 
 let title = 'surface projection'
@@ -13,29 +15,23 @@ let lines = Math.floor( vertices * 1.3 );
 let surface = new Surface( vertices, lines ).generate()
 
 let svgPath 
-
-
-let picture = new Image()
-picture.src = './assets/images/Michael-Faraday.jpg';
-let pictureContext
-let pictureWidth, pictureHeight
-
-
+let unsubscribe
 
 onMount( () => {  
 
-    pictureContext = document.getElementById('canvas').getContext('2d')
-	picture.onload = ()=>{
-		pictureContext.drawImage(picture, 0, 0, pictureContext.canvas.width, pictureContext.canvas.height) 
-		surface.loadMap( pictureContext)
+	unsubscribe = pictureStore.subscribe( s =>{
 
-		surface.process( ( x, y, v )=>{
-			const newx = x
-			const newy = y + ( ( 1-v + 0.5 )*0.01 )	- 0.01
-			return { x: newx, y: newy  }
-		})
-		svgPath = surface.getSVGpath( format )
-	}
+		
+		// surface.loadMap( s.ctxt)
+		
+		// surface.process( ( x, y, v )=>{
+		// 	const newx = x
+		// 	const newy = y 
+		// 	const z = ( ( 1-v + 0.5 )*0.01 )
+		// 	return { x: newx, y: newy, z: z  }
+		// })
+		svgPath = "M0 0 L10 20 L20 10 Z" //surface.getSVGpath( format )
+	})
  })
 
 
@@ -45,7 +41,7 @@ onMount( () => {
 
 $: (()=>{
 
-		svgPath = surface.getSVGpath( format )
+		svgPath = "M0 0 L10 20 L20 10 Z" //surface.getSVGpath( format )
 	}
 )()
 
@@ -57,10 +53,6 @@ $: (()=>{
 
 <div class = "playground">
 
-	<div class="pictureCanvas" bind:clientWidth={pictureWidth} bind:clientHeight={pictureHeight}>
-
-		<canvas id="canvas" ></canvas>
-	</div>
 
 	<PictureView></PictureView>
 
@@ -77,6 +69,8 @@ $: (()=>{
 	</div>
 </div>
 
+
+<!-- STYLE -------------------------------------------------------- -->
 
 <style>
 
@@ -95,18 +89,6 @@ $: (()=>{
 		  align-items:flex-start;
 		  margin-top: 1em;
 			margin-bottom: 1em;
-	  }
-
-	  .pictureCanvas{
-		width: calc(100vh/400 * 216 /2);
-		height: calc(100vh/400 * 279 /2);
-	  }
-
-	  canvas{
-		width: 100%;
-		height: 100%;
-		padding: none;
-		background-color: whitesmoke;
 	  }
 
 	  .svgCanvas{

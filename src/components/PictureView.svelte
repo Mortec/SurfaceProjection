@@ -2,38 +2,27 @@
 
   import { get } from 'svelte/store';
   import { onMount } from "svelte"
-  import { picture } from "../stores/Picture.js"
+  import { Picture } from "../libs/picture.js"
+  import  { pictureStore }  from "../stores/stores.js"
   
-  export let src = "./assets/images/Michael-Faraday.jpg"
-
   const id = "pictureCanvas"
-  let params = {brightness: 1, contrast: 1, saturation: 1, zoom: 1, blur: 0}
-  let pwidth, pheight
-  
+
+  let params = get( pictureStore )
+  let picture
+  let canvas
+
   onMount(() => { 
-    picture.init(src, id);
-    
-    params = { ...get(picture) }
-
-    picture.subscribe( s =>{
-
-      const offset = {
-        x: (s.buffer.getContext('2d').canvas.width - s.width/s.zoom)/2 - s.x/s.zoom ,
-        y: (s.buffer.getContext('2d').canvas.height - s.height/s.zoom)/2 - s.y/s.zoom 
-      }
-      s.ctxt.canvas.width = s.width
-      s.ctxt.canvas.height = s.height
-      s.ctxt.filter =`brightness(${s.brightness}) contrast(${s.contrast}) saturate(${s.saturation}) blur(${s.blur*5}px)`
-      s.ctxt.drawImage(s.buffer, offset.x, offset.y, s.width/s.zoom, s.height/s.zoom, 0, 0, s.width, s.height )
-    })
+    picture = new Picture( id )
+    pictureStore.subscribe( s => picture.set( s ) )
+    picture.load("./assets/images/Michael-Faraday.jpg")
   })
 
-  let dragRef = {x: 0, y: 0}
+  let dragRef = {x: params.x, y: params.y}
   let locked = false
 
   function mousedown( e ){
     locked = true
-    dragRef = {x: e.x - get(picture).x, y: e.y - get(picture).y }
+    dragRef = {x: e.x - get(pictureStore).x, y: e.y - get(pictureStore).y }
   }
 
   function mouseup(e){
@@ -42,26 +31,67 @@
   
   function drag( e ) {
     if (locked) {
-      const position = {
-        x: e.x - dragRef.x, 
-        y: e.y - dragRef.y
-      }
-  
-      picture.tune( {x: position.x, y: position.y}  )
+      params.x = e.x - dragRef.x, 
+      params.y = e.y - dragRef.y
     }
   }
 
-  $: picture.tune( {width: pwidth, height: pheight})
-  $: picture.tune( {brightness: params.brightness} )
-  $: picture.tune( {contrast: params.contrast} )
-  $: picture.tune( {saturation: params.saturation} )
-  $: picture.tune( {blur: params.blur} )
-  $: picture.tune( {zoom: params.zoom} )
-
+  $: pictureStore.tune( params )
+  // $: console.log( params )
 
 </script>
 
+
+
+<!-- pseudoHTML -------------------------------------------------------- -->
+<div class="pictureBox">
+
+  <div class="picture" bind:clientWidth={params.width} bind:clientHeight={params.height}>
+    <canvas {id} bind:this={canvas}
+      on:mousedown={ mousedown }
+      on:mouseup={ mouseup }
+      on:mouseout={ mouseup }
+      on:mousemove={ drag }
+    />
+  </div>
+  
+  <div class="params">
+  <label >
+    <span>brtnss</span>
+    <input type=number bind:value={params.brightness} min=0.0 max=3.0 step="0.01">
+    <input type=range bind:value={params.brightness} min=0.0 max=3.0 step="0.01">
+  </label>
+  
+  <label>
+    <span>ctrst</span>
+    <input type=number bind:value={params.contrast} min=0.0 max=3.0 step="0.01">
+    <input type=range bind:value={params.contrast} min=0.0 max=3.0 step="0.01">
+  </label>
+  
+  <label>
+    <span>sat</span>
+    <input type=number bind:value={params.saturation} min=0.0 max=1.0 step="0.01">
+    <input type=range bind:value={params.saturation} min=0.0 max=1.0 step="0.01">
+  </label>
+  
+  <label>
+    <span>blur</span>
+    <input type=number bind:value={params.blur} min=0.0 max=1.0 step="0.01">
+    <input type=range bind:value={params.blur} min=0.0 max=1.0 step="0.01">
+  </label>
+  
+  <label>
+    <span>zoom</span>
+    <input type=number bind:value={params.zoom} min=0.1 max=3.0 step="0.01">
+    <input type=range bind:value={params.zoom} min=0.1 max=3.0 step="0.01">
+  </label>
+  </div>
+  
+  </div>
+
+
 <!-- STYLE -------------------------------------------------------- -->
+
 <style>
   .picture {
     width: calc(100vh / 400 * 216 / 2);
@@ -70,9 +100,10 @@
     background-color: whitesmoke;
   }
 
-  canvas {
-    padding: none;
-    margin: none;
+  #pictureCanvas {
+    cursor: grab;
+    width: 100%;
+    height: 100%;
   }
 
   .params{
@@ -96,7 +127,6 @@ label{
 }
 input[type=number]{
   text-align: center;
-  /* background: red; */
   border-radius: 0px;
   font-size: 0.9em;
   width: 30%;
@@ -215,44 +245,3 @@ input[type=range]:focus::-ms-fill-upper {
   background: #C9C9C9;
 }
 </style>
-
-<!-- pseudoHTML -------------------------------------------------------- -->
-<div>
-
-<div class="picture" bind:clientWidth={pwidth} bind:clientHeight={pheight}>
-  <canvas {id} {pwidth} {pheight} on:mousedown={ mousedown }  on:mouseup={ mouseup } on:mouseout={ mouseup } on:mousemove={ drag }/>
-</div>
-
-<div class="params">
-<label >
-  <span>btns</span>
-	<input type=number bind:value={params.brightness} min=0.0 max=3.0 step="0.05">
-	<input type=range bind:value={params.brightness} min=0.0 max=3.0 step="0.05">
-</label>
-
-<label>
-  <span>ctst</span>
-	<input type=number bind:value={params.contrast} min=0.0 max=3.0 step="0.05">
-	<input type=range bind:value={params.contrast} min=0.0 max=3.0 step="0.05">
-</label>
-
-<label>
-  <span>satu</span>
-	<input type=number bind:value={params.saturation} min=0.0 max=1.0 step="0.05">
-	<input type=range bind:value={params.saturation} min=0.0 max=1.0 step="0.05">
-</label>
-
-<label>
-  <span>blur</span>
-	<input type=number bind:value={params.blur} min=0.0 max=1.0 step="0.05">
-	<input type=range bind:value={params.blur} min=0.0 max=1.0 step="0.05">
-</label>
-
-<label>
-  <span>zoom</span>
-	<input type=number bind:value={params.zoom} min=0.1 max=3.0 step="0.05">
-	<input type=range bind:value={params.zoom} min=0.1 max=3.0 step="0.05">
-</label>
-</div>
-
-</div>

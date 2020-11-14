@@ -63,7 +63,7 @@ Surface.prototype.getSVGpath = function( format) {
     let svgString = this.path.map( e => {
 
 		let X = this.vertices[e].x * format.width 
-		let Y = this.vertices[e].y * format.height 
+		let Y = (this.vertices[e].y + this.vertices[e].z) * format.height 
 
 		let str = (e === 0) ? 'M' + X + ' ' + Y
 				// : ( e === this.size-1 ) ? 'L' + X + ' ' + Y  + ' ' + 'Z'
