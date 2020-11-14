@@ -7,30 +7,33 @@ import { Surface } from './libs/surface'
 
 let title = 'surface projection'
 
-let format = {width: 216, height: 279}
 
-let vertices = 55;
-let lines = Math.floor( vertices * 1.3 );
+let resX = 100;
+let resY = Math.floor( resX * 1.3 );
 
-let surface = new Surface( vertices, lines ).generate()
+let surface = new Surface()
 
 let svgPath 
 let unsubscribe
+
+let format = {width: 100, height: 100}
 
 onMount( () => {  
 
 	unsubscribe = pictureStore.subscribe( s =>{
 
+		surface.generate(resX, resY)
+
+		surface.loadTexture( s.id )
 		
-		// surface.loadMap( s.ctxt)
-		
-		// surface.process( ( x, y, v )=>{
-		// 	const newx = x
-		// 	const newy = y 
-		// 	const z = ( ( 1-v + 0.5 )*0.01 )
-		// 	return { x: newx, y: newy, z: z  }
-		// })
-		svgPath = "M0 0 L10 20 L20 10 Z" //surface.getSVGpath( format )
+		surface.process( ( x, y, v )=>{
+			const newx = x
+			const newy = y
+			const z = v * format.height/resY * 0.5 - 0.25
+			return { x: newx, y: newy, z: z  }
+		})
+
+		svgPath = surface.getSVGpath( format )
 	})
  })
 
@@ -75,11 +78,11 @@ $: (()=>{
 <style>
 
 	  h1{
-		width: 50%;
+		/* width: 33%; */
 		margin: auto;
-		text-align: center;
+		/* text-align: center; */
 		margin-top: 1em;
-		margin-bottom: 1em;
+		margin-bottom: 2em;
 	  }
 
 	  .playground{

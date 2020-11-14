@@ -18,5 +18,9 @@ function createStore( params ) {
 }
 
 export const pictureStore = createStore( 
-    {x: 0,  y: 0, width: 100, height: 100, brightness: 1, contrast: 1, saturation: 1, zoom: 1, blur: 0.5, invert: 0}
+    {id: 'pictureCanvas', x: 0,  y: 0, width: 100, height: 100, brightness: 1, contrast: 1, saturation: 1, zoom: 1, blur: 0.5, invert: 0}
+)
+
+export const surfaceStore = createStore(
+    {resX: 100, resY: 100, x: 0, y: 0, width: 1, height: 1, intensity: 1}
 )

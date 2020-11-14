@@ -86,4 +86,9 @@ Picture.prototype.draw = function(){
     )
 }
 
+Picture.prototype.getPixel = function( x, y) {
+
+    return this.ctxt.getImageData(x, y, 1, 1)
+}
+
 export { Picture }

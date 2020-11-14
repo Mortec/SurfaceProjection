@@ -1,35 +1,44 @@
-const Surface = function ( width, height ){
+const Surface = function (){
 
-    this.width = width ? width : 1
-    this.height = height ? height : 1
-    this.size = width * height
+    this.params = {
+      resX: 100,
+      resY: 100,
+      x: 0,
+      y: 0,
+      width: 1,
+      height: 1,
+      intensity: 1,
+    }
+
     this.vertices = []
-    this.map = []
+    this.texture = []
     this.path = []
 }
 
 
-Surface.prototype.generate = function( width, height ){
+Surface.prototype.generate = function( resX, resY ){
 
-    if (width && height){
-        this.width = width
-        this.height = height
-        this.size = width * height
+    if (resX && resY){
+        this.params.resX = resX
+        this.params.resY = resY
     }
+    let width = this.params.resX
+    let height = this.params.resY
 
-    this.vertices = new Array( this.width * this.height ).fill(0).map( (e, i) => {
+    this.vertices = new Array( width * height ).fill(0).map( (e, i) => {
 
-        const y = Math.floor(i/this.width) / this.height + (1/this.height/2)
-        const x = i%this.width / this.width + (1/this.width/2)
-        return {x, y}
+        const x = i%width / width + (1/width/2)
+        const y = Math.floor(i/width) / height + (1/height/2)
+
+        return { x, y, z: 0 }
     })
 
-    this.map = new Array(this.width * this.height ).fill(0)
+    this.texture = new Array(width * height ).fill(0)
 
-    this.path = new Array(this.width * this.height ).fill(0).map( (e, i) => {
+    this.path = new Array(width * height ).fill(0).map( (e, i) => {
 
-        const yCount = Math.floor(i/this.width)
-        const index = (yCount%2 === 0) ? i : (this.width-1 - i%this.width) + ( yCount * this.width )
+        const yCount = Math.floor(i/width)
+        const index = (yCount%2 === 0) ? i : (width-1 - i%width) + ( yCount * width )
         return index 
     })
 
@@ -37,33 +46,48 @@ Surface.prototype.generate = function( width, height ){
 }
 
 
-Surface.prototype.loadMap = function( ctxt, option ){
+Surface.prototype.loadTexture = function( id, option ){
+
+    const image = document.getElementById( id ).getContext('2d')
+    const imagedata = image.getImageData(0,0,image.canvas.width, image.canvas.height)
+
+    let width = imagedata.width
+    let height = imagedata.height
 
     this.vertices.forEach( (e, i, a) => {
 
-        const x = Math.floor(e.x * ctxt.canvas.clientWidth*1.1)
-        const y = Math.floor(e.y * ctxt.canvas.clientHeight/2.2)
+        const x = Math.floor(e.x * width)
+        const y = Math.floor(e.y * height)
 
-        const pixel = ctxt.getImageData( x, y, 1, 1 )
-        // console.log( {x, y}, pixel.data[0] )
-        this.map[i] = pixel.data[0]/255.0 //RED val
+        const index = (width * y + x) * 4
+
+        const red = imagedata.data[ index ]
+        const green = imagedata.data[ index + 1 ]
+        const blue = imagedata.data[ index + 2]
+        const alpha = imagedata.data[ index + 3]
+
+        this.texture[i] = (red+green+blue)/3/255.0
     }, this)
 }
 
 
 Surface.prototype.process = function( func ){
 
-    this.vertices.forEach( (e, i, a) =>  this.vertices[i] = func( e.x, e.y, this.map[i], i, a ), this )
+    this.vertices.forEach( (e, i, a) =>  {
+        this.vertices[i] = func( e.x, e.y, this.texture[i], i, a )
+        return this.vertices[i]
+     }, this )
 }
 
 
 
-Surface.prototype.getSVGpath = function( format) {
-
+Surface.prototype.getSVGpath = function( format ) {
     let svgString = this.path.map( e => {
-
-		let X = this.vertices[e].x * format.width 
-		let Y = (this.vertices[e].y + this.vertices[e].z) * format.height 
+        
+        const X = this.vertices[e].x * format.width 
+		const Y = (this.vertices[e].y ) * format.height + this.vertices[e].z
+        
+        // console.log( this.vertices[e].z )
 
 		let str = (e === 0) ? 'M' + X + ' ' + Y
 				// : ( e === this.size-1 ) ? 'L' + X + ' ' + Y  + ' ' + 'Z'
