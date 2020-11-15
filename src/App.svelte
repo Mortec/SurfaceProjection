@@ -8,28 +8,37 @@ import { Surface } from './libs/surface'
 let title = 'surface projection'
 
 
-let resX = 100;
-let resY = Math.floor( resX * 1.3 );
+let resX = 1080;
+let resY = Math.floor( resX * 1.3 )/6;
 
 let surface = new Surface()
 
 let svgPath 
-let unsubscribe
 
 let format = {width: 100, height: 100}
 
 onMount( () => {  
 
-	unsubscribe = pictureStore.subscribe( s =>{
+	
+	pictureStore.subscribe( s =>{
 
-		surface.generate(resX, resY)
+		surface.generate(
+			Math.floor(format.width/2), 
+			Math.floor(format.height/2)
+			)
 
 		surface.loadTexture( s.id )
 		
-		surface.process( ( x, y, v )=>{
+		surface.process( ( x, y, v, i )=>{
 			const newx = x
 			const newy = y
-			const z = v * format.height/resY * 0.5 - 0.25
+			let z = 0
+			let c = i/(resX*resY)
+			// z = -v * format.height/resY //luminsosity to y
+			z = Math.sin( c * Math.PI * 1000 ) * -v//FM
+			z = z/2 + 0.5
+
+			z = (z  * 0.75 - 0.375)*1000
 			return { x: newx, y: newy, z: z  }
 		})
 
@@ -42,11 +51,7 @@ onMount( () => {
 
 
 
-$: (()=>{
 
-		svgPath = "M0 0 L10 20 L20 10 Z" //surface.getSVGpath( format )
-	}
-)()
 
 
 </script>
@@ -79,10 +84,12 @@ $: (()=>{
 
 	  h1{
 		/* width: 33%; */
-		margin: auto;
+		/* margin: auto; */
 		/* text-align: center; */
+		font-size: 1.5em;
 		margin-top: 1em;
 		margin-bottom: 2em;
+		margin-left: 1em;
 	  }
 
 	  .playground{

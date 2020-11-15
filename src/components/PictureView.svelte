@@ -14,7 +14,7 @@
   onMount(() => { 
     picture = new Picture( id )
     pictureStore.subscribe( s => picture.set( s ) )
-    picture.load("./assets/images/Michael-Faraday.jpg")
+    picture.load("./assets/images/EM-Portrait2.jpg")
   })
 
   let dragRef = {x: params.x, y: params.y}

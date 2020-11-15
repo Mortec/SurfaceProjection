@@ -17,10 +17,34 @@ function createStore( params ) {
 	}
 }
 
-export const pictureStore = createStore( 
-    {id: 'pictureCanvas', x: 0,  y: 0, width: 100, height: 100, brightness: 1, contrast: 1, saturation: 1, zoom: 1, blur: 0.5, invert: 0}
-)
+export const pictureStore = createStore({
+  id: "pictureCanvas",
+  x: -5,
+  y: 10,
+  width: 100,
+  height: 100,
+  brightness: 1,
+  contrast: 0.1,
+  saturation: 1,
+  zoom: 0.4,
+  blur: 0,
+  invert: 0,
+})
 
-export const surfaceStore = createStore(
-    {resX: 100, resY: 100, x: 0, y: 0, width: 1, height: 1, intensity: 1}
-)
+export const surfaceStore = createStore({
+  x: 0,
+  y: 0,
+  resX: 100,
+  resY: 100,
+  width: 100,
+  height: 100,
+  q: 1,
+  r: 1,
+  pen_color: 0,
+  paper_color: 1,
+  structure: "net",
+  path: 'one',
+  pattern: 'frequency modulation',
+  threshold: 0,
+  ceiling: 1
+})
