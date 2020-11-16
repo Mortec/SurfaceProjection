@@ -1,4 +1,6 @@
-const Picture = function ( id ){
+const Picture = function ( ){
+
+    this.id = '0';
 
     this.params = {
         x : 0,
@@ -13,9 +15,20 @@ const Picture = function ( id ){
         invert: 0.0
     }
 
+    this.buffer = {}
+    
+    this.ctxt = {}
+
+    this.image = new Image()
+}
+
+Picture.prototype.init = function( id ){
+
+    this.id = id
+    
     this.buffer = document.createElement('canvas')
     
-    this.ctxt = document.getElementById( id ).getContext("2d")
+    this.ctxt = document.getElementById( this.id ).getContext("2d")
 
     this.image = new Image()
 
@@ -34,6 +47,8 @@ Picture.prototype.reset = function(){
     this.params = {
         x : 0,
         y: 0,
+        width: 100,
+        height: 100,
         brightness: 1.0,
         contrast: 1.0,
         saturation: 1.0,

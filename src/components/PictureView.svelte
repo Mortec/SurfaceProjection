@@ -2,19 +2,31 @@
 
   import { get } from 'svelte/store';
   import { onMount } from "svelte"
-  import { Picture } from "../libs/picture.js"
   import  { pictureStore }  from "../stores/stores.js"
+  import { Picture } from "../libs/picture.js"
   
+  const picture = new Picture()
   const id = "pictureCanvas"
 
-  let params = get( pictureStore )
-  let picture
+  let params = {
+    id: "pictureCanvas",
+    x: -5,
+    y: 10,
+    width: 100,
+    height: 100,
+    brightness: 0.97,
+    contrast: 0.8,
+    saturation: 1,
+    zoom: 0.51,
+    blur: 0,
+    invert: 0,
+  }
 
+  onMount(() => {
 
-  onMount(() => { 
-    picture = new Picture( id )
+    picture.init(id)
     pictureStore.subscribe( s => picture.set( s ) )
-    picture.load("./assets/images/EM-Portrait2.jpg")
+    picture.load("./assets/images/EM-portrait2.jpg")
   })
 
   let dragRef = {x: params.x, y: params.y}
@@ -37,7 +49,6 @@
   }
 
   $: pictureStore.tune( params )
-  // $: console.log( params )
 
 </script>
 
