@@ -62,6 +62,25 @@ const savesvg = function(){
     svgsaver.asSvg(svg);   
 }
 
+let dragRef = {x: params.x, y: params.y}
+  let locked = false
+
+  function mousedown( e ){
+    locked = true
+    dragRef = {x: e.x - params.x, y: e.y - params.y }
+  }
+
+  function mouseup(e){
+    locked = false
+  }
+  
+  function drag( e ) {
+    if (locked) {
+      params.x = e.x - dragRef.x, 
+      params.y = e.y - dragRef.y
+    }
+  }
+
 
 
  $: surfaceStore.tune( params )
@@ -72,8 +91,14 @@ const savesvg = function(){
 
 <div class="surfaceView">
 
+    <!-- on:click={ savesvg } -->
     <div class="surface" bind:clientWidth={params.width} bind:clientHeight={params.height}>
-        <svg id="svg"  width={params.width} height={params.height} on:click={ savesvg }> 
+        <svg id="svg"  width={params.width} height={params.height} 
+        on:mousedown={ mousedown }
+        on:mouseup={ mouseup }
+        on:mouseout={ mouseup }
+        on:mousemove={ drag }
+        > 
             <path style="
             fill : none;
             stroke-width: 1px;

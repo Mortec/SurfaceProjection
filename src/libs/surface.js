@@ -126,7 +126,7 @@ Surface.prototype.loadPath = function () {
           this.texture[i] <= this.params.ceiling &&
           this.texture[i] >= this.params.threshold &&
           y >= 0 &&
-          y < this.params.height
+          y < (this.params.height * (1-this.params.crop))
     ) {
 
       const yCount = Math.floor(i / this.params.resX);
@@ -152,8 +152,8 @@ Surface.prototype.getSVGstring = function () {
       
     this.string = this.path.map(( e,  i) => {
 
-      const X = this.vertices[e].x * this.params.width;
-      const Y = this.vertices[e].y * this.params.height + this.vertices[e].z ;
+      const X = this.vertices[e].x * this.params.width * this.params.skew + this.params.x;
+      const Y = (this.vertices[e].y * this.params.height + this.vertices[e].z) * this.params.skew + this.params.y;
 
       let str =
         i === 0
