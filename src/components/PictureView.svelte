@@ -24,9 +24,12 @@
 
   onMount(() => {
 
+    picture.notify = () => pictureStore.tune( { state: 'loaded'})
     picture.init(id)
     pictureStore.subscribe( s => picture.set( s ) )
+    pictureStore.tune( { state: 'loading'})
     picture.load("./assets/images/EM-portrait2.jpg")
+    console.log( "Picture mounted")
   })
 
   let dragRef = {x: params.x, y: params.y}

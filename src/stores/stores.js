@@ -29,7 +29,8 @@ export const pictureStore = createStore( {
     saturation: 1.0,
     blur: 0,
     zoom: 1.0,
-    invert: 0.0
+    invert: 0.0,
+    state: 'init'
 } )
 
 export const surfaceStore = createStore({

@@ -37,9 +37,10 @@ onMount( () => {
     
     surface.with = format.width
     surface.height = format.height
-	pictureStore.subscribe( s =>{
+    pictureStore.subscribe( s =>{
         update( s.id )
-	})
+    })
+    console.log("Surface mounted")
 })
 
 

@@ -20,6 +20,8 @@ const Picture = function ( ){
     this.ctxt = {}
 
     this.image = new Image()
+
+    this.notify = function(){}
 }
 
 Picture.prototype.init = function( id ){
@@ -39,6 +41,8 @@ Picture.prototype.init = function( id ){
         this.buffer.getContext('2d').canvas.height = height
         this.buffer.getContext('2d').drawImage( this.image, 0, 0, width, height )
         this.draw()
+        this.notify()
+        console.log( "Picture loaded" )
     }
 }
 
@@ -65,6 +69,7 @@ Picture.prototype.set = function( params ){
 }
 
 Picture.prototype.load = function( src ){
+
     
     // this.reset()
     this.image.src = src

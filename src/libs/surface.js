@@ -102,8 +102,8 @@ Surface.prototype.process = function (func) {
 
 Surface.prototype.getSVGstring = function () {
 
-  this.string = this.path
-    .map((e) => {
+  this.string = this.path.map((e) => {
+
       const X = this.vertices[e].x * this.width;
       const Y = this.vertices[e].y * this.height + this.vertices[e].z;
 
@@ -115,8 +115,8 @@ Surface.prototype.getSVGstring = function () {
             "L" + X + ", " + Y + " ";
 
       return str;
-    })
-    .join(" ");
+      
+    }).join(" ");
 
   return this.string;
 };

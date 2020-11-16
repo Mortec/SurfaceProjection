@@ -1,14 +1,10 @@
 <script>
-import SvgSaver from 'svgsaver'
-import { onMount } from 'svelte';
 import PictureView from './components/PictureView.svelte'
 import SurfaceView from './components/SurfaceView.svelte'
 
 let title = 'surface projection'
 
-
 </script>
-
 
 <h1>{title}</h1>
 
@@ -16,7 +12,6 @@ let title = 'surface projection'
 	<PictureView></PictureView>
 	<SurfaceView></SurfaceView>
 </div>
-
 
 <!-- STYLE -------------------------------------------------------- -->
 
@@ -40,6 +35,5 @@ let title = 'surface projection'
 		  margin-top: 1em;
 			margin-bottom: 1em;
 	  }
-
 
 </style>
