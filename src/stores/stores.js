@@ -40,6 +40,8 @@ export const surfaceStore = createStore({
     height: 279,
     resX: 216,
     resY: 279,
+    skew: 1,
+    crop: 0,
     q: 2,
     formula: 'y',
     structure: "net",

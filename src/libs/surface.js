@@ -7,6 +7,8 @@ const Surface = function (id) {
     height: 100,
     resX: 100,
     resY: 100,
+    skew: 1,
+    crop: 0,
     q: 1,
     formula: 'y',
     structure: "net",
@@ -23,7 +25,7 @@ const Surface = function (id) {
   this.string = "";
 };
 
-Surface.prototype.generate = function (resX, resY) {
+Surface.prototype.loadVertices = function (resX, resY) {
 
   if (resX && resY) {
     this.params.resX = resX;
@@ -56,6 +58,7 @@ Surface.prototype.generate = function (resX, resY) {
   return this;
 };
 
+
 Surface.prototype.loadTexture = function (id, option) {
 
   if (id) this.sourceId = id
@@ -85,8 +88,11 @@ Surface.prototype.loadTexture = function (id, option) {
     this.texture[i] = (red + green + blue) / 3 / 255.0; //normalized luminance
   }, this);
 
+  
+
   return this
 };
+
 
 Surface.prototype.process = function (func) {
 
@@ -106,16 +112,51 @@ Surface.prototype.process = function (func) {
   return this
 };
 
+
+Surface.prototype.loadPath = function () {
+  //snake unique path
+  const newPath = [];
+
+  this.vertices.forEach((e, i) => {
+    
+      const y = e.y * this.params.height + e.z
+    //   console.log( 't : ', this.params.floor  )
+      
+      if (
+          this.texture[i] <= this.params.ceiling &&
+          this.texture[i] >= this.params.threshold &&
+          y >= 0 &&
+          y < this.params.height
+    ) {
+
+      const yCount = Math.floor(i / this.params.resX);
+
+      const index =
+        yCount % 2 === 0
+          ? i
+          : this.params.resX - 1 - (i % this.params.resX) + yCount * this.params.resX;
+
+      newPath.push(index);
+    }
+  }, this);
+
+  this.path = newPath
+
+  return this;
+};
+
+
 Surface.prototype.getSVGstring = function () {
 
-  this.string = this.path.map((e) => {
+  if  (this.path){
+      
+    this.string = this.path.map(( e,  i) => {
 
       const X = this.vertices[e].x * this.params.width;
-      const Y = this.vertices[e].y * this.params.height + this.vertices[e].z;
-
+      const Y = this.vertices[e].y * this.params.height + this.vertices[e].z ;
 
       let str =
-        e === 0
+        i === 0
           ? "M" + X + ", " + Y
           : // : ( e === this.size-1 ) ? 'L' + X + ' ' + Y  + ' ' + 'Z'
             "L" + X + ", " + Y + " ";
@@ -125,6 +166,10 @@ Surface.prototype.getSVGstring = function () {
     }).join(" ");
 
   return this.string;
+    }
+
+    else return "M0, 0"
 };
+
 
 export { Surface };

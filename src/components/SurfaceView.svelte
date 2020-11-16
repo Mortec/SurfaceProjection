@@ -11,8 +11,10 @@ export let params = {
   y: 0,
   width: 216,
   height: 279,
-  resX: 216,
-  resY: 279,
+  resX: 5,
+  resY: 5,
+  skew: 1,
+  crop: 0,
   q: 2,
   formula: 'y',
   structure: "net",
@@ -26,16 +28,28 @@ export let params = {
 let surface = new Surface()
 let svgString = "M0 0, L5, 15, L15, 5, Z"
 
+const formula = (x, y, l, i, a, q, w, h ) => Math.sin( i/a.length * Math.PI * (l*w/2) ) * q
 
 onMount( () => {  
-    console.log(params)
+    // console.log(params)
     surface.params = params
+
     pictureStore.subscribe( s =>{
-        update( s.id )
+        svgString =
+        surface.loadTexture( s.id )
+                .process( formula )
+                .loadPath()
+                .getSVGstring()
     })
+
     surfaceStore.subscribe( s => {
-        surface.params = params
-        update()
+        surface.params = s
+        svgString =
+        surface.loadVertices()
+                .loadTexture()
+                .process( formula )
+                .loadPath()
+                .getSVGstring()
         }
     )
     // console.log("Surface mounted")
@@ -48,15 +62,7 @@ const savesvg = function(){
     svgsaver.asSvg(svg);   
 }
 
- const update = ( id ) => {
-    surface.generate()
-            .loadTexture( id )
-            .process(
-                (x, y, l, i, a, q, w, h )=> Math.sin( i/a.length * Math.PI * (l*w/2) ) * q
-            )
-    
-    svgString = surface.getSVGstring()
- }
+
 
  $: surfaceStore.tune( params )
 
@@ -65,6 +71,7 @@ const savesvg = function(){
 <!-- pseudoHTML -------------------------------------------------------- -->
 
 <div class="surfaceView">
+
     <div class="surface" bind:clientWidth={params.width} bind:clientHeight={params.height}>
         <svg id="svg"  width={params.width} height={params.height} on:click={ savesvg }> 
             <path style="
@@ -78,23 +85,55 @@ const savesvg = function(){
             {/each} -->
         </svg>
     </div>
+
     <div class="surface_params">
+
         <label >
             <span>res_x</span>
-            <input type=range bind:value={params.resX} min=5 max=216 step="1">
-            <input type=number bind:value={params.resX} min=5 max=216 step="1">
+            <input type=range bind:value={params.resX} min=5 max={params.width} step="1">
+            <input type=number bind:value={params.resX} min=5 max={params.width} step="1">
         </label>
 
         <label >
             <span>res_y</span>
-            <input type=range bind:value={params.resY} min=5 max=279 step="1">
-            <input type=number bind:value={params.resY} min=5 max=279 step="1">
+            <input type=range bind:value={params.resY} min=5 max={params.height} step="1">
+            <input type=number bind:value={params.resY} min=5 max={params.height} step="1">
         </label>
+        <label >
+            <span>skew</span>
+            <input type=range bind:value={params.skew} min=0.5 max=1.5 step="0.05">
+            <input type=number bind:value={params.skew} min=0.5 max=1.5 step="0.05">
+        </label>
+
+        <label >
+            <span>crop</span>
+            <input type=range bind:value={params.crop} min=0 max=0.35 step="0.05">
+            <input type=number bind:value={params.crop} min=0 max=0.35 step="0.05">
+        </label>
+
         <label >
             <span>q</span>
             <input type=range bind:value={params.q} min=0.0 max=100.0 step="0.5">
             <input type=number bind:value={params.q} min=0.0 max=100.0 step="0.1">
         </label>
+
+        <label >
+            <span>thrsh.</span>
+            <input type=range bind:value={params.threshold} min=0 max=0.5 step="0.01">
+            <input type=number bind:value={params.threshold} min=0 max=0.5 step="0.01">
+        </label>
+
+        <label >
+            <span>ceil.</span>
+            <input type=range bind:value={params.ceiling} min=0.5 max=1 step="0.01">
+            <input type=number bind:value={params.ceiling} min=0.5 max=1 step="0.01">
+        </label>
+        
+
+        <div class="feedback">
+        <span >path_length: {surface.path.length}</span>
+        </div>
+
     </div>
 </div>
 
@@ -133,7 +172,7 @@ const savesvg = function(){
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        margin-left: 0.5em;
+        margin-left: 0.7em;
       }
 
     label{
@@ -143,7 +182,14 @@ const savesvg = function(){
         align-items: center;
         /* width: 100%; */
     }
-
+    .feedback{
+        font-family: 'Cutive Mono', monospace;
+        font-size: 0.85em;
+        letter-spacing: -1px;
+        align-self: flex-start;
+        margin-left: 1.5em;
+        margin-top: 8em;
+    }
   input[type=number]{
     text-align: center;
     border-radius: 0px;
