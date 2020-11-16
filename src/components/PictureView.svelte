@@ -14,8 +14,8 @@
     y: 10,
     width: 100,
     height: 100,
-    brightness: 0.97,
-    contrast: 0.8,
+    brightness: 0.13,
+    contrast: 0.33,
     saturation: 1,
     zoom: 0.51,
     blur: 0,
@@ -29,7 +29,7 @@
     pictureStore.subscribe( s => picture.set( s ) )
     pictureStore.tune( { state: 'loading'})
     picture.load("./assets/images/EM-portrait2.jpg")
-    console.log( "Picture mounted")
+    // console.log( "Picture mounted")
   })
 
   let dragRef = {x: params.x, y: params.y}
@@ -58,7 +58,7 @@
 
 
 <!-- pseudoHTML -------------------------------------------------------- -->
-<div class="pictureBox">
+<div class="pictureView">
 
   <div class="picture" bind:clientWidth={params.width} bind:clientHeight={params.height}>
     <canvas {id}
@@ -69,7 +69,7 @@
     />
   </div>
   
-  <div class="params">
+  <div class="picture_params">
   <label >
     <span>brtnss</span>
     <input type=number bind:value={params.brightness} min=0.0 max=3.0 step="0.01">
@@ -108,8 +108,8 @@
 
 <style>
   .picture {
-    width: calc(100vh / 400 * 216 / 2);
-    height: calc(100vh / 400 * 279 / 2);
+    width: calc(100vh / 400 * 216 / 2 - 1px);
+    height: calc(100vh / 400 * 279 / 2 - 1px);
     border: 1px solid black;
     background-color: whitesmoke;
   }
@@ -118,7 +118,7 @@
     cursor: grab;
   }
 
-  .params{
+  .picture_params {  
     display: flex;
     flex-direction: column;
     justify-content: space-between;

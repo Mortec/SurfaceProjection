@@ -3,12 +3,18 @@ const Surface = function (id) {
   this.params = {
     x: 0,
     y: 0,
-    width :  100,
-    height : 100,
+    width: 100,
+    height: 100,
     resX: 100,
     resY: 100,
     q: 1,
-    formula: "y"
+    formula: 'y',
+    structure: "net",
+    threshold: 0,
+    ceiling: 1,
+    path: 'one',
+    paper_color: 1,
+    pen_color: 0,
 };
   this.sourceId = id;
   this.vertices = [];
@@ -52,9 +58,9 @@ Surface.prototype.generate = function (resX, resY) {
 
 Surface.prototype.loadTexture = function (id, option) {
 
-    if(id)this.id = id
+  if (id) this.sourceId = id
 
-  const image = document.getElementById(this.id).getContext("2d");
+  const image = document.getElementById(this.sourceId).getContext("2d");
   const imagedata = image.getImageData(
     0,
     0,
@@ -104,8 +110,8 @@ Surface.prototype.getSVGstring = function () {
 
   this.string = this.path.map((e) => {
 
-      const X = this.vertices[e].x * this.width;
-      const Y = this.vertices[e].y * this.height + this.vertices[e].z;
+      const X = this.vertices[e].x * this.params.width;
+      const Y = this.vertices[e].y * this.params.height + this.vertices[e].z;
 
 
       let str =
@@ -115,7 +121,7 @@ Surface.prototype.getSVGstring = function () {
             "L" + X + ", " + Y + " ";
 
       return str;
-      
+
     }).join(" ");
 
   return this.string;

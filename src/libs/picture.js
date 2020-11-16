@@ -1,8 +1,8 @@
-const Picture = function ( ){
+const Picture = function (  ){
 
-    this.id = '0';
 
     this.params = {
+        id: 'null',
         x : 0,
         y: 0,
         width: 100,
@@ -26,11 +26,11 @@ const Picture = function ( ){
 
 Picture.prototype.init = function( id ){
 
-    this.id = id
+    this.params.id = id
     
     this.buffer = document.createElement('canvas')
     
-    this.ctxt = document.getElementById( this.id ).getContext("2d")
+    this.ctxt = document.getElementById( id ).getContext("2d")
 
     this.image = new Image()
 
@@ -42,7 +42,7 @@ Picture.prototype.init = function( id ){
         this.buffer.getContext('2d').drawImage( this.image, 0, 0, width, height )
         this.draw()
         this.notify()
-        console.log( "Picture loaded" )
+        // console.log( "Picture loaded" )
     }
 }
 
@@ -82,9 +82,10 @@ Picture.prototype.draw = function(){
     canvas.height = this.params.height
 
     const area = {
-        width: canvas.width/this.params.zoom,
-        height: canvas.height/this.params.zoom
+        width: Math.floor( canvas.width/this.params.zoom )+1,
+        height: Math.floor( canvas.height/this.params.zoom )
     }
+    // console.log(area)
     const offset = {
         x: (this.buffer.getContext('2d').canvas.width - area.width)/2 - this.params.x/this.params.zoom ,
         y: (this.buffer.getContext('2d').canvas.height - area.height)/2 - this.params.y/this.params.zoom 
