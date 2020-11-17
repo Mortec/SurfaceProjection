@@ -4,7 +4,7 @@
   import { Surface } from "../libs/surface.js"
   import  { surfaceStore }  from "../stores/stores.js"
   import  { pictureStore }  from "../stores/stores.js"
-
+import Fader from './Fader.svelte'
 
 export let params = {
   x: 0,
@@ -114,11 +114,20 @@ let dragRef = {x: params.x, y: params.y}
     <div class="surface_params">
 
         <div class="surface_params_faders">
-            <label >
+            <Fader
+                name="resX"
+                label="res_x"
+                range={{min: 0, max: params.width}}
+                step={1}
+                value={params.resX}
+                on:input={ (i)=>params.resX=i.detail.value }
+            />
+
+            <!-- <label >
                 <span>res_x</span>
                 <input type=range bind:value={params.resX} min=5 max={params.width} step="1">
                 <input type=number bind:value={params.resX} min=5 max={params.width} step="1">
-            </label>
+            </label> -->
 
             <label >
                 <span>res_y</span>
