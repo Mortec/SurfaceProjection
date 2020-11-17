@@ -6,6 +6,7 @@
   import  { pictureStore }  from "../stores/stores.js"
 import Fader from './Fader.svelte'
 
+export let title = "surface_projection"
 export let params = {
   x: 0,
   y: 0,
@@ -16,7 +17,7 @@ export let params = {
   skew: 1,
   crop: 0,
   q: 2,
-  formula: 'y',
+  formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
   structure: "net",
   threshold: 0,
   ceiling: 1,
@@ -81,7 +82,10 @@ let dragRef = {x: params.x, y: params.y}
     }
   }
 
-
+  const handleInput = e => {
+    
+    params = {...params, ...{[e.detail.name]: e.detail.value} }
+  }
 
  $: surfaceStore.tune( params )
 
@@ -117,66 +121,85 @@ let dragRef = {x: params.x, y: params.y}
             <Fader
                 name="resX"
                 label="res_x"
-                range={{min: 0, max: params.width}}
+                range={{min: 2, max: params.width}}
                 step={1}
                 value={params.resX}
-                on:input={ (i)=>params.resX=i.detail.value }
+                on:input={ handleInput }
             />
 
-            <!-- <label >
-                <span>res_x</span>
-                <input type=range bind:value={params.resX} min=5 max={params.width} step="1">
-                <input type=number bind:value={params.resX} min=5 max={params.width} step="1">
-            </label> -->
+            <Fader
+            name="resY"
+            label="res_y"
+            range={{min: 2, max: params.height}}
+            step={1}
+            value={params.resY}
+            on:input={ handleInput }
+            />
 
-            <label >
-                <span>res_y</span>
-                <input type=range bind:value={params.resY} min=5 max={params.height} step="1">
-                <input type=number bind:value={params.resY} min=5 max={params.height} step="1">
-            </label>
-            <label >
-                <span>skew</span>
-                <input type=range bind:value={params.skew} min=0.5 max=1.5 step="0.01">
-                <input type=number bind:value={params.skew} min=0.5 max=1.5 step="0.01">
-            </label>
+            <Fader
+            name="skew"
+            label="skew"
+            range={{min: 0.25, max: 1.5}}
+            step={0.01}
+            value={params.skew}
+            on:input={ handleInput }
+            />
 
-            <label >
-                <span>crop</span>
-                <input type=range bind:value={params.crop} min=0 max=0.35 step="0.01">
-                <input type=number bind:value={params.crop} min=0 max=0.35 step="0.01">
-            </label>
+            <Fader
+            name="crop"
+            label="crop"
+            range={{min: 0, max: 1}}
+            step={0.01}
+            value={params.crop}
+            on:input={ handleInput }
+            />
 
-            <label >
-                <span>q</span>
-                <input type=range bind:value={params.q} min=0.0 max=100.0 step="0.5">
-                <input type=number bind:value={params.q} min=0.0 max=100.0 step="0.1">
-            </label>
+            <Fader
+            name="q"
+            label="__q"
+            range={{min: 0, max: 200}}
+            step={0.1}
+            value={params.q}
+            on:input={ handleInput }
+            />
 
-            <label >
-                <span>thrsh.</span>
-                <input type=range bind:value={params.threshold} min=0 max=0.5 step="0.01">
-                <input type=number bind:value={params.threshold} min=0 max=0.5 step="0.01">
-            </label>
+            <Fader
+            name="threshold"
+            label="thrsh."
+            range={{min: 0, max: 1}}
+            step={0.01}
+            value={params.threshold}
+            on:input={ handleInput }
+            />
 
-            <label >
-                <span>ceil.</span>
-                <input type=range bind:value={params.ceiling} min=0.5 max=1 step="0.01">
-                <input type=number bind:value={params.ceiling} min=0.5 max=1 step="0.01">
-            </label>
+            <Fader
+            name="ceiling"
+            label="ceil."
+            range={{min: 0, max: 1}}
+            step={0.01}
+            value={params.ceiling}
+            on:input={ handleInput }
+            />
             
         </div>
-            <div class = "surface_params_formula">
-                <span>formula:</span>
-                <label>
-                <textarea id="formula" bind:value={params.formula}></textarea>
-                </label>
-            </div>
 
-            <div class="surface_params_pathFeedback">
-                <span >path_length: {surface.path.length}</span>
-            </div>
+        <div class = "surface_params_formula">
+            <span>formula:</span>
+            <label>
+            <textarea id="formula" bind:value={params.formula}></textarea>
+            </label>
+        </div>
 
+        <div class="surface_params_pathFeedback">
+            <span >path_length: {surface.path.length}</span>
+        </div>
+
+        <!-- <div class="surface_params_title">
+            <label for="title">title:</label>
+            <input type="text" bind:value={title}/>
+        </div> -->
     </div>
+    
 </div>
 
 
@@ -199,11 +222,13 @@ let dragRef = {x: params.x, y: params.y}
 		background-color: white;	
 		border: 1px solid rgb(211, 211, 211);
         box-shadow: 1px 2px 4px rgba(0, 0, 0, .2);
-	  }
+      }
+      
     #svg{
         cursor: grab;
     }
-	  path{
+
+	path{
 		  fill : none;
 		  stroke-width: 1px;
 		  stroke : black;
@@ -218,6 +243,22 @@ let dragRef = {x: params.x, y: params.y}
         justify-content: flex-end;
       }
 
+    .surface_params_title{
+        display: flex;
+        flex-direction: row;
+    }
+
+    input[type="text"]{
+        font-family: 'Cutive Mono', monospace;
+        letter-spacing: -1px;
+        margin: none;
+        height: 1.5em;
+    }
+    input[type="text"]:focus{
+        outline: none;
+    }
+
+
     .surface_params_faders{
         display: flex;
         flex-direction: column;
@@ -227,7 +268,7 @@ let dragRef = {x: params.x, y: params.y}
     .surface_params_formula{
         /* align-self: flex-start; */
         margin-top: 1em;
-        height: 34%;
+        /* height: 34%; */
     }
 
     .surface_params_formula > span{
@@ -241,14 +282,15 @@ let dragRef = {x: params.x, y: params.y}
         padding: 0.5em;
         font-family: roboto, monospace;
         font-size: 0.85em;
-        margin-top: 0.5em;
+        /* margin-top: 0.5em; */
         margin-left: 1em;
         margin-right: 1em;
         width: 100%;
-        height: calc(100vh/400 * 85);
+        height: calc(100vh/400 * 90);
         resize: none;
         border: 0px solid transparent
     }
+
     #formula:focus{
         border: 0px solid transparent;
         box-shadow: transparent;
@@ -262,7 +304,7 @@ let dragRef = {x: params.x, y: params.y}
         letter-spacing: -1px;
         align-self: flex-start;
         margin-top: 1em;
-        margin-bottom: 1em;
+        margin-bottom: 1.5em;
     }
     .surface_params_pathFeedback > span{
         
@@ -277,120 +319,7 @@ let dragRef = {x: params.x, y: params.y}
         /* width: 100%; */
     }
 
-    input{
-        border: none;
-        padding: 0px 0px 0px 0px;
-        background-color: transparent;
-    }
-    
-    input[type=number]{
-        text-align: center;
-        border-radius: 0px;
-        font-size: 0.9em;
-        width: 30%;
-        margin: 1em;
-        margin-left: 0.5em;
-    }
 
-    label > span{
-        text-align: center;
-        width: 4em;
-        margin: 1em;
-        padding: 0;
-    }
-    
-
-
-  /* https://www.cssportal.com/style-input-range/ */
-  input[type=range] {
-    height: 12px;
-    -webkit-appearance: none;
-    margin: 10px 0;
-    width: 100%;
-  }
-  input[type=range]:focus {
-    outline: none;
-  }
-  input[type=range]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 2px;
-    cursor: pointer;
-    animate: 0.2s;
-    box-shadow: 0px 0px 1px #000000;
-    background: #C9C9C9;
-    border-radius: 2px;
-    border: 0px solid #000000;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    box-shadow: 0px 0px 1px #000000;
-    border: 0px solid #B1C8E3;
-    height: 6px;
-    width: 24px;
-    border-radius: 20px;
-    background: #283440;
-    cursor: pointer;
-    -webkit-appearance: none;
-    margin-top: -2px;
-  }
-  input[type=range]:focus::-webkit-slider-runnable-track {
-    background: #C9C9C9;
-  }
-  input[type=range]::-moz-range-track {
-    width: 100%;
-    height: 2px;
-    cursor: pointer;
-    animate: 0.2s;
-    box-shadow: 0px 0px 1px #000000;
-    background: #C9C9C9;
-    border-radius: 2px;
-    border: 0px solid #000000;
-  }
-  input[type=range]::-moz-range-thumb {
-    box-shadow: 0px 0px 1px #000000;
-    border: 0px solid #B1C8E3;
-    height: 6px;
-    width: 24px;
-    border-radius: 20px;
-    background: #283440;
-    cursor: pointer;
-  }
-  input[type=range]::-ms-track {
-    width: 100%;
-    height: 2px;
-    cursor: pointer;
-    animate: 0.2s;
-    background: transparent;
-    border-color: transparent;
-    color: transparent;
-  }
-  input[type=range]::-ms-fill-lower {
-    background: #C9C9C9;
-    border: 0px solid #000000;
-    border-radius: 4px;
-    box-shadow: 0px 0px 1px #000000;
-  }
-  input[type=range]::-ms-fill-upper {
-    background: #C9C9C9;
-    border: 0px solid #000000;
-    border-radius: 4px;
-    box-shadow: 0px 0px 1px #000000;
-  }
-  input[type=range]::-ms-thumb {
-    margin-top: 1px;
-    box-shadow: 0px 0px 1px #000000;
-    border: 0px solid #B1C8E3;
-    height: 6px;
-    width: 24px;
-    border-radius: 20px;
-    background: #283440;
-    cursor: pointer;
-  }
-  input[type=range]:focus::-ms-fill-lower {
-    background: #C9C9C9;
-  }
-  input[type=range]:focus::-ms-fill-upper {
-    background: #C9C9C9;
-  }
 
 
 </style>

@@ -21,7 +21,7 @@
    .fader{
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: flex-end;
         align-items: center;
         margin: 0.5em 0.5em 0.5em 1em;
    }
@@ -39,9 +39,15 @@
     width: 30%;
     margin: 0em 0em 0em 0.5em;
   }
+
+  input[type="number"]:focus{
+    outline: none;
+  }
+
   label{
       margin: 0em 0.5em 0.25em 0em
   }
+  
   label > span {
     text-align: center;
     /* width: 4em; */
