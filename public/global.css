@@ -15,7 +15,7 @@ body {
 }
 
 a {
-	color: rgb(0,100,200);
+	color: red;
 	text-decoration: none;
 }
 
@@ -24,7 +24,7 @@ a:hover {
 }
 
 a:visited {
-	color: rgb(0,80,160);
+	color: rgb(186, 0, 0);
 }
 
 label {

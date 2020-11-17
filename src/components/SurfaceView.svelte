@@ -113,51 +113,59 @@ let dragRef = {x: params.x, y: params.y}
 
     <div class="surface_params">
 
-        <label >
-            <span>res_x</span>
-            <input type=range bind:value={params.resX} min=5 max={params.width} step="1">
-            <input type=number bind:value={params.resX} min=5 max={params.width} step="1">
-        </label>
+        <div class="surface_params_faders">
+            <label >
+                <span>res_x</span>
+                <input type=range bind:value={params.resX} min=5 max={params.width} step="1">
+                <input type=number bind:value={params.resX} min=5 max={params.width} step="1">
+            </label>
 
-        <label >
-            <span>res_y</span>
-            <input type=range bind:value={params.resY} min=5 max={params.height} step="1">
-            <input type=number bind:value={params.resY} min=5 max={params.height} step="1">
-        </label>
-        <label >
-            <span>skew</span>
-            <input type=range bind:value={params.skew} min=0.5 max=1.5 step="0.05">
-            <input type=number bind:value={params.skew} min=0.5 max=1.5 step="0.05">
-        </label>
+            <label >
+                <span>res_y</span>
+                <input type=range bind:value={params.resY} min=5 max={params.height} step="1">
+                <input type=number bind:value={params.resY} min=5 max={params.height} step="1">
+            </label>
+            <label >
+                <span>skew</span>
+                <input type=range bind:value={params.skew} min=0.5 max=1.5 step="0.01">
+                <input type=number bind:value={params.skew} min=0.5 max=1.5 step="0.01">
+            </label>
 
-        <label >
-            <span>crop</span>
-            <input type=range bind:value={params.crop} min=0 max=0.35 step="0.05">
-            <input type=number bind:value={params.crop} min=0 max=0.35 step="0.05">
-        </label>
+            <label >
+                <span>crop</span>
+                <input type=range bind:value={params.crop} min=0 max=0.35 step="0.01">
+                <input type=number bind:value={params.crop} min=0 max=0.35 step="0.01">
+            </label>
 
-        <label >
-            <span>q</span>
-            <input type=range bind:value={params.q} min=0.0 max=100.0 step="0.5">
-            <input type=number bind:value={params.q} min=0.0 max=100.0 step="0.1">
-        </label>
+            <label >
+                <span>q</span>
+                <input type=range bind:value={params.q} min=0.0 max=100.0 step="0.5">
+                <input type=number bind:value={params.q} min=0.0 max=100.0 step="0.1">
+            </label>
 
-        <label >
-            <span>thrsh.</span>
-            <input type=range bind:value={params.threshold} min=0 max=0.5 step="0.01">
-            <input type=number bind:value={params.threshold} min=0 max=0.5 step="0.01">
-        </label>
+            <label >
+                <span>thrsh.</span>
+                <input type=range bind:value={params.threshold} min=0 max=0.5 step="0.01">
+                <input type=number bind:value={params.threshold} min=0 max=0.5 step="0.01">
+            </label>
 
-        <label >
-            <span>ceil.</span>
-            <input type=range bind:value={params.ceiling} min=0.5 max=1 step="0.01">
-            <input type=number bind:value={params.ceiling} min=0.5 max=1 step="0.01">
-        </label>
-        
-
-        <div class="feedback">
-        <span >path_length: {surface.path.length}</span>
+            <label >
+                <span>ceil.</span>
+                <input type=range bind:value={params.ceiling} min=0.5 max=1 step="0.01">
+                <input type=number bind:value={params.ceiling} min=0.5 max=1 step="0.01">
+            </label>
+            
         </div>
+            <div class = "surface_params_formula">
+                <span>formula:</span>
+                <label>
+                <textarea id="formula" bind:value={params.formula}></textarea>
+                </label>
+            </div>
+
+            <div class="surface_params_pathFeedback">
+                <span >path_length: {surface.path.length}</span>
+            </div>
 
     </div>
 </div>
@@ -183,7 +191,9 @@ let dragRef = {x: params.x, y: params.y}
 		border: 1px solid rgb(211, 211, 211);
         box-shadow: 1px 2px 4px rgba(0, 0, 0, .2);
 	  }
-
+    #svg{
+        cursor: grab;
+    }
 	  path{
 		  fill : none;
 		  stroke-width: 1px;
@@ -193,13 +203,63 @@ let dragRef = {x: params.x, y: params.y}
     .surface_params{
         background-color: rgb(237, 237, 237);
         width: calc(100vh/400 * 216 * 0.5 );
+        margin-left: 0.7em;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+
+    .surface_params_faders{
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        margin-left: 0.7em;
-      }
+    }
+    .surface_params_formula{
+        /* align-self: flex-start; */
+        margin-top: 1em;
+        height: 34%;
+    }
 
+    .surface_params_formula > span{
+        width: 100%;
+        margin-left: 1em;
+    }
+
+    #formula{
+        background-color: rgb(222, 222, 222);
+        color: rgb(0, 0, 0);
+        padding: 0.5em;
+        font-family: roboto, monospace;
+        font-size: 0.85em;
+        margin-top: 0.5em;
+        margin-left: 1em;
+        margin-right: 1em;
+        width: 100%;
+        height: calc(100vh/400 * 85);
+        resize: none;
+        border: 0px solid transparent
+    }
+    #formula:focus{
+        border: 0px solid transparent;
+        box-shadow: transparent;
+        outline: none;
+
+    }
+
+    .surface_params_pathFeedback{
+        font-family: 'Cutive Mono', monospace;
+        font-size: 0.85em;
+        letter-spacing: -1px;
+        align-self: flex-start;
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+    .surface_params_pathFeedback > span{
+        
+        margin: 0em 0em 0em 1em;
+    }
+    
     label{
         display: flex;
         flex-direction: row;
@@ -207,32 +267,29 @@ let dragRef = {x: params.x, y: params.y}
         align-items: center;
         /* width: 100%; */
     }
-    .feedback{
-        font-family: 'Cutive Mono', monospace;
-        font-size: 0.85em;
-        letter-spacing: -1px;
-        align-self: flex-start;
-        margin-left: 1.5em;
-        margin-top: 8em;
+
+    input{
+        border: none;
+        padding: 0px 0px 0px 0px;
+        background-color: transparent;
     }
-  input[type=number]{
-    text-align: center;
-    border-radius: 0px;
-    font-size: 0.9em;
-    width: 30%;
-    margin: 0.9em;
-  }
-  label > span{
-    text-align: center;
-    width: 4em;
-    margin: 1em;
-    padding: 0;
-  }
-  input{
-    border: none;
-    padding: 0px 0px 0px 0px;
-    background-color: transparent;
-  }
+    
+    input[type=number]{
+        text-align: center;
+        border-radius: 0px;
+        font-size: 0.9em;
+        width: 30%;
+        margin: 1em;
+        margin-left: 0.5em;
+    }
+
+    label > span{
+        text-align: center;
+        width: 4em;
+        margin: 1em;
+        padding: 0;
+    }
+    
 
 
   /* https://www.cssportal.com/style-input-range/ */

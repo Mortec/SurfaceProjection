@@ -2,7 +2,7 @@
 import PictureView from './components/PictureView.svelte'
 import SurfaceView from './components/SurfaceView.svelte'
 
-let title = 'surface projection'
+let title = 'surface_projection'
 
 </script>
 
