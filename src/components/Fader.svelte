@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte';
  
-    export let id = new Date().getUTCMilliseconds();
+    export let id = Date.now() + Math.random();
     export let label = "fadr" //name as it appear in the ui
     export let name = "fader" ///programmatic name
     export let value = "0.5"
@@ -47,7 +47,7 @@
   label{
       margin: 0em 0.5em 0.25em 0em
   }
-  
+
   label > span {
     text-align: center;
     /* width: 4em; */
