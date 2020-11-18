@@ -243,7 +243,7 @@ let dragRef = {x: params.x, y: params.y}
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        height: 100%;
+        /* height: 100%; */
       }
 
 

@@ -9,21 +9,43 @@
 <!-- STYLE -------------------------------------------------------- -->
 
 <style>
-  header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-	justify-content: flex-start;
-    height: 10%;
-  }
+.container{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	height: 100%;
+}
 
-  footer {
-	  height: 10%;
-  }
+
+	nav {
+	
+	}
+	.navbutton {
+		height: 10%;
+		vertical-align: center;
+	}
+
+	main{
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	header {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	height: 10%;
+	margin: none;
+	padding: none;
+	padding-left: 1.5em;
+	}
 
   h1 {
     font-size: 1.5em;
-    margin: 1em;
+    margin: none;
   }
 
   .playground {
@@ -32,17 +54,30 @@
     justify-content: space-around;
     align-items: flex-start;
     margin-top: 1em;
-    margin-bottom: 1em;
+	margin-bottom: 1em;
+	padding-left: 3em;
+	height: auto;
+	
   }
+  footer {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-end;
+		height: 10%;
+		padding-right: 2em;
+	}
 
-  .title {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-self: flex-start;
-    align-self: flex-start;
+
+	.gcode {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-self: flex-start;
+	align-self: flex-start;
+	margin: none;
+	padding: none;
   }
-
   input[type="text"] {
     font-family: "Cutive Mono", monospace;
     letter-spacing: -1px;
@@ -57,24 +92,33 @@
 
 
 <!-- pseudoHTML -------------------------------------------------------- -->
+<div class="container">
 
+	<nav>
+		<div class="navbutton">
+		<IconButton iconUrl="./assets/icons/save.png"/>
+		</div>
+		<div class="navbutton">
+		<IconButton iconUrl="./assets/icons/load.png"/>
+		</div>
+	</nav>
 
-<header>
-	<IconButton iconUrl="./assets/icons/save.png"/>
-	<IconButton iconUrl="./assets/icons/load.png"/>
-  <div class="title">
-    <h1>{title}</h1>
-  </div>
-</header>
+	<main>
+		<header>
+			<h1>{title}</h1>
+		</header>
 
-<main>
-  <div class="playground">
-    <PictureView />
-    <SurfaceView />
-    <div class="title">
-      <label for="title">title:</label>
-      <input type="text" bind:value={title} />
-    </div>
-  </div>
-</main>
-<footer />
+		<div class="playground">
+			<PictureView />
+			<SurfaceView />
+			<div class="gcode">
+				<label for="title">title:</label>
+				<input type="text" bind:value={title} />
+			</div>
+		</div>
+
+		<footer>
+			<p style="color: #bbb">©<a style="color: #bbb" href="https://www.edouardmortec.com.com">mortec</a> lockdown 2020</p>
+		</footer>
+	</main>
+</div>
