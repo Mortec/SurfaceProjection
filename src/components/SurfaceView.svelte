@@ -6,7 +6,6 @@
   import  { pictureStore }  from "../stores/stores.js"
 import Fader from './Fader.svelte'
 
-export let title = "surface_projection"
 export let params = {
   x: 0,
   y: 0,
@@ -14,9 +13,9 @@ export let params = {
   height: 279,
   resX: 5,
   resY: 5,
-  skew: 1,
+  scale: 1,
   crop: 0,
-  q: 2,
+  q: 0,
   formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
   structure: "net",
   threshold: 0,
@@ -27,31 +26,34 @@ export let params = {
 }
 
 let surface = new Surface()
-let svgString = "M0 0, L5, 15, L15, 5, Z"
+let string
 
 const formula = (x, y, l, i, a, q, w, h ) => Math.sin( i/a.length * Math.PI * (l*w/2) ) * q
 
-onMount( () => {  
-    // console.log(params)
-    surface.params = params
+onMount( () => {
 
+    surface.params = params
+    string = surface.SVGstring
     pictureStore.subscribe( s =>{
-        svgString =
         surface.loadTexture( s.id )
-                .process( formula )
-                .loadPath()
-                .getSVGstring()
+        .computeMap( formula )
+        .computePath()
+        .computeSVGstring()
+    string = surface.SVGstring
+
     })
 
     surfaceStore.subscribe( s => {
+        
         surface.params = s
-        svgString =
-        surface.loadVertices()
+        surface.setVertices()
                 .loadTexture()
-                .process( formula )
-                .loadPath()
-                .getSVGstring()
+                .computeMap( formula )
+                .computePath()
+                .computeSVGstring()
+        string = surface.SVGstring
         }
+
     )
     // console.log("Surface mounted")
 })
@@ -77,8 +79,8 @@ let dragRef = {x: params.x, y: params.y}
   
   function drag( e ) {
     if (locked) {
-      params.x = e.x - dragRef.x, 
-      params.y = e.y - dragRef.y
+        params.x = e.x - dragRef.x, 
+        params.y = e.y - dragRef.y
     }
   }
 
@@ -97,7 +99,8 @@ let dragRef = {x: params.x, y: params.y}
 
     <!-- on:click={ savesvg } -->
     <div class="surface" bind:clientWidth={params.width} bind:clientHeight={params.height}>
-        <svg id="svg"  width={params.width} height={params.height} 
+        <svg id="svg"
+        viewbox="0 0 {params.width} {params.height}"
         on:mousedown={ mousedown }
         on:mouseup={ mouseup }
         on:mouseout={ mouseup }
@@ -105,9 +108,12 @@ let dragRef = {x: params.x, y: params.y}
         > 
             <path style="
             fill : none;
-            stroke-width: 1px;
-            stroke : black;" 
-            d={svgString} />
+            stroke-width: {1/params.height}px;
+            stroke : black;"
+            transform="
+            translate({params.x} {params.y})
+            scale({params.width} {params.height})" 
+            d={ string } />
 
             <!-- {#each surface.vertices as { x, y }, i}
             <circle cx={x*format.width} cy={y*format.height} r="2" stroke="none" stroke-width="1" fill="red" />
@@ -137,11 +143,11 @@ let dragRef = {x: params.x, y: params.y}
             />
 
             <Fader
-            name="skew"
-            label="skew"
+            name="scale"
+            label="scale"
             range={{min: 0.25, max: 1.5}}
             step={0.01}
-            value={params.skew}
+            value={params.scale}
             on:input={ handleInput }
             />
 
@@ -157,8 +163,8 @@ let dragRef = {x: params.x, y: params.y}
             <Fader
             name="q"
             label="__q"
-            range={{min: 0, max: 200}}
-            step={0.1}
+            range={{min: 0, max: 1}}
+            step={0.001}
             value={params.q}
             on:input={ handleInput }
             />
@@ -194,10 +200,6 @@ let dragRef = {x: params.x, y: params.y}
             <span >path_length: {surface.path.length}</span>
         </div>
 
-        <!-- <div class="surface_params_title">
-            <label for="title">title:</label>
-            <input type="text" bind:value={title}/>
-        </div> -->
     </div>
     
 </div>
@@ -210,7 +212,7 @@ let dragRef = {x: params.x, y: params.y}
 
     .surfaceView{
         width: calc(100vh/400 * 216 * 1.5);
-            display: flex;
+        display: flex;
         flex-direction: row;
         justify-content: flex-start;
     }
@@ -241,22 +243,10 @@ let dragRef = {x: params.x, y: params.y}
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
+        height: 100%;
       }
 
-    .surface_params_title{
-        display: flex;
-        flex-direction: row;
-    }
 
-    input[type="text"]{
-        font-family: 'Cutive Mono', monospace;
-        letter-spacing: -1px;
-        margin: none;
-        height: 1.5em;
-    }
-    input[type="text"]:focus{
-        outline: none;
-    }
 
 
     .surface_params_faders{
