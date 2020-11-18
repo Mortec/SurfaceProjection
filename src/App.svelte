@@ -107,7 +107,8 @@
 		<div class="playground">
 			<PictureView />
 			<SurfaceView />
-			<div class="gcode">
+
+			<div class="gcode" style="align-self: flex-end; height: calc(100vh/400 * 279);">
 				<label for="title">title:</label>
 				<input type="text" name="title" bind:value={title} />
 				<IconButton iconUrl="./assets/icons/save.png"/>	

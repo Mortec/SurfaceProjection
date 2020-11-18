@@ -1,5 +1,4 @@
-import { writable } from 'svelte/store';
-import {Picture} from '../libs/picture.js'
+import { writable, derived } from 'svelte/store';
 
 const createStore = function( object ) {
 
@@ -51,3 +50,5 @@ export const surfaceStore = createStore({
     paper_color: "white",
     pen_color: "black",
 })
+
+const projectStore = derived()
