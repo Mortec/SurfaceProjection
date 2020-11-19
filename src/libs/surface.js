@@ -1,27 +1,27 @@
 const Surface = function (id) {
   this.params = {
+    id: 'elementRenderingId',
     x: 0,
     y: 0,
-    width: 100,
-    height: 100,
-    resX: 100,
-    resY: 100,
-    scale: 1,
+    width: 216,
+    height: 279,
+    resX: 216,
+    resY: 279,
+    skew: 1,
     crop: 0,
     q: 0,
-    formula: "y",
-    structure: "net",
+    r:0,
     threshold: 0,
     ceiling: 1,
-    path: "one",
-    paper_color: 1,
-    pen_color: 0,
+    formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
+    structure: "net",
+    path: 'zig',
   };
   this.sourceId = id;
   this.vertices = [];
   this.texture = [];
   this.path = [];
-  this.SVGstring = "M0, 0 L50 100, L100, 50 Z";
+  this.pathString = "M0, 0 L50 100, L100, 50 Z";
 };
 
 Surface.prototype.setVertices = function (resX, resY) {
@@ -101,12 +101,10 @@ Surface.prototype.computeMap = function (func) {
 Surface.prototype.computePath = function () {
 
     const newPath = [];
-
     this.vertices.forEach((e, i) => {
-    const scaleOffset = (1-this.params.scale)/2
-    const x = e.x * this.params.scale + scaleOffset;
-    const y = (e.y + e.z) * this.params.scale + scaleOffset;
-    //   console.log( 't : ', this.params.floor  )
+      const scaleOffset = (1-this.params.scale)/2
+      const x = e.x * this.params.scale + scaleOffset;
+      const y = (e.y + e.z) * this.params.scale + scaleOffset;
 
     if (
       this.texture[i] <= this.params.ceiling &&
@@ -136,11 +134,11 @@ Surface.prototype.computePath = function () {
   return this;
 };
 
-Surface.prototype.computeSVGstring = function () {
+Surface.prototype.computePathString = function () {
 
     if (this.path.length) {
 
-        this.SVGstring = this.path.map((e, i) => {
+        this.pathString = this.path.map((e, i) => {
 
         const scaleOffset = (1-this.params.scale)/2
 
@@ -161,6 +159,8 @@ Surface.prototype.computeSVGstring = function () {
       })
       .join(" ");
 
+      const pathElement = document.getElementById(this.params.id)
+      pathElement && pathElement.setAttribute('d', this.pathString)
     }
 
     return this;

@@ -6,30 +6,28 @@
   import { Picture } from "../libs/picture.js"
   
   const picture = new Picture()
-  const id = "pictureCanvas"
 
-  let params = {
+  export let params = {
     id: "pictureCanvas",
-    x: -5,
-    y: 10,
+    imgUrl: "./assets/images/EM-portrait2.jpg",
+    x : 0,
+    y: 0,
     width: 100,
     height: 100,
-    brightness: 0.13,
-    contrast: 0.33,
-    saturation: 1,
-    zoom: 0.51,
+    brightness: 1.0,
+    contrast: 1.0,
+    saturation: 1.0,
     blur: 0,
-    invert: 0,
+    zoom: 1.0,
+    invert: 0.0,
   }
 
   onMount(() => {
 
-    picture.notify = () => pictureStore.tune( { state: 'loaded'})
-    picture.init(id)
+    picture.notify = () => pictureStore.tune( {} )
+    picture.init(params.id)
     pictureStore.subscribe( s => picture.set( s ) )
-    pictureStore.tune( { state: 'loading'})
-    picture.load("./assets/images/EM-portrait2.jpg")
-    // console.log( "Picture mounted")
+    picture.load(params.imgUrl)
   })
 
   let dragRef = {x: params.x, y: params.y}
@@ -61,7 +59,7 @@
 <div class="pictureView">
 
   <div class="picture" bind:clientWidth={params.width} bind:clientHeight={params.height}>
-    <canvas {id}
+    <canvas id={params.id}
       on:mousedown={ mousedown }
       on:mouseup={ mouseup }
       on:mouseout={ mouseup }

@@ -4,43 +4,49 @@
   import { Surface } from "../libs/surface.js"
   import  { surfaceStore }  from "../stores/stores.js"
   import  { pictureStore }  from "../stores/stores.js"
-import Fader from './Fader.svelte'
+  import Fader from './Fader.svelte'
 
 export let params = {
-  x: 0,
-  y: 0,
-  width: 216,
-  height: 279,
-  resX: 5,
-  resY: 5,
-  scale: 1,
-  crop: 0,
-  q: 0,
-  formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
-  structure: "net",
-  threshold: 0,
-  ceiling: 1,
-  path: 'one',
-  paper_color: "white",
-  pen_color: "black",
+    id: 'surfacePath',
+    x: 0,
+    y: 0,
+    width: 216,
+    height: 279,
+    resX: 7,
+    resY: 7,
+    scale: 0.7,
+    crop: 0,
+    q: 0,
+    r:0,
+    threshold: 0,
+    ceiling: 1,
+    formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
+    structure: "net",
+    path: 'zig',
+    paper_color: "white",
+    pen_color: "black",
 }
 
+
+/*nota:
+path: zig = unique snake path along the x axis
+    zag: unique snake path along the y axis
+    d->l : unique path with sorting of vertices based on luminance, darkness to light 
+*/
+
 let surface = new Surface()
-let string
 
 const formula = (x, y, l, i, a, q, w, h ) => Math.sin( i/a.length * Math.PI * (l*w/2) ) * q
 
 onMount( () => {
 
     surface.params = params
-    string = surface.SVGstring
     pictureStore.subscribe( s =>{
         surface.loadTexture( s.id )
         .computeMap( formula )
         .computePath()
-        .computeSVGstring()
-    string = surface.SVGstring
-
+        .computePathString()
+        surfaceStore.tune({})
     })
 
     surfaceStore.subscribe( s => {
@@ -50,12 +56,9 @@ onMount( () => {
                 .loadTexture()
                 .computeMap( formula )
                 .computePath()
-                .computeSVGstring()
-        string = surface.SVGstring
+                .computePathString()
         }
-
     )
-    // console.log("Surface mounted")
 })
 
 
@@ -98,22 +101,24 @@ let dragRef = {x: params.x, y: params.y}
 <div class="surfaceView">
 
     <!-- on:click={ savesvg } -->
-    <div class="surface" bind:clientWidth={params.width} bind:clientHeight={params.height}>
-        <svg id="svg"
-        viewbox="0 0 {params.width} {params.height}"
+    <div class="surface"
+        bind:clientWidth={params.width} bind:clientHeight={params.height}
         on:mousedown={ mousedown }
         on:mouseup={ mouseup }
         on:mouseout={ mouseup }
         on:mousemove={ drag }
-        > 
-            <path style="
+        on:dblclick={savesvg}
+        
+        >
+        <svg viewbox="0 0 {params.width} {params.height}">
+            <path id={params.id} style="
             fill : none;
             stroke-width: {1/params.height}px;
             stroke : black;"
             transform="
             translate({params.x} {params.y})
             scale({params.width} {params.height})" 
-            d={ string } />
+            d="M0.5 0 L1 0.5 L0 1 Z" />
 
             <!-- {#each surface.vertices as { x, y }, i}
             <circle cx={x*format.width} cy={y*format.height} r="2" stroke="none" stroke-width="1" fill="red" />
@@ -224,12 +229,9 @@ let dragRef = {x: params.x, y: params.y}
 		background-color: white;	
 		border: 1px solid rgb(211, 211, 211);
         box-shadow: 1px 2px 4px rgba(0, 0, 0, .2);
+        cursor: grab;
       }
       
-    #svg{
-        cursor: grab;
-    }
-
 	path{
 		  fill : none;
 		  stroke-width: 1px;

@@ -2,7 +2,7 @@ const Picture = function (  ){
 
 
     this.params = {
-        id: 'null',
+        id: 'pictureCanvas',
         x : 0,
         y: 0,
         width: 100,
