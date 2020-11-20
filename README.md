@@ -4,7 +4,7 @@
 
 Svelte app to map pictures to SVG paths prepared to be send to a pen plotter.
 
-This turn put to be some kind of oneliner with a bunch of parameters to generate a crazy SVG from a picture.
+This turns out to be some kind of oneliner with a bunch of parameters to generate a crazy SVG from a picture.
 
 Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection/).
 
