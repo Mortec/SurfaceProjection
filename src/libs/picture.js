@@ -95,11 +95,11 @@ Picture.prototype.draw = function(){
     this.ctxt.clearRect(0, 0, canvas.width,  canvas.height);
 
     this.ctxt.filter =`
+        invert(${this.params.invert})
         brightness(${this.params.brightness})
         contrast(${this.params.contrast})
         saturate(${this.params.saturation})
         blur(${this.params.blur*5}px)
-        invert(${this.params.invert})
     `
     this.ctxt.drawImage(this.buffer,
             offset.x, offset.y, area.width, area.height,

@@ -3,6 +3,7 @@
   import { onMount } from "svelte"
   import  { pictureStore }  from "../stores/stores.js"
   import { Picture } from "../libs/picture.js"
+  import { createEventDispatcher } from 'svelte'
   
   const picture = new Picture()
 
@@ -54,6 +55,12 @@
     params = {...params, ...{[e.detail.name]: e.detail.value} }
   }
 
+  const dispatch = createEventDispatcher()
+
+  const savepng = function(){
+    dispatch('savePNG') 
+  }
+
   $: pictureStore.tune( params )
 
 </script>
@@ -69,6 +76,7 @@
       on:mouseup={ mouseup }
       on:mouseout={ mouseup }
       on:mousemove={ drag }
+      on:dblclick={savepng}
     />
   </div>
   

@@ -6,6 +6,8 @@
   import { get } from 'svelte/store';
   import { onMount } from "svelte"
   import { defaultProject, defaultProjects } from './configs/configs.js'
+  import SvgSaver from 'svgsaver'
+  import { FileSaver, saveAs } from 'file-saver';	
 
   let title = 'none'
   let currentProject, projects
@@ -38,7 +40,23 @@
 	  loadProject( projects.last_project_title )
 	} )
  
+	const saveSVG = function(){
+		const svgsaver = new SvgSaver();                      
+		const svg = document.querySelector("#svg");        
+		svgsaver.asSvg(svg, title+".svg");   
+	}
 
+	const savePNG = function(){
+		const canvas = document.querySelector("#pictureCanvas");
+		canvas.toBlob(function(blob) {
+    		saveAs(blob, title+".png");
+		})
+	}
+
+	const saveGCODE = ( gcode )=>{
+		const file = new File([gcode], title+".nc", {type: "text/plain;charset=utf-8"});
+		FileSaver.saveAs(file);
+	}
 
 
 </script>
@@ -91,8 +109,7 @@
 		align-items: flex-start;
 		justify-content: space-around;
 		padding-top: 1em;
-		padding-left: 1em;
-
+		padding-left: 3em;
 		height: 100%;
 		width: 100%
 		
@@ -110,12 +127,20 @@
 
 	.gcode {
 		display: flex;
+		flex-direction: column;
+		align-items:center;
+		justify-self: flex-start;
+		align-self: flex-start;
+		margin: none;
+		padding: none;
+	}
+	.title{
+		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-self: flex-start;
 		align-self: flex-start;
 		margin: none;
-		padding: none;
 	}
 
 	input[type="text"] {
@@ -157,20 +182,21 @@
 		</nav>
 
 		<div class="playground">
-			<PictureView params={currentProject.picture}/>
-			<SurfaceView params={currentProject.surface}/>
-
+			<PictureView params={currentProject.picture} on:savePNG={savePNG}/>
+			<SurfaceView params={currentProject.surface} on:saveSVG={saveSVG}/>
 
 			<div class="gcode"> 
-				<label for="title">title:</label>
-				<input type="text" bind:value={title} />
-			</div>
+				<div class="title"> 
+					<label for="title">title:</label>
+					<input type="text" bind:value={title} />
+				</div>
 
-			<div class="save" style="align-self: flex-start;" >
-				<IconButton iconUrl="./assets/icons/save.png"
-				on:action={saveProject}
-				/>	
+				<div class="save" style="align-self: flex-end;" >
+					<IconButton iconUrl="./assets/icons/save.png"
+					on:action={saveProject}
+					/>	
 
+				</div>
 			</div>
 		</div>
 

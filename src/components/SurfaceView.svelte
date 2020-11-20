@@ -1,10 +1,12 @@
 <script>
-  import SvgSaver from 'svgsaver'
   import { onMount } from "svelte"
   import { Surface } from "../libs/surface.js"
   import  { surfaceStore }  from "../stores/stores.js"
   import  { pictureStore }  from "../stores/stores.js"
   import Fader from './Fader.svelte'
+  import { createEventDispatcher } from 'svelte'
+
+  
 
 export let params = {
     id: 'surfacePath',
@@ -61,11 +63,10 @@ onMount( () => {
     )
 })
 
+const dispatch = createEventDispatcher()
 
 const savesvg = function(){
-    const svgsaver = new SvgSaver();                      
-    const svg = document.querySelector("#svg");        
-    svgsaver.asSvg(svg);   
+    dispatch('saveSVG') 
 }
 
 let dragRef = {x: params.x, y: params.y}
