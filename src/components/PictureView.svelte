@@ -1,6 +1,5 @@
 <script>
-
-  import { get } from 'svelte/store';
+  import Vader from "./Vader.svelte"
   import { onMount } from "svelte"
   import  { pictureStore }  from "../stores/stores.js"
   import { Picture } from "../libs/picture.js"
@@ -26,7 +25,8 @@
 
     picture.notify = () => pictureStore.tune( {} )
     picture.init(params.id)
-    pictureStore.subscribe( s => picture.set( s ) )
+    pictureStore.subscribe( s => {
+      picture.set( s )} )
     picture.load(params.imgUrl)
   })
 
@@ -49,6 +49,11 @@
     }
   }
 
+  const handleInput = e => {
+    
+    params = {...params, ...{[e.detail.name]: e.detail.value} }
+  }
+
   $: pictureStore.tune( params )
 
 </script>
@@ -68,38 +73,50 @@
   </div>
   
   <div class="picture_params">
-  <label >
-    <span>brtnss</span>
-    <input type=number bind:value={params.brightness} min=0.0 max=3.0 step="0.01">
-    <input type=range bind:value={params.brightness} min=0.0 max=3.0 step="0.01">
-  </label>
-  
-  <label>
-    <span>ctrst</span>
-    <input type=number bind:value={params.contrast} min=0.0 max=3.0 step="0.01">
-    <input type=range bind:value={params.contrast} min=0.0 max=3.0 step="0.01">
-  </label>
-  
-  <label>
-    <span>sat</span>
-    <input type=number bind:value={params.saturation} min=0.0 max=1.0 step="0.01">
-    <input type=range bind:value={params.saturation} min=0.0 max=1.0 step="0.01">
-  </label>
-  
-  <label>
-    <span>blur</span>
-    <input type=number bind:value={params.blur} min=0.0 max=1.0 step="0.01">
-    <input type=range bind:value={params.blur} min=0.0 max=1.0 step="0.01">
-  </label>
-  
-  <label>
-    <span>zoom</span>
-    <input type=number bind:value={params.zoom} min=0.1 max=3.0 step="0.01">
-    <input type=range bind:value={params.zoom} min=0.1 max=3.0 step="0.01">
-  </label>
+
+    <Vader
+    name="brightness"
+    label="brtnss"
+    range={{min: 0, max: 1}}
+    step={0.01}
+    value={params.brightness}
+    on:input={ handleInput }
+    />
+    <Vader
+    name="contrast"
+    label="ctrst"
+    range={{min: 0, max: 1}}
+    step={0.01}
+    value={params.contrast}
+    on:input={ handleInput }
+    />
+    <Vader
+    name="blur"
+    label="blur"
+    range={{min: 0, max: 1}}
+    step={0.01}
+    value={params.blur}
+    on:input={ handleInput }
+    />
+    <Vader
+    name="zoom"
+    label="zoom"
+    range={{min: 0, max: 1}}
+    step={0.01}
+    value={params.zoom}
+    on:input={ handleInput }
+    />
+    <Vader
+    name="invert"
+    label="inv."
+    range={{min: 0, max: 1}}
+    step={1}
+    value={params.invert}
+    on:input={ handleInput }
+    />
   </div>
   
-  </div>
+</div>
 
 
 <!-- STYLE -------------------------------------------------------- -->
@@ -118,140 +135,12 @@
 
   .picture_params {  
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: space-around;
     align-items: flex-end;
-    margin-top: 2em;
+    margin-top:2em;
     width: calc(100vh / 400 * 216 / 2);
     height: calc(100vh / 400 * 216 / 2);
-    -webkit-transform: rotate(-90deg);
-    -moz-transform: rotate(-90deg);
-    -o-transform: rotate(-90deg);
-    transform: rotate(-90deg);
   }
 
-  label{
-    display: flex;
-    justify-content: flex-start;
-    width: 100%
-  }
-  input[type=number]{
-    text-align: center;
-    border-radius: 0px;
-    font-size: 0.9em;
-    width: 30%;
-    margin: 0;
-    margin-top: 0.85em;
-    padding-left: 0 em;
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
-  }
-  label > span{
-    text-align: center;
-    width: 4em;
-    margin: 0;
-    padding: 0;
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
-  }
-  input{
-    border: none;
-    padding: 0px 0px 0px 0px;
-    background-color: transparent;
-  }
-
-  /* https://www.cssportal.com/style-input-range/ */
-  input[type=range] {
-    height: 12px;
-    -webkit-appearance: none;
-    margin: 10px 0;
-    width: 100%;
-  }
-  input[type=range]:focus {
-    outline: none;
-  }
-  input[type=range]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 2px;
-    cursor: pointer;
-    animate: 0.2s;
-    box-shadow: 0px 0px 1px #000000;
-    background: #C9C9C9;
-    border-radius: 2px;
-    border: 0px solid #000000;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    box-shadow: 0px 0px 1px #000000;
-    border: 0px solid #B1C8E3;
-    height: 6px;
-    width: 24px;
-    border-radius: 20px;
-    background: #283440;
-    cursor: pointer;
-    -webkit-appearance: none;
-    margin-top: -2px;
-  }
-  input[type=range]:focus::-webkit-slider-runnable-track {
-    background: #C9C9C9;
-  }
-  input[type=range]::-moz-range-track {
-    width: 100%;
-    height: 2px;
-    cursor: pointer;
-    animate: 0.2s;
-    box-shadow: 0px 0px 1px #000000;
-    background: #C9C9C9;
-    border-radius: 2px;
-    border: 0px solid #000000;
-  }
-  input[type=range]::-moz-range-thumb {
-    box-shadow: 0px 0px 1px #000000;
-    border: 0px solid #B1C8E3;
-    height: 6px;
-    width: 24px;
-    border-radius: 20px;
-    background: #283440;
-    cursor: pointer;
-  }
-  input[type=range]::-ms-track {
-    width: 100%;
-    height: 2px;
-    cursor: pointer;
-    animate: 0.2s;
-    background: transparent;
-    border-color: transparent;
-    color: transparent;
-  }
-  input[type=range]::-ms-fill-lower {
-    background: #C9C9C9;
-    border: 0px solid #000000;
-    border-radius: 4px;
-    box-shadow: 0px 0px 1px #000000;
-  }
-  input[type=range]::-ms-fill-upper {
-    background: #C9C9C9;
-    border: 0px solid #000000;
-    border-radius: 4px;
-    box-shadow: 0px 0px 1px #000000;
-  }
-  input[type=range]::-ms-thumb {
-    margin-top: 1px;
-    box-shadow: 0px 0px 1px #000000;
-    border: 0px solid #B1C8E3;
-    height: 6px;
-    width: 24px;
-    border-radius: 20px;
-    background: #283440;
-    cursor: pointer;
-  }
-  input[type=range]:focus::-ms-fill-lower {
-    background: #C9C9C9;
-  }
-  input[type=range]:focus::-ms-fill-upper {
-    background: #C9C9C9;
-  }
 </style>

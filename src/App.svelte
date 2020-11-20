@@ -7,30 +7,30 @@
   import { onMount } from "svelte"
   import { defaultProject, defaultProjects } from './configs/configs.js'
 
+  let title = 'none'
+  let currentProject, projects
+  let showprojects = false
 
-  let project, projects
-  
-  project = { ...defaultProject }
+  currentProject = { ...defaultProject }
   projects = localStorage.length ?
 	  			JSON.parse( localStorage.getItem( 'projects' ) )
 				:
 				{...defaultProjects};
 
   const saveProject = ()=>{
-	  	console.log(project.title)
-		project = {...project, ...get(projectStore) }
-		console.log(project.title)
-		projects.projects = projects.projects.filter( p => p.title != project.title )
-		projects.projects.push( project )
-		projects.last_project_title = project.title
+		currentProject = {...currentProject, ...get(projectStore) }
+		currentProject.title = title
+		projects.projects = projects.projects.filter( p => p.title != currentProject.title )
+		projects.projects.push( currentProject )
+		projects.last_project_title = currentProject.title
 		localStorage.setItem( 'projects', JSON.stringify( projects ) )
-	  	// console.log( "save : ", project.title, JSON.parse( localStorage.getItem( 'projects' ) ) )
 	}
   
-  const loadProject = ( title )=>{
-	  const loadedProject = projects.projects.filter( p => p.title === title )[0]
-	  project = { ...project, ...loadedProject }
-	//   console.log( "load : ", project )
+  const loadProject = ( loadtitle )=>{
+	  const loadedProject = projects.projects.filter( p => p.title === loadtitle )[0]
+	  currentProject = { ...currentProject, ...loadedProject }	
+	  title = currentProject.title
+	  showprojects = false
 	}
 
   onMount( ()=>{
@@ -76,9 +76,12 @@
 	
 	nav {
 		display: block;
-		width: 12vw;
 		margin: none;
 		padding: none;
+	}
+
+	nav>ul{
+		width: 20vw;
 	}
 
 
@@ -133,30 +136,34 @@
 <div class="container">
 	
 	<header>
-		<h1>{project.title}</h1>
+		<h1>{title}</h1>
 	</header>
 	<main>
 
 		<nav>
 			<IconButton iconUrl="./assets/icons/load.png"
+			on:action={()=> showprojects = !showprojects}
 			/>
+			{#if showprojects}
+			
 			<div class="projects_list">
 				<ul>
-				{#each projects.projects as p}
-				<li on:dblclick={()=>loadProject(p.title)}> {p.title} </li>
-				{/each}
+					{#each projects.projects as p}
+					<li on:dblclick={()=>loadProject(p.title)}> {p.title} </li>
+					{/each}
 				</ul>
 			</div>
+			{/if}
 		</nav>
 
 		<div class="playground">
-			<PictureView params={project.picture}/>
-			<SurfaceView params={project.surface}/>
+			<PictureView params={currentProject.picture}/>
+			<SurfaceView params={currentProject.surface}/>
 
-			<!-- style="align-self: flex-end; height: calc(100vh/400 * 279);"> -->
+
 			<div class="gcode"> 
 				<label for="title">title:</label>
-				<input type="text" name="title" bind:value={project.title} />
+				<input type="text" bind:value={title} />
 			</div>
 
 			<div class="save" style="align-self: flex-start;" >

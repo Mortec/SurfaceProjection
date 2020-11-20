@@ -44,7 +44,7 @@ export const defaultProject = {
         pen_up_sequence:"",
         pen_down_sequence:"",
         end_sequence:"",
-
+        paper_format: {width: 216, height: 279}
     }
 }
 

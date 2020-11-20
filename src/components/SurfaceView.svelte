@@ -43,18 +43,18 @@ onMount( () => {
     surface.params = params
     pictureStore.subscribe( s =>{
         surface.loadTexture( s.id )
-        .computeMap( formula )
-        .computePath()
-        .computePathString()
+            .computeMap( formula )
+            .computePath()
+            .computePathString()
         surfaceStore.tune({})
     })
 
     surfaceStore.subscribe( s => {
-        
         surface.params = s
         surface.setVertices()
                 .loadTexture()
                 .computeMap( formula )
+                // .evaluate( params.formula )
                 .computePath()
                 .computePathString()
         }
@@ -64,7 +64,7 @@ onMount( () => {
 
 const savesvg = function(){
     const svgsaver = new SvgSaver();                      
-    const svg = document.querySelector('#svg');        
+    const svg = document.querySelector("#svg");        
     svgsaver.asSvg(svg);   
 }
 
@@ -103,26 +103,25 @@ let dragRef = {x: params.x, y: params.y}
     <!-- on:click={ savesvg } -->
     <div class="surface"
         bind:clientWidth={params.width} bind:clientHeight={params.height}
+    >
+        <svg id="svg"
+        viewbox="0 0 {params.width} {params.height}"
         on:mousedown={ mousedown }
         on:mouseup={ mouseup }
         on:mouseout={ mouseup }
         on:mousemove={ drag }
         on:dblclick={savesvg}
-        
         >
-        <svg viewbox="0 0 {params.width} {params.height}">
-            <path id={params.id} style="
+            <path id={params.id}
+            style="
             fill : none;
             stroke-width: {1/params.height}px;
             stroke : black;"
             transform="
             translate({params.x} {params.y})
             scale({params.width} {params.height})" 
-            d="M0.5 0 L1 0.5 L0 1 Z" />
-
-            <!-- {#each surface.vertices as { x, y }, i}
-            <circle cx={x*format.width} cy={y*format.height} r="2" stroke="none" stroke-width="1" fill="red" />
-            {/each} -->
+            d="M0.5 0 L1 0.5 L0 1 Z"
+            />
         </svg>
     </div>
 
@@ -130,12 +129,12 @@ let dragRef = {x: params.x, y: params.y}
 
         <div class="surface_params_faders">
             <Fader
-                name="resX"
-                label="res_x"
-                range={{min: 2, max: params.width}}
-                step={1}
-                value={params.resX}
-                on:input={ handleInput }
+            name="resX"
+            label="res_x"
+            range={{min: 2, max: params.width}}
+            step={1}
+            value={params.resX}
+            on:input={ handleInput }
             />
 
             <Fader

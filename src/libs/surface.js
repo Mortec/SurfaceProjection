@@ -82,8 +82,30 @@ this.texture = new Array(this.params.resX * this.params.resY).fill(0);
 
 Surface.prototype.computeMap = function (func) {
 
+
   this.vertices.forEach((e, i, a) => {
     this.vertices[i].z = func(
+      e.x,
+      e.y,
+      this.texture[i],
+      i,
+      a,
+      this.params.q,
+      this.params.resX,
+      this.params.resY
+    );
+  }, this);
+
+  return this;
+};
+
+Surface.prototype.evaluate = function ( formula ) {
+
+  let funk 
+  eval( "funk = function(x, y, l, i, a, q, w, h){ return " +  formula + "}" )
+
+  this.vertices.forEach((e, i, a) => {
+    this.vertices[i].z = funk(
       e.x,
       e.y,
       this.texture[i],
@@ -101,7 +123,12 @@ Surface.prototype.computeMap = function (func) {
 Surface.prototype.computePath = function () {
 
     const newPath = [];
-    this.vertices.forEach((e, i) => {
+
+    const sorted = [ ...this.vertices]
+
+    // sorted.sort( (a, b) => a.z - b.z )
+
+    sorted.forEach((e, i) => {
       const scaleOffset = (1-this.params.scale)/2
       const x = e.x * this.params.scale + scaleOffset;
       const y = (e.y + e.z) * this.params.scale + scaleOffset;
