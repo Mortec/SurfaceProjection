@@ -2,7 +2,7 @@
 (work in progress)
 
 
-Svelte app to map pictures to SVG paths prepared to be send to a pen plotter.
+Svelte app to map pictures to SVG paths prepared to be sent to a pen plotter.
 
 This turns out to be some kind of oneliner with a bunch of parameters to generate a crazy SVG from a picture.
 
