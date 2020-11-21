@@ -18,16 +18,19 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 ## to do :
 *  ui load project
-*  feedback/callback "tipslike" on button "save project"
-*  load image from url / local
+*  feedback/callback "tipslike" on button component
+*  load image from url || local
 *  on the fly evaluation of the formula
+* temporisation of mouse drag input to prevent computing
+* surface ui :
+    *    paper color
+    *    pen color
+    *    paper size
+* gcode ui :
+    *    begin / end / pen up / pen down commands
+    *    drawing speed & translate speed
 *  svg to gcode translation
-*  gcode ui :   *  paper color
-                *  pen color
-                *  paper size
-                *  begin / end / pen up / pen down commands
-                *  drawing speed & translate speed
-
 *  estimation of path length in millimeters -> estimation of drawing time
-*  refactoring of suface object for easy path calculation / easy vertices structure / easy drawing pattern
-*  appropriate handling of SVG control points coordinate for consistent result from screen to paper (handle correctly scale)
+*  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
+*  appropriate handling of SVG control points coordinate for consistent result from screen to paper (correct handling of scale)
+* presentation mode (show drawing only at maximum available size)
