@@ -5,7 +5,8 @@
   import  { pictureStore }  from "../stores/stores.js"
   import Fader from './Fader.svelte'
   import { createEventDispatcher } from 'svelte'
-
+import {fade } from 'svelte/transition'
+import IconButton from './IconButton.svelte'
   
 
 export let params = {
@@ -99,7 +100,7 @@ let dragRef = {x: params.x, y: params.y}
 
 <!-- pseudoHTML -------------------------------------------------------- -->
 
-<div class="surfaceView">
+<div class="surfaceView" in:fade>
 
     <!-- on:click={ savesvg } -->
     <div class="surface"
@@ -124,6 +125,14 @@ let dragRef = {x: params.x, y: params.y}
             d="M0.5 0 L1 0.5 L0 1 Z"
             />
         </svg>
+        <div class="savebutton">
+            <IconButton
+            iconUrl="./assets/icons/save.png"
+            on:action={savesvg}
+            tip="save SVG"
+            size= "1.3em"
+            />
+          </div>
     </div>
 
     <div class="surface_params">
@@ -311,7 +320,10 @@ let dragRef = {x: params.x, y: params.y}
         /* width: 100%; */
     }
 
-
+    .savebutton{
+    position: absolute;
+    transform: translateY( -100%)
+  }
 
 
 </style>

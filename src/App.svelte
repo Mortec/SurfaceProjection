@@ -8,10 +8,16 @@
   import { defaultProject, defaultProjects } from './configs/configs.js'
   import SvgSaver from 'svgsaver'
   import { FileSaver, saveAs } from 'file-saver';	
+  import { fly, fade, crossfade } from 'svelte/transition';
+  import { flip } from 'svelte/animate';
+
+
 
   let title = 'none'
   let currentProject, projects
   let showprojects = false
+
+  let saveStatus = "waiting"
 
   currentProject = { ...defaultProject }
   projects = localStorage.length ?
@@ -26,13 +32,14 @@
 		projects.projects.push( currentProject )
 		projects.last_project_title = currentProject.title
 		localStorage.setItem( 'projects', JSON.stringify( projects ) )
+		saveStatus = "success"
 	}
   
   const loadProject = ( loadtitle )=>{
 	  const loadedProject = projects.projects.filter( p => p.title === loadtitle )[0]
 	  currentProject = { ...currentProject, ...loadedProject }	
 	  title = currentProject.title
-	  showprojects = false
+	//   showprojects = false
 	}
 
   onMount( ()=>{
@@ -88,7 +95,7 @@
 		height: 83vh;
 		display: flex;
 		flex-direction: row;
-		justify-content: flex-start;
+		justify-content:space-between;
 
 	}
 	
@@ -96,10 +103,39 @@
 		display: block;
 		margin: none;
 		padding: none;
+		background-color: white;
+		overflow-y: scroll;
+		height: 100%;
+	}
+	.loadbutton_container{
+		width: 3vw;
+		margin: auto;
+		display: flex;
+		justify-content: center;
+	}
+	.projects_list{
+		width: 14vw;
+		font-size: 1.1em;
+		padding-top: 1em;
+		padding-bottom: 1em;
 	}
 
-	nav>ul{
-		width: 20vw;
+	.projects_list>ul{
+		list-style-type: none;
+		padding: none;
+		margin: none;
+	}
+	.projects_list>ul>li{
+		padding: 0.2em;
+		/* padding-left: 0.5em; */
+		margin: none;
+		margin-top: 1em;
+		cursor:pointer;
+		width:100%;
+	}
+
+	.projects_list>ul>li:hover{
+		background-color: whitesmoke;
 	}
 
 
@@ -111,7 +147,8 @@
 		padding-top: 1em;
 		padding-left: 3em;
 		height: 100%;
-		width: 100%
+		width: 100%;
+		position: relative;
 		
 	}
 
@@ -165,24 +202,33 @@
 	</header>
 	<main>
 
-		<nav>
-			<IconButton iconUrl="./assets/icons/load.png"
-			on:action={()=> showprojects = !showprojects}
-			/>
+		<nav transition:crossfade>
+			<div class="loadbutton_container">
+				<IconButton
+				iconUrl="./assets/icons/load.png"
+				on:action={()=> showprojects = !showprojects}
+				tip="Projects"
+				tipPosition="right"
+				/>
+			</div>
 			{#if showprojects}
-			
-			<div class="projects_list">
+			<div class="projects_list" in:fly="{{ x: -100, duration: 1000 }}" out:fly="{{ x: -100, duration: 1000 }}">
 				<ul>
-					{#each projects.projects as p}
-					<li on:dblclick={()=>loadProject(p.title)}> {p.title} </li>
+					{#each projects.projects as p, index (p)}
+					<li on:click={()=>loadProject(p.title)}
+						transition:fade
+						animate:flip="{{ delay: 1000 }}"
+					> 
+						{p.title}
+					</li>
 					{/each}
 				</ul>
 			</div>
 			{/if}
 		</nav>
 
-		<div class="playground">
-			<PictureView params={currentProject.picture} on:savePNG={savePNG}/>
+		<div class="playground" transition:crossfade>
+			<PictureView params={currentProject.picture} on:savePNG={savePNG} />
 			<SurfaceView params={currentProject.surface} on:saveSVG={saveSVG}/>
 
 			<div class="gcode"> 
@@ -194,6 +240,11 @@
 				<div class="save" style="align-self: flex-end;" >
 					<IconButton iconUrl="./assets/icons/save.png"
 					on:action={saveProject}
+					bind:status={saveStatus}
+					tip= "Save project"
+					tipsuccess="Project saved"
+					tiperror="error while saving, please retry"
+					tipPosition="left"
 					/>	
 
 				</div>
@@ -202,6 +253,6 @@
 
 	</main>
 	<footer>
-		<p style="color: #bbb">surface_projection © <a style="color: #bbb" href="https://www.edouardmortec.com.com">mortec</a> lockdown 2020</p>
+		<p style="color: #bbb; font-size:0.9em">surface_projection © <a style="color: #bbb" href="https://www.edouardmortec.com.com">mortec</a> lockdown 2020</p>
 	</footer>
 </div>

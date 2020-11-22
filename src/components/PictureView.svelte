@@ -4,6 +4,9 @@
   import  { pictureStore }  from "../stores/stores.js"
   import { Picture } from "../libs/picture.js"
   import { createEventDispatcher } from 'svelte'
+import {fade } from 'svelte/transition'
+import IconButton from './IconButton.svelte'
+
   
   const picture = new Picture()
 
@@ -68,7 +71,7 @@
 
 
 <!-- pseudoHTML -------------------------------------------------------- -->
-<div class="pictureView">
+<div class="pictureView" in:fade>
 
   <div class="picture" bind:clientWidth={params.width} bind:clientHeight={params.height}>
     <canvas id={params.id}
@@ -76,8 +79,15 @@
       on:mouseup={ mouseup }
       on:mouseout={ mouseup }
       on:mousemove={ drag }
-      on:dblclick={savepng}
     />
+    <div class="savebutton">
+      <IconButton
+      iconUrl="./assets/icons/save.png"
+      on:action={savepng}
+      tip="save PNG"
+      size= "1.3em"
+      />
+    </div>
   </div>
   
   <div class="picture_params">
@@ -151,4 +161,8 @@
     height: calc(100vh / 400 * 216 / 2);
   }
 
+  .savebutton{
+    position: absolute;
+    transform: translateY( -100%)
+  }
 </style>

@@ -17,8 +17,6 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 
 ## to do :
-*  ui load project
-*  feedback/callback "tipslike" on button component
 *  load image from url || local
 *  on the fly evaluation of the formula
 * temporisation of mouse drag input to prevent computing
