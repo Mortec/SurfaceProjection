@@ -17,8 +17,11 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 
 ## to do :
+*  appropriate handling of SVG control points coordinate for consistent result from screen to paper (correct handling of scale)
+*  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
+*  refactoring of surface object to send all the computation on the graphic card
+*  on the fly evaluation of the formula in a fragment shader
 *  load image from url || local
-*  on the fly evaluation of the formula
 * temporisation of mouse drag input to prevent computing
 * surface ui :
     *    paper color
@@ -29,6 +32,8 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
     *    drawing speed & translate speed
 *  svg to gcode translation
 *  estimation of path length in millimeters -> estimation of drawing time
-*  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
-*  appropriate handling of SVG control points coordinate for consistent result from screen to paper (correct handling of scale)
 * presentation mode (show drawing only at maximum available size)
+
+### to do v2
+* multilayering
+* control point selection for gcode command editing

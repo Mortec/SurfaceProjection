@@ -9,7 +9,7 @@
     export let size = "1.4em";
     export let status = "waiting";
     export let tipPosition = "left";
-
+    export let opacity = 0.7;
     const dispatch = createEventDispatcher();
     const action = () => {  dispatch('action') };
 
@@ -23,7 +23,6 @@
     margin: 0.5em;
     display: inline-block;
     padding: none;
-    opacity: 0.7;
   }
 
   button {
@@ -72,7 +71,8 @@
 <!-- pseudoHTML -------------------------------------------------------- -->
 <!-- http://csstooltip.com/ -->
 <div class="IconButton"
-    style= "width:{size}; height:{size};"
+    style= "width:{size}; height:{size}; opacity: {opacity}"
+
 >
             {#if showtip}
             <span class="tooltip"

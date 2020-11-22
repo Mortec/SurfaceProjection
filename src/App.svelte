@@ -85,9 +85,12 @@
 	}
 	
 	h1 {
-	  font-size: 1.5em;
+	  font-size: 1.7em;
 	  margin: none;
 	  padding:none;
+		font-family: "Cutive Mono", monospace;
+		letter-spacing: -3px;
+
 	}
 
 	main{

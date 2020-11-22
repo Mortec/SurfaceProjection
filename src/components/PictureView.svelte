@@ -86,6 +86,7 @@ import IconButton from './IconButton.svelte'
       on:action={savepng}
       tip="save PNG"
       size= "1.3em"
+      opacity={0.8}
       />
     </div>
   </div>

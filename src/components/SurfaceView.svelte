@@ -130,7 +130,8 @@ let dragRef = {x: params.x, y: params.y}
             iconUrl="./assets/icons/save.png"
             on:action={savesvg}
             tip="save SVG"
-            size= "1.3em"
+            size= "1.2em"
+            opacity="0.4"
             />
           </div>
     </div>
@@ -211,7 +212,7 @@ let dragRef = {x: params.x, y: params.y}
         </div>
 
         <div class="surface_params_pathFeedback">
-            <span >path_length: {surface.path.length}</span>
+            <span >path_length: {surface.path.length}pts</span>
         </div>
 
     </div>
@@ -322,8 +323,8 @@ let dragRef = {x: params.x, y: params.y}
 
     .savebutton{
     position: absolute;
-    transform: translateY( -100%)
-  }
+    transform: translateY( -120%);
+    }
 
 
 </style>
