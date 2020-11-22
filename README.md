@@ -25,7 +25,7 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  load image from url || local
 * temporisation of mouse drag input to prevent over-computing
 * surface ui :
-    *    pen color / opacity
+    *    pen color / opacity / stroke
     *    paper size
     *    paper color
 *  svg to gcode translation
@@ -38,4 +38,4 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 ### to do v2
 * multilayering
-* control point selection for gcode command editing
+* control point selection for specific gcode commands editing
