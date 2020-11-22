@@ -28,6 +28,7 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
     *    pen color / opacity / stroke
     *    paper size
     *    paper color
+    *    svg zoom for convenient exploration of the path
 *  svg to gcode translation
 * gcode ui :
     *    begin / end / pen up / pen down commands
