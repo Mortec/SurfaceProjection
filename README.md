@@ -19,8 +19,8 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 ## to do :
 *  appropriate handling of SVG control points coordinates for consistent result from screen to paper (correct handling of scale)
 *  drop out svg saver for custom made svg files
-*  refactoring of surface object to send all the computation on the graphic card
-*  on the fly evaluation of the formula in a fragment shader
+*  refactoring of surface object to send all the computation to the graphic card
+*  on the fly evaluation of the oneliner formula in a fragment shader
 *  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
 *  load image from url || local
 * temporisation of mouse drag input to prevent over-computing
