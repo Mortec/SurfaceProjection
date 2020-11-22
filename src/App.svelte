@@ -111,14 +111,13 @@
 		height: 100%;
 	}
 	.loadbutton_container{
-		width: 3vw;
-		margin: auto;
+		padding: 0.5em;
 		display: flex;
 		justify-content: center;
 	}
 	.projects_list{
-		width: 14vw;
-		font-size: 1.1em;
+		width: 12vw;
+		font-size: 1em;
 		padding-top: 1em;
 		padding-bottom: 1em;
 	}
