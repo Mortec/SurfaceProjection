@@ -30,6 +30,7 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
     *    paper color
     *    svg zoom for convenient exploration of the path
 *  svg to gcode translation
+*  projects bar : delete a project
 * gcode ui :
     *    begin / end / pen up / pen down commands
     *    drawing speed & translate speed
