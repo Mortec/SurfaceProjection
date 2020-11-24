@@ -1,31 +1,32 @@
 <script>
-  import PictureView from "./components/PictureView.svelte";
-  import SurfaceView from "./components/SurfaceView.svelte";
-  import IconButton from "./components/IconButton.svelte";
-  import { projectStore } from './stores/stores'
-  import { get } from 'svelte/store';
-  import { onMount } from "svelte"
-  import { defaultProject, defaultProjects } from './configs/configs.js'
-  import SvgSaver from 'svgsaver'
-  import { FileSaver, saveAs } from 'file-saver';	
-  import { fly, fade, crossfade } from 'svelte/transition';
-  import { flip } from 'svelte/animate';
+	import PictureView from "./components/PictureView.svelte";
+	import SurfaceView from "./components/SurfaceView.svelte";
+	import IconButton from "./components/IconButton.svelte";
+	import { projectStore } from './stores/stores'
+	import { get } from 'svelte/store';
+	import { onMount } from "svelte"
+	import { defaultProject, defaultProjects } from './configs/default.js'
+	import SvgSaver from 'svgsaver'
+	import { FileSaver, saveAs } from 'file-saver';	
+	import { fly, fade, crossfade } from 'svelte/transition';
+	import { flip } from 'svelte/animate';
 
 
+	let title = 'none'
+	let currentProject, projects
+	let showprojects = false
 
-  let title = 'none'
-  let currentProject, projects
-  let showprojects = false
+	let saveStatus = "waiting"
 
-  let saveStatus = "waiting"
+	currentProject = { ...defaultProject }
+	projects = localStorage.length ?
+					JSON.parse( localStorage.getItem( 'projects' ) )
+					:
+					{...defaultProjects};
+	
+	// projects = {...defaultProjects};	
 
-  currentProject = { ...defaultProject }
-  projects = localStorage.length ?
-	  			JSON.parse( localStorage.getItem( 'projects' ) )
-				:
-				{...defaultProjects};
-
-  const saveProject = ()=>{
+  	const saveProject = ()=>{
 		currentProject = {...currentProject, ...get(projectStore) }
 		currentProject.title = title
 		projects.projects = projects.projects.filter( p => p.title != currentProject.title )
@@ -35,32 +36,31 @@
 		saveStatus = "success"
 	}
   
-  const loadProject = ( loadtitle )=>{
+  	const loadProject = ( loadtitle )=>{
 	  const loadedProject = projects.projects.filter( p => p.title === loadtitle )[0]
 	  currentProject = { ...currentProject, ...loadedProject }	
 	  title = currentProject.title
-	//   showprojects = false
 	}
 
-  onMount( ()=>{
+  	onMount( ()=>{
 
 	  loadProject( projects.last_project_title )
 	} )
  
-	const saveSVG = function(){
+	const exportSVG = function(){
 		const svgsaver = new SvgSaver();                      
 		const svg = document.querySelector("#svg");        
 		svgsaver.asSvg(svg, title+".svg");   
 	}
 
-	const savePNG = function(){
+	const exportPNG = function(){
 		const canvas = document.querySelector("#pictureCanvas");
 		canvas.toBlob(function(blob) {
     		saveAs(blob, title+".png");
 		})
 	}
 
-	const saveGCODE = ( gcode )=>{
+	const exportGCODE = ( gcode )=>{
 		const file = new File([gcode], title+".nc", {type: "text/plain;charset=utf-8"});
 		FileSaver.saveAs(file);
 	}
@@ -85,7 +85,7 @@
 	}
 	
 	h1 {
-	  font-size: 1.7em;
+	  font-size: 1.6em;
 	  margin: none;
 	  padding:none;
 		font-family: "Cutive Mono", monospace;
@@ -111,13 +111,15 @@
 		height: 100%;
 	}
 	.loadbutton_container{
-		padding: 0.5em;
+		padding: 0em;
 		display: flex;
 		justify-content: center;
 	}
 	.projects_list{
-		width: 12vw;
-		font-size: 1em;
+		width: 13vw;
+		/* font-family: Cutive, monospace; */
+		/* letter-spacing: -2px; */
+		/* font-size: 1.2em; */
 		padding-top: 1em;
 		padding-bottom: 1em;
 	}
@@ -126,6 +128,7 @@
 		list-style-type: none;
 		padding: none;
 		margin: none;
+		transform: translateX(-2ch)
 	}
 	.projects_list>ul>li{
 		padding: 0.2em;
@@ -192,6 +195,14 @@
 	input[type="text"]:focus {
 		outline: none;
 	}
+
+	.colophon{
+		color: #bbb;
+		font-size:0.9em;
+	}
+	.colophon>a{
+		color: #bbb;
+	}
 </style>
 
 
@@ -211,6 +222,7 @@
 				on:action={()=> showprojects = !showprojects}
 				tip="Projects"
 				tipPosition="right"
+				size="1.7em"
 				/>
 			</div>
 			{#if showprojects}
@@ -230,8 +242,8 @@
 		</nav>
 
 		<div class="playground" transition:crossfade>
-			<PictureView params={currentProject.picture} on:savePNG={savePNG} />
-			<SurfaceView params={currentProject.surface} on:saveSVG={saveSVG}/>
+			<PictureView params={currentProject.picture} on:exportPNG={exportPNG} />
+			<SurfaceView params={currentProject.surface} on:exportSVG={exportSVG}/>
 
 			<div class="gcode"> 
 				<div class="title"> 
@@ -255,6 +267,8 @@
 
 	</main>
 	<footer>
-		<p style="color: #bbb; font-size:0.9em">surface_projection © <a style="color: #bbb" href="https://www.edouardmortec.com.com">mortec</a> lockdown 2020</p>
+		<p class="colophon">
+		surface_projection © <a href="https://www.edouardmortec.com.com">mortec</a> lockdown 2020
+		</p>
 	</footer>
 </div>

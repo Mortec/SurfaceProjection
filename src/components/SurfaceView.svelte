@@ -66,8 +66,8 @@ onMount( () => {
 
 const dispatch = createEventDispatcher()
 
-const savesvg = function(){
-    dispatch('saveSVG') 
+const exportsvg = function(){
+    dispatch('exportSVG') 
 }
 
 let dragRef = {x: params.x, y: params.y}
@@ -98,126 +98,6 @@ let dragRef = {x: params.x, y: params.y}
 
 </script>
 
-<!-- pseudoHTML -------------------------------------------------------- -->
-
-<div class="surfaceView" in:fade>
-
-    <!-- on:click={ savesvg } -->
-    <div class="surface"
-        bind:clientWidth={params.width} bind:clientHeight={params.height}
-    >
-        <svg id="svg"
-        viewbox="0 0 {params.width} {params.height}"
-        on:mousedown={ mousedown }
-        on:mouseup={ mouseup }
-        on:mouseout={ mouseup }
-        on:mousemove={ drag }
-        on:dblclick={savesvg}
-        >
-            <path id={params.id}
-            style="
-            fill : none;
-            stroke-width: {1/params.height}px;
-            stroke : black;"
-            transform="
-            translate({params.x} {params.y})
-            scale({params.width} {params.height})" 
-            d="M0.5 0 L1 0.5 L0 1 Z"
-            />
-        </svg>
-        <div class="savebutton">
-            <IconButton
-            iconUrl="./assets/icons/save.png"
-            on:action={savesvg}
-            tip="save SVG"
-            size= "1.2em"
-            opacity="0.4"
-            />
-          </div>
-    </div>
-
-    <div class="surface_params">
-
-        <div class="surface_params_faders">
-            <Fader
-            name="resX"
-            label="res_x"
-            range={{min: 2, max: params.width}}
-            step={1}
-            value={params.resX}
-            on:input={ handleInput }
-            />
-
-            <Fader
-            name="resY"
-            label="res_y"
-            range={{min: 2, max: params.height}}
-            step={1}
-            value={params.resY}
-            on:input={ handleInput }
-            />
-
-            <Fader
-            name="scale"
-            label="scale"
-            range={{min: 0.25, max: 1.5}}
-            step={0.01}
-            value={params.scale}
-            on:input={ handleInput }
-            />
-
-            <Fader
-            name="crop"
-            label="crop"
-            range={{min: 0, max: 1}}
-            step={0.01}
-            value={params.crop}
-            on:input={ handleInput }
-            />
-
-            <Fader
-            name="q"
-            label="__q"
-            range={{min: 0, max: 1}}
-            step={0.001}
-            value={params.q}
-            on:input={ handleInput }
-            />
-
-            <Fader
-            name="threshold"
-            label="thrsh."
-            range={{min: 0, max: 1}}
-            step={0.01}
-            value={params.threshold}
-            on:input={ handleInput }
-            />
-
-            <Fader
-            name="ceiling"
-            label="ceil."
-            range={{min: 0, max: 1}}
-            step={0.01}
-            value={params.ceiling}
-            on:input={ handleInput }
-            />
-            
-        </div>
-
-        <div class = "surface_params_formula">
-            <span>formula:</span>
-            <label>
-            <textarea id="formula" bind:value={params.formula}></textarea>
-            </label>
-        </div>
-
-        <div class="surface_params_pathFeedback">
-            <span >path_length: {surface.path.length}pts</span>
-        </div>
-
-    </div>
-    
-</div>
 
 
 <!-- STYLE -------------------------------------------------------- -->
@@ -323,8 +203,130 @@ let dragRef = {x: params.x, y: params.y}
 
     .savebutton{
     position: absolute;
-    transform: translateY( -120%);
+    transform: translateY( -2.5em);
     }
 
 
 </style>
+
+
+<!-- pseudoHTML -------------------------------------------------------- -->
+<!-- https://oreillymedia.github.io/Using_SVG/guide/units.html } -->
+
+<div class="surfaceView" in:fade>
+
+    <div class="surface"
+        bind:clientWidth={params.width} bind:clientHeight={params.height}
+    >
+        <svg id="svg"
+        viewbox="0 0 {params.width} {params.height}"
+        on:mousedown={ mousedown }
+        on:mouseup={ mouseup }
+        on:mouseout={ mouseup }
+        on:mousemove={ drag }
+        >
+            <path id={params.id}
+            style="
+            fill : none;
+            stroke-width: {1/params.height}px;
+            stroke : black;"
+            transform="
+            translate({params.x} {params.y})
+            scale({params.width} {params.height})" 
+            d="M0.5 0 L1 0.5 L0 1 Z"
+            />
+        </svg>
+        <div class="savebutton">
+            <IconButton
+            iconUrl="./assets/icons/export.png"
+            on:action={exportsvg}
+            tip="export SVG"
+            size= "1.2em"
+            opacity="0.4"
+            />
+          </div>
+    </div>
+
+    <div class="surface_params">
+
+        <div class="surface_params_faders">
+            <Fader
+            name="resX"
+            label="res_x"
+            range={{min: 2, max: params.width}}
+            step={1}
+            value={params.resX}
+            on:input={ handleInput }
+            />
+
+            <Fader
+            name="resY"
+            label="res_y"
+            range={{min: 2, max: params.height}}
+            step={1}
+            value={params.resY}
+            on:input={ handleInput }
+            />
+
+            <Fader
+            name="scale"
+            label="scale"
+            range={{min: 0.25, max: 1.5}}
+            step={0.01}
+            value={params.scale}
+            on:input={ handleInput }
+            />
+
+            <Fader
+            name="crop"
+            label="crop"
+            range={{min: 0, max: 1}}
+            step={0.01}
+            value={params.crop}
+            on:input={ handleInput }
+            />
+
+            <Fader
+            name="q"
+            label="__q"
+            range={{min: 0, max: 1}}
+            step={0.001}
+            value={params.q}
+            on:input={ handleInput }
+            />
+
+            <Fader
+            name="threshold"
+            label="thrsh."
+            range={{min: 0, max: 1}}
+            step={0.01}
+            value={params.threshold}
+            on:input={ handleInput }
+            />
+
+            <Fader
+            name="ceiling"
+            label="ceil."
+            range={{min: 0, max: 1}}
+            step={0.01}
+            value={params.ceiling}
+            on:input={ handleInput }
+            />
+            
+        </div>
+
+        <div class = "surface_params_formula">
+            <span>formula:</span>
+            <label>
+            <textarea id="formula" bind:value={params.formula}></textarea>
+            </label>
+        </div>
+
+        <div class="surface_params_pathFeedback">
+            <span >path_length: {surface.path.length}_pts</span>
+        </div>
+
+    </div>
+    
+</div>
+

@@ -20,7 +20,7 @@
 <!-- STYLE -------------------------------------------------------- -->
 <style>
   .IconButton {
-    margin: 0.5em;
+    margin: 0.6em;
     display: inline-block;
     padding: none;
   }

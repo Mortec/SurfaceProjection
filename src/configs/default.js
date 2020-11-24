@@ -4,14 +4,12 @@ export const defaultProject = {
 
     picture: {
         id: "pictureCanvas",
-        imgUrl: "./assets/images/EM-portrait2.jpg",
+        imgUrl: "./assets/images/EM-Portrait2.jpg",
         x : 0,
         y: 0,
-        width: 100,
-        height: 100,
         brightness: 1.0,
         contrast: 1.0,
-        saturation: 1.0,
+        saturation: 0.0,
         blur: 0,
         zoom: 1.0,
         invert: 0.0,

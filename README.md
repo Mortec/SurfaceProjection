@@ -23,20 +23,21 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  on the fly evaluation of the oneliner formula in a fragment shader
 *  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
 *  load image from url || local
-* temporisation of mouse drag input to prevent over-computing
-* surface ui :
+*  temporisation of mouse drag input to prevent over-computing
+*  surface ui :
     *    pen color / opacity / stroke
     *    paper size
     *    paper color
     *    svg zoom for convenient exploration of the path
 *  svg to gcode translation
 *  projects bar : delete a project
-* gcode ui :
+*  gcode ui :
     *    begin / end / pen up / pen down commands
     *    drawing speed & translate speed
 *  estimation of path length in millimeters -> estimation of drawing time
-* presentation mode (show drawing only at maximum available size)
-* eased transition on changes (projects bar, playground div, svg canvas format, picture canvas format)
+*  presentation mode (show drawing only at maximum available size)
+*  eased transition on changes (projects bar, playground div, svg canvas format, picture canvas format)
+*  button tooltips improvement
 
 ### to do v2
 * multilayering

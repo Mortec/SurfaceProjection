@@ -4,19 +4,18 @@
   import  { pictureStore }  from "../stores/stores.js"
   import { Picture } from "../libs/picture.js"
   import { createEventDispatcher } from 'svelte'
-import {fade } from 'svelte/transition'
-import IconButton from './IconButton.svelte'
+  import {fade } from 'svelte/transition'
+  import IconButton from './IconButton.svelte'
 
   
   const picture = new Picture()
+  let width, height
 
   export let params = {
     id: "pictureCanvas",
     imgUrl: "./assets/images/EM-portrait2.jpg",
     x : 0,
     y: 0,
-    width: 100,
-    height: 100,
     brightness: 1.0,
     contrast: 1.0,
     saturation: 1.0,
@@ -29,8 +28,11 @@ import IconButton from './IconButton.svelte'
 
     picture.notify = () => pictureStore.tune( {} )
     picture.init(params.id)
+    picture.set( params )
+    picture.resize(width, height)
     pictureStore.subscribe( s => {
-      picture.set( s )} )
+    picture.set( s )
+    } )
     picture.load(params.imgUrl)
   })
 
@@ -60,82 +62,17 @@ import IconButton from './IconButton.svelte'
 
   const dispatch = createEventDispatcher()
 
-  const savepng = function(){
-    dispatch('savePNG') 
+  const exportpng = function(){
+    dispatch('exportPNG') 
   }
 
+
+
   $: pictureStore.tune( params )
+  $: picture.load( params.imgUrl )
+  $: picture.resize( width, height )
 
 </script>
-
-
-
-<!-- pseudoHTML -------------------------------------------------------- -->
-<div class="pictureView" in:fade>
-
-  <div class="picture" bind:clientWidth={params.width} bind:clientHeight={params.height}>
-    <canvas id={params.id}
-      on:mousedown={ mousedown }
-      on:mouseup={ mouseup }
-      on:mouseout={ mouseup }
-      on:mousemove={ drag }
-    />
-    <div class="savebutton">
-      <IconButton
-      iconUrl="./assets/icons/save.png"
-      on:action={savepng}
-      tip="save PNG"
-      size= "1.3em"
-      opacity={0.8}
-      />
-    </div>
-  </div>
-  
-  <div class="picture_params">
-
-    <Vader
-    name="brightness"
-    label="brtnss"
-    range={{min: 0, max: 1}}
-    step={0.01}
-    value={params.brightness}
-    on:input={ handleInput }
-    />
-    <Vader
-    name="contrast"
-    label="ctrst"
-    range={{min: 0, max: 1}}
-    step={0.01}
-    value={params.contrast}
-    on:input={ handleInput }
-    />
-    <Vader
-    name="blur"
-    label="blur"
-    range={{min: 0, max: 1}}
-    step={0.01}
-    value={params.blur}
-    on:input={ handleInput }
-    />
-    <Vader
-    name="zoom"
-    label="zoom"
-    range={{min: 0, max: 1}}
-    step={0.01}
-    value={params.zoom}
-    on:input={ handleInput }
-    />
-    <Vader
-    name="invert"
-    label="inv."
-    range={{min: 0, max: 1}}
-    step={1}
-    value={params.invert}
-    on:input={ handleInput }
-    />
-  </div>
-  
-</div>
 
 
 <!-- STYLE -------------------------------------------------------- -->
@@ -164,6 +101,122 @@ import IconButton from './IconButton.svelte'
 
   .savebutton{
     position: absolute;
-    transform: translateY( -100%)
+    transform: translateY( -2.2em)
+  }
+
+  .input-image{
+    margin: auto;
+    margin-top: 1em;
+    padding:0.12em;
+    background-color: whitesmoke;
+    border-radius: 3px;
+    border: 1px solid gray;
+    overflow: hidden;
+    width: 9ch;
+    height: 2.6ex;
+    text-align: center;
+  }
+  .input-image:hover{
+    background-color: rgb(201, 201, 201);
+    color: whitesmoke;
+  }
+  .input-image:active{
+    filter: invert(1)
+  }
+
+  .input-image>input[type="file"]{
+    /* position: absolute; */
+    margin:  auto;
+    top: 0px;
+    left: 0px;
+    /* right: 0px;
+    bottom: 0px; */
+    width: 110%;
+    height: 110%;
+    opacity: 0;
+    transform: translateY(-1.6em) translateX(-0.6em);
+    z-index: 10;
   }
 </style>
+
+
+<!-- pseudoHTML -------------------------------------------------------- -->
+<div class="pictureView" in:fade>
+
+  <div class="picture" bind:clientWidth={width} bind:clientHeight={height}>
+    <canvas id={params.id}
+      on:mousedown={ mousedown }
+      on:mouseup={ mouseup }
+      on:mouseout={ mouseup }
+      on:mousemove={ drag }
+    />
+    <div class="savebutton">
+      <IconButton
+      iconUrl="./assets/icons/export.png"
+      on:action={exportpng}
+      tip="export PNG"
+      size= "1.2em"
+      opacity={0.5}
+      />
+    </div>
+  </div>
+  
+  <div class="picture_params">
+
+    <Vader
+    name="brightness"
+    label="brtnss"
+    range={{min: 0, max: 3}}
+    step={0.01}
+    value={params.brightness}
+    on:input={ handleInput }
+    />
+    <Vader
+    name="contrast"
+    label="ctrst"
+    range={{min: 0, max: 3}}
+    step={0.01}
+    value={params.contrast}
+    on:input={ handleInput }
+    />
+    <Vader
+    name="blur"
+    label="blur"
+    range={{min: 0, max: 1}}
+    step={0.01}
+    value={params.blur}
+    on:input={ handleInput }
+    />
+    <Vader
+    name="zoom"
+    label="zoom"
+    range={{min: 0, max: 2}}
+    step={0.01}
+    value={params.zoom}
+    on:input={ handleInput }
+    />
+    <Vader
+    name="invert"
+    label="inv."
+    range={{min: 0, max: 1}}
+    step={1}
+    value={params.invert}
+    on:input={ handleInput }
+    />
+  </div>
+
+  <div class="input-image">
+    load local
+    <input type="file"
+          id="image" name="temp"
+          accept="image/png, image/jpeg"
+          on:change="{
+            
+            e => picture.loadLocal(e.target.files[0], ( url )=>params.imgUrl = url )
+          
+          }"
+    >
+  </div>
+  
+</div>
+

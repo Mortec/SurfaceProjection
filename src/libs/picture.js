@@ -3,10 +3,9 @@ const Picture = function (  ){
 
     this.params = {
         id: 'pictureCanvas',
+        imgUrl: "./assets/images/IMG_0406.jpg",
         x : 0,
         y: 0,
-        width: 100,
-        height: 100,
         brightness: 1.0,
         contrast: 1.0,
         saturation: 1.0,
@@ -14,7 +13,8 @@ const Picture = function (  ){
         zoom: 1.0,
         invert: 0.0
     }
-
+    this.width = 100
+    this.height = 100
     this.buffer = {}
     
     this.ctxt = {}
@@ -46,13 +46,17 @@ Picture.prototype.init = function( id ){
     }
 }
 
+
+Picture.prototype.resize = function( width, height ){
+    this.width = width
+    this.height = height
+}
+
 Picture.prototype.reset = function(){
 
     this.params = {
         x : 0,
         y: 0,
-        width: 100,
-        height: 100,
         brightness: 1.0,
         contrast: 1.0,
         saturation: 1.0,
@@ -68,18 +72,29 @@ Picture.prototype.set = function( params ){
     this.draw()
 }
 
-Picture.prototype.load = function( src ){
+Picture.prototype.load = function( url ){
 
-    
-    // this.reset()
-    this.image.src = src
+    this.imgUrl = url
+    this.image.src = url
+}
+
+Picture.prototype.loadLocal = function( file, callback ){
+
+        const fr =  new FileReader();
+        fr.onload = ()=>{
+
+            const localUrl = fr.result;
+            callback( localUrl )
+            this.load( localUrl )
+        }
+        fr.readAsDataURL(file)
 }
 
 Picture.prototype.draw = function(){
 
     const canvas = this.ctxt.canvas
-    canvas.width = this.params.width
-    canvas.height = this.params.height
+    canvas.width = this.width
+    canvas.height = this.height
 
     const area = {
         width: Math.floor( canvas.width/this.params.zoom )+1,

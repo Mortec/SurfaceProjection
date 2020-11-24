@@ -36,7 +36,7 @@
     text-align: center;
     border-radius: 0px;
     font-size: 0.9em;
-    width: 30%;
+    width: 7ch;
     margin: 0em 0em 0em 0.5em;
   }
 
@@ -50,7 +50,7 @@
 
   label > span {
     text-align: center;
-    /* width: 4em; */
+    width: 6ch;
     padding: 0;
   }
 
@@ -59,7 +59,7 @@
     height: 12px;
     -webkit-appearance: none;
     margin: 10px 0;
-    width: 100%;
+    width: auto;
   }
   input[type="range"]:focus {
     outline: none;

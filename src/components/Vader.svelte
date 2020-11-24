@@ -69,8 +69,9 @@
     text-align: center;
     border-radius: 0px;
     font-size: 0.9em;
-    width: 3em;
+    width: 7ch;
     height: 1em;
+    outline: none;
   }
   label > span{
     text-align: center;
@@ -91,7 +92,7 @@
   /* https://www.cssportal.com/style-input-range/ */
   input[type=range] {
     -webkit-appearance: none;
-    width: 190px;
+    width: 180px;
 
   }
 
