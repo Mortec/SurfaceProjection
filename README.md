@@ -23,12 +23,12 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  on the fly evaluation of the oneliner formula in a fragment shader
 *  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
 *  load image from url
-*  temporisation of mouse drag input to prevent over-computing
+*  temporisation of mouse drag input events to prevent over-computing
 *  surface ui :
     *    pen color / opacity / stroke
     *    paper size
     *    paper color
-    *    svg zoom for convenient exploration of the path
+    *    svg zoom at real scale for convenient exploration of the path
 *  svg to gcode translation
 *  projects bar : delete a project
 *  gcode ui :
