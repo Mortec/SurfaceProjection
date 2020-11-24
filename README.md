@@ -22,7 +22,7 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  refactoring of surface object to send all the computation to the graphic card
 *  on the fly evaluation of the oneliner formula in a fragment shader
 *  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
-*  load image from url || local
+*  load image from url
 *  temporisation of mouse drag input to prevent over-computing
 *  surface ui :
     *    pen color / opacity / stroke
@@ -42,3 +42,5 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 ### to do v2
 * multilayering
 * control point selection for specific gcode commands editing
+* map the plotter speed along specific aspect of the picture
+* map z command along specific aspect of the picture
