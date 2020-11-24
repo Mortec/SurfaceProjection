@@ -34,8 +34,8 @@ Picture.prototype.init = function( id ){
 
     this.image = new Image()
 
-    this.image.onload = (o) => {
-        console.log( o )
+    this.image.onload = (e) => {
+
         const width = this.image.naturalWidth
         const height = this.image.naturalHeight
         this.buffer.getContext('2d').canvas.width = width

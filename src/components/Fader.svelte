@@ -21,9 +21,9 @@
    .fader{
         display: flex;
         flex-direction: row;
-        justify-content: flex-end;
+        justify-content: space-between;
         align-items: center;
-        margin: 0.5em 0.5em 0.5em 1em;
+        margin: 0.5em 0em 0.5em 0em;
    }
 
   input {
@@ -45,12 +45,12 @@
   }
 
   label{
-      margin: 0em 0.5em 0.25em 0em
+      margin: 0em 0.5em 0.25em 0em;
+      width: 4.5ch;
   }
 
   label > span {
     text-align: center;
-    width: 6ch;
     padding: 0;
   }
 

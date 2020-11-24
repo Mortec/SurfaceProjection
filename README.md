@@ -24,9 +24,7 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
 *  temporisation of mouse drag input events to prevent over-computing
 *  surface ui :
-    *    pen color / opacity / stroke
     *    paper size
-    *    paper color
     *    svg zoom at real scale for convenient exploration of the path
 *  svg to gcode translation
 *  projects bar : delete a project
@@ -40,6 +38,6 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 ### to do v2
 * multilayering
-* map the plotter speed along specific aspect of the picture
+* map the plotter feed commmand along specific aspect of the picture
 * map dwell command along specific aspect of the picture
 * map z command along specific aspect of the picture

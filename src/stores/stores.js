@@ -53,6 +53,8 @@ export const surfaceStore = createStore({
     path: 'zig',
     paper_color: "white",
     pen_color: "black",
+    pen_stroke: 1,
+    pen_opacity: 1
 })
 
 export const gcodeStore = createStore({

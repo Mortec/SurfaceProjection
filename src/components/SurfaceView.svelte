@@ -5,9 +5,12 @@
   import  { pictureStore }  from "../stores/stores.js"
   import Fader from './Fader.svelte'
   import { createEventDispatcher } from 'svelte'
-import {fade } from 'svelte/transition'
-import IconButton from './IconButton.svelte'
-  
+  import {fade } from 'svelte/transition'
+  import IconButton from './IconButton.svelte'
+  import { paper_colors, paper_formats, pen_colors, pen_strokes } from '../configs/furnitures.js'
+  import InputColorRadio from './InputColorRadio.svelte'
+  import InputRadio from './InputRadio.svelte'
+
 
 export let params = {
     id: 'surfacePath',
@@ -131,21 +134,20 @@ let dragRef = {x: params.x, y: params.y}
     .surface_params{
         background-color: rgb(237, 237, 237);
         width: calc(100vh/400 * 216 * 0.5 );
-        margin-left: 0.7em;
+        padding-left: 0.8em;
+        padding-right: 0.5em;
+
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
+        justify-content: space-around;
         /* height: 100%; */
       }
-
-
-
 
     .surface_params_faders{
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        align-items: center;
+        /* align-items: center; */
     }
     .surface_params_formula{
         /* align-self: flex-start; */
@@ -185,20 +187,16 @@ let dragRef = {x: params.x, y: params.y}
         font-size: 0.85em;
         letter-spacing: -1px;
         align-self: flex-start;
-        margin-top: 1em;
-        margin-bottom: 1.5em;
+        /* margin-top: 1em;
+        margin-bottom: 1.5em; */
     }
-    .surface_params_pathFeedback > span{
-        
-        margin: 0em 0em 0em 1em;
-    }
+
     
     label{
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        /* width: 100%; */
     }
 
     .savebutton{
@@ -206,6 +204,27 @@ let dragRef = {x: params.x, y: params.y}
     transform: translateY( -2.5em);
     }
 
+    .pen{
+        margin-left: 1em;
+    }
+
+    select{
+        outline: none;
+        /* font-size: 0.9em; */
+        font-family: monospace;
+        border: none;
+        height:  1.8em;
+        padding: none;
+        margin: none;
+        margin-left: 1em;
+        display: inline-block;
+        width :auto;
+
+    }
+    option{
+        padding: none;  
+        margin: none;
+    }
 
 </style>
 
@@ -224,15 +243,19 @@ let dragRef = {x: params.x, y: params.y}
         on:mouseup={ mouseup }
         on:mouseout={ mouseup }
         on:mousemove={ drag }
+        style="background-color: {params.paper_color}"
         >
             <path id={params.id}
             style="
-            fill : none;
-            stroke-width: {1/params.height}px;
-            stroke : black;"
+                fill : none;
+                stroke-width: {1/params.height}px;
+                stroke : {params.pen_color};
+                stroke-opacity:{ params.pen_opacity};
+            "
             transform="
-            translate({params.x} {params.y})
-            scale({params.width} {params.height})" 
+                translate({params.x} {params.y})
+                scale({params.width} {params.height})
+            " 
             d="M0.5 0 L1 0.5 L0 1 Z"
             />
         </svg>
@@ -315,12 +338,75 @@ let dragRef = {x: params.x, y: params.y}
             
         </div>
 
-        <div class = "surface_params_formula">
+        <div>
+            <span>pen color</span><br>
+            {#each pen_colors as color, id}
+                 <InputColorRadio
+                 id="pencolor-{id}"
+                 bind:group={params.pen_color}
+                 size="0.7em"
+                 radius="50%"
+                 value={color}
+                 />
+            {/each}
+        </div>
+
+        <div>
+            <span>pen stroke (mm) :</span><br>
+            {#each pen_strokes as stroke, id}
+
+                 <InputRadio
+                 id="penstroke-{id}"
+                 bind:group={params.pen_stroke}
+                 size="{ (0.6 - 0.25) * stroke + 0.2 }em"
+                 radius="50%"
+                 value={stroke}
+                 color={"black"}
+                 />
+                 <span style="font-size: 0.7em">{stroke}</span>
+
+            {/each}
+        </div>
+
+        <div> 
+        <Fader
+            name="pen_opacity"
+            label="ink_op."
+            range={{min: 0, max: 1}}
+            step={0.01}
+            value={params.pen_opacity}
+            on:input={ handleInput }
+        />
+       </div>
+
+        <div>
+            <span>paper color</span>
+            {#each paper_colors as color, id}
+                 <InputColorRadio
+                 id="papercolor-{id}"
+                 bind:group={params.paper_color}
+                 size="0.7em"
+                 radius="0%"
+                 value={color}
+                 />
+            {/each}
+        </div>
+
+        <div>
+            <span>paper format</span>
+            <select bind:value={params.format}>
+            {#each paper_formats as item, id (item.name)}
+                <option value={item.format}>{item.name}</option>
+                {/each}
+            </select>
+        </div>
+
+        <!-- <div class = "surface_params_formula">
             <span>formula:</span>
             <label>
             <textarea id="formula" bind:value={params.formula}></textarea>
             </label>
-        </div>
+        </div> -->
 
         <div class="surface_params_pathFeedback">
             <span >path_length: {surface.path.length}_pts</span>
