@@ -8,7 +8,7 @@
 	import { defaultProject, defaultProjects } from './configs/default.js'
 	import SvgSaver from 'svgsaver'
 	import { FileSaver, saveAs } from 'file-saver';	
-	import { fly, fade, crossfade } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 
 
@@ -241,7 +241,7 @@
 			{/if}
 		</nav>
 
-		<div class="playground" transition:crossfade>
+		<div class="playground">
 			<PictureView params={currentProject.picture} on:exportPNG={exportPNG} />
 			<SurfaceView params={currentProject.surface} on:exportSVG={exportSVG}/>
 

@@ -240,7 +240,7 @@ let dragRef = {x: params.x, y: params.y}
             <IconButton
             iconUrl="./assets/icons/export.png"
             on:action={exportsvg}
-            tip="export SVG"
+            tip="Export SVG"
             size= "1.2em"
             opacity="0.4"
             />

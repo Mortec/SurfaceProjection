@@ -154,7 +154,7 @@
       <IconButton
       iconUrl="./assets/icons/export.png"
       on:action={exportpng}
-      tip="export PNG"
+      tip="Export PNG"
       size= "1.2em"
       opacity={0.5}
       />

@@ -41,6 +41,6 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 ### to do v2
 * multilayering
-* control point selection for specific gcode commands editing
 * map the plotter speed along specific aspect of the picture
+* map dwell command along specific aspect of the picture
 * map z command along specific aspect of the picture
