@@ -21,7 +21,7 @@ const Picture = function (  ){
 
     this.image = new Image()
 
-    this.notify = function(){}
+    this.notifyLoaded = function(){}
 }
 
 Picture.prototype.init = function( id ){
@@ -34,15 +34,20 @@ Picture.prototype.init = function( id ){
 
     this.image = new Image()
 
-    this.image.onload = () => {
+    this.image.onload = (o) => {
+        console.log( o )
         const width = this.image.naturalWidth
         const height = this.image.naturalHeight
         this.buffer.getContext('2d').canvas.width = width
         this.buffer.getContext('2d').canvas.height = height
         this.buffer.getContext('2d').drawImage( this.image, 0, 0, width, height )
         this.draw()
-        this.notify()
-        // console.log( "Picture loaded" )
+        this.notifyLoaded()
+        // try {
+        //     this.buffer.toDataURL();
+        //   } catch (e) {
+        //     console.log("BUFFER TAINTED")
+        //   }
     }
 }
 
@@ -68,26 +73,35 @@ Picture.prototype.reset = function(){
 
 Picture.prototype.set = function( params ){
 
-    if ( params ) this.params = {...this.params, ...params }
+    this.params = {...this.params, ...params }
     this.draw()
 }
 
 Picture.prototype.load = function( url ){
 
     this.imgUrl = url
+    this.image.crossOrigin='anonymous'
     this.image.src = url
 }
 
 Picture.prototype.loadLocal = function( file, callback ){
 
         const fr =  new FileReader();
+
         fr.onload = ()=>{
 
             const localUrl = fr.result;
             callback( localUrl )
             this.load( localUrl )
         }
+
         fr.readAsDataURL(file)
+}
+
+Picture.prototype.loadURL = function( url ){
+
+
+    
 }
 
 Picture.prototype.draw = function(){
@@ -97,15 +111,14 @@ Picture.prototype.draw = function(){
     canvas.height = this.height
 
     const area = {
-        width: Math.floor( canvas.width/this.params.zoom )+1,
+        width: Math.floor( canvas.width/this.params.zoom ),
         height: Math.floor( canvas.height/this.params.zoom )
     }
-    // console.log(area)
+
     const offset = {
         x: (this.buffer.getContext('2d').canvas.width - area.width)/2 - this.params.x/this.params.zoom ,
         y: (this.buffer.getContext('2d').canvas.height - area.height)/2 - this.params.y/this.params.zoom 
     }
-
 
     this.ctxt.clearRect(0, 0, canvas.width,  canvas.height);
 

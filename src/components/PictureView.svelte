@@ -26,12 +26,12 @@
 
   onMount(() => {
 
-    picture.notify = () => pictureStore.tune( {} )
+    picture.notifyLoaded = () => pictureStore.trig()
     picture.init(params.id)
     picture.set( params )
     picture.resize(width, height)
     pictureStore.subscribe( s => {
-    picture.set( s )
+      picture.set( s )
     } )
     picture.load(params.imgUrl)
   })
@@ -104,17 +104,24 @@
     transform: translateY( -2.2em)
   }
 
+  .input-image-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
   .input-image{
-    margin: auto;
+    /* margin: auto; */
     margin-top: 1em;
-    padding:0.12em;
+    padding:0.1em;
     background-color: whitesmoke;
     border-radius: 3px;
-    border: 1px solid gray;
+    border: 1px solid rgb(203, 203, 203);
     overflow: hidden;
     width: 9ch;
     height: 2.6ex;
     text-align: center;
+    /* display: inline; */
   }
   .input-image:hover{
     background-color: rgb(201, 201, 201);
@@ -125,18 +132,22 @@
   }
 
   .input-image>input[type="file"]{
-    /* position: absolute; */
     margin:  auto;
     top: 0px;
     left: 0px;
-    /* right: 0px;
-    bottom: 0px; */
     width: 110%;
     height: 110%;
     opacity: 0;
     transform: translateY(-1.6em) translateX(-0.6em);
     z-index: 10;
   }
+
+  input[type="text"] {
+		margin: 1em;
+		height: 1.5em;
+    border: none;
+    outline: none;
+	}
 </style>
 
 
@@ -205,18 +216,23 @@
     />
   </div>
 
-  <div class="input-image">
-    load local
-    <input type="file"
-          id="image" name="temp"
-          accept="image/png, image/jpeg"
-          on:change="{
+  <div class="input-image-container">
+    <div class="input-image">
+      load local
+      <input type="file"
+            id="image" name="temp"
+            accept="image/png, image/jpeg"
+            on:change="{
+              
+              e => picture.loadLocal(e.target.files[0], ( url )=>params.imgUrl = url )
             
-            e => picture.loadLocal(e.target.files[0], ( url )=>params.imgUrl = url )
-          
-          }"
-    >
+            }"
+      >    
+    </div>
+    <!-- <input type="text"
+      placeholder="load from url"
+      on:change="{ e => params.imgUrl = e.target.value }"
+    /> -->
   </div>
-  
 </div>
 

@@ -8,12 +8,16 @@ const createStore = function( object ) {
 
         subscribe,
 
+        set,
+
         update,
 
         tune: ( newparams )  => {
 
             update( s =>( { ...s, ...newparams } ) )
-        }
+        },
+
+        trig: ()=>{update( s => s)}
 	}
 }
 

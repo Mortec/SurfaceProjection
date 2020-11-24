@@ -19,12 +19,13 @@
 	let saveStatus = "waiting"
 
 	currentProject = { ...defaultProject }
+
 	projects = localStorage.length ?
 					JSON.parse( localStorage.getItem( 'projects' ) )
 					:
 					{...defaultProjects};
 	
-	// projects = {...defaultProjects};	
+	// projects = {...defaultProjects};
 
   	const saveProject = ()=>{
 		currentProject = {...currentProject, ...get(projectStore) }
@@ -215,7 +216,7 @@
 	</header>
 	<main>
 
-		<nav transition:crossfade>
+		<nav class="projects-menu">
 			<div class="loadbutton_container">
 				<IconButton
 				iconUrl="./assets/icons/load.png"
