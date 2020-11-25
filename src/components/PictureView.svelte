@@ -28,7 +28,7 @@
   onMount(() => {
     surfaceStore.subscribe( s => {
       
-      width = Math.floor( s.format.width/s.format.height * height )
+      width = ( s.format.width/s.format.height * height )
     })
 
     picture.notifyLoaded = () => pictureStore.trig()
@@ -73,7 +73,7 @@
 
   $: pictureStore.tune( params )
   $: picture.load( params.imgUrl )
-  $: picture.resize( width, height )
+  $: (()=>{picture.resize( width, height ) ; pictureStore.trig()})()
 
 </script>
 
@@ -83,7 +83,7 @@
 <style>
 
   .pictureView{
-    width: 27vh;
+    width: 28vh;
     display: flex;
     flex-direction: column;
     justify-content: center;

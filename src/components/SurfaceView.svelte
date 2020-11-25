@@ -17,7 +17,7 @@
         id: 'surfacePath',
         x: 0,
         y: 0,
-        format: {width: 216, height: 260},
+        format: {name: "sLTR", width:  210, height: 260 },
         resX: 7,
         resY: 7,
         scale: 0.7,
@@ -62,6 +62,7 @@
 
         surfaceStore.subscribe( s => {
             surface.params = s
+            paper_name = s.format.name
             surface.setVertices()
                     .loadTexture()
                     .computeMap( formula )
@@ -104,6 +105,7 @@
   $: surfaceStore.tune( params )
   $: width = height * params.format.width/params.format.height
   $: scale = height/(params.format.height * 3.779527559)
+  $: params.format = paper_formats.filter( p => p.name === paper_name )[0]
 
 </script>
 
@@ -233,7 +235,7 @@
         "
         
     >
-        <svg id="svgmain"
+        <svg id="surfacesvg"
         on:mousedown={ mousedown }
         on:mouseup={ mouseup }
         on:mouseout={ mouseup }
@@ -276,7 +278,7 @@
             <Fader
             name="resX"
             label="res_x"
-            range={{min: 2, max: Math.floor(params.format.width * params.scale)}}
+            range={{min: 2, max: params.format.width}}
             step={1}
             value={params.resX}
             on:input={ handleInput }
@@ -285,7 +287,7 @@
             <Fader
             name="resY"
             label="res_y"
-            range={{min: 2, max: Math.floor(params.format.height * params.scale)}}
+            range={{min: 2, max: params.format.height}}
             step={1}
             value={params.resY}
             on:input={ handleInput }
@@ -394,9 +396,9 @@
 
         <div>
             <span>paper format</span>
-            <select bind:value={params.format}>
-            {#each paper_formats as item, i (item.name)}
-                <option id={item.name} value={item.format}>{item.name}</option>
+            <select id="paper_formats" bind:value={paper_name}>
+            {#each paper_formats as item, i }
+                <option  value={item.name}>{item.name}</option>
             {/each}
             </select>
         </div>

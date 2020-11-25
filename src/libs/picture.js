@@ -55,7 +55,6 @@ Picture.prototype.init = function( id ){
 Picture.prototype.resize = function( width, height ){
     this.width = width
     this.height = height
-    // this.draw()
 }
 
 Picture.prototype.reset = function(){
@@ -106,6 +105,7 @@ Picture.prototype.loadURL = function( url ){
 }
 
 Picture.prototype.draw = function(){
+
 
     const canvas = this.ctxt.canvas
     canvas.width = this.width

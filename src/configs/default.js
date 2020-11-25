@@ -19,7 +19,7 @@ export const defaultProject = {
         id: 'surfacePath',
         x: 0,
         y: 0,
-        format:{width: 216, height: 279},
+        format:{name: "sLTR", width:  210, height: 260 },
         resX: 7,
         resY: 7,
         scale: 0.7,

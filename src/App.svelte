@@ -20,12 +20,12 @@
 
 	currentProject = { ...defaultProject }
 
-	// projects = localStorage.length ?
-	// 				JSON.parse( localStorage.getItem( 'projects' ) )
-	// 				:
-	// 				{...defaultProjects};
+	projects = localStorage.length ?
+					JSON.parse( localStorage.getItem( 'projects' ) )
+					:
+					{...defaultProjects};
 	
-	projects = {...defaultProjects};
+	// projects = {...defaultProjects};
 
   	const saveProject = ()=>{
 		currentProject = {...currentProject, ...get(projectStore) }
@@ -50,7 +50,7 @@
  
 	const exportSVG = function(){
 		const svgsaver = new SvgSaver();                      
-		const svg = document.querySelector("#svg");        
+		const svg = document.querySelector("#surfacesvg");        
 		svgsaver.asSvg(svg, title+".svg");   
 	}
 
