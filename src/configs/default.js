@@ -19,8 +19,7 @@ export const defaultProject = {
         id: 'surfacePath',
         x: 0,
         y: 0,
-        width: 216,
-        height: 279,
+        format:{width: 216, height: 279},
         resX: 7,
         resY: 7,
         scale: 0.7,
@@ -32,9 +31,9 @@ export const defaultProject = {
         formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
         structure: "net",
         path: 'zig',
-        paper_color: "white",
-        pen_color: "black",
-        pen_stroke: 1,
+        paper_color: "#FFFFFF",
+        pen_color: "#000000",
+        pen_stroke: 0.5,
         pen_opacity: 1
     },
 
@@ -44,7 +43,6 @@ export const defaultProject = {
         pen_up_sequence:"",
         pen_down_sequence:"",
         end_sequence:"",
-        paper_format: {width: 216, height: 279}
     }
 }
 

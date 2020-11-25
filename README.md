@@ -17,23 +17,21 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 
 ## to do :
-*  appropriate handling of SVG control points coordinates for consistent result from screen to paper (correct handling of scale)
 *  drop out svg saver for custom made svg files
+*  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
 *  refactoring of surface object to send all the computation to the graphic card
 *  on the fly evaluation of the oneliner formula in a fragment shader
-*  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
 *  temporisation of mouse drag input events to prevent over-computing
+*  eased transition on changes (projects bar, playground div, svg canvas format, picture canvas format)
 *  surface ui :
-    *    paper size
     *    svg zoom at real scale for convenient exploration of the path
-*  svg to gcode translation
 *  projects bar : delete a project
+*  svg to gcode translation
 *  gcode ui :
     *    begin / end / pen up / pen down commands
     *    drawing speed & translate speed
 *  estimation of path length in millimeters -> estimation of drawing time
 *  presentation mode (show drawing only at maximum available size)
-*  eased transition on changes (projects bar, playground div, svg canvas format, picture canvas format)
 *  button tooltips improvement
 
 ### to do v2

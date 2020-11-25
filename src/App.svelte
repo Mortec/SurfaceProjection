@@ -20,12 +20,12 @@
 
 	currentProject = { ...defaultProject }
 
-	projects = localStorage.length ?
-					JSON.parse( localStorage.getItem( 'projects' ) )
-					:
-					{...defaultProjects};
+	// projects = localStorage.length ?
+	// 				JSON.parse( localStorage.getItem( 'projects' ) )
+	// 				:
+	// 				{...defaultProjects};
 	
-	// projects = {...defaultProjects};
+	projects = {...defaultProjects};
 
   	const saveProject = ()=>{
 		currentProject = {...currentProject, ...get(projectStore) }

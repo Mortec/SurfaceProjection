@@ -12,73 +12,77 @@
   import InputRadio from './InputRadio.svelte'
 
 
-export let params = {
-    id: 'surfacePath',
-    x: 0,
-    y: 0,
-    width: 216,
-    height: 279,
-    resX: 7,
-    resY: 7,
-    scale: 0.7,
-    crop: 0,
-    q: 0,
-    r:0,
-    threshold: 0,
-    ceiling: 1,
-    formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
-    structure: "net",
-    path: 'zig',
-    paper_color: "white",
-    pen_color: "black",
-}
 
+    export let params = {
+        id: 'surfacePath',
+        x: 0,
+        y: 0,
+        format: {width: 216, height: 260},
+        resX: 7,
+        resY: 7,
+        scale: 0.7,
+        crop: 0,
+        q: 0,
+        r:0,
+        threshold: 0,
+        ceiling: 1,
+        formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
+        structure: "net",
+        path: 'zig',
+        paper_color: "#FFFFFF",
+        pen_color: "#000000",
+        pen_stroke: 0.5,
+        pen_opacity: 1
+    }
 
-/*nota:
-path: zig = unique snake path along the x axis
-    zag: unique snake path along the y axis
-    d->l : unique path with sorting of vertices based on luminance, darkness to light 
-*/
+    let width = 210
+    let height = 279
+    let scale = 1
+    let paper_name = "sLTR"
+    /*nota:
+    path: zig = unique snake path along the x axis
+        zag: unique snake path along the y axis
+        d->l : unique path with sorting of vertices based on luminance, darkness to light 
+    */
 
-let surface = new Surface()
+    let surface = new Surface()
 
-const formula = (x, y, l, i, a, q, w, h ) => Math.sin( i/a.length * Math.PI * (l*w/2) ) * q
+    const formula = (x, y, l, i, a, q, w, h ) => Math.sin( i/a.length * Math.PI * (l*w/2) ) * q
 
-onMount( () => {
+    onMount( () => {
 
-    surface.params = params
-    pictureStore.subscribe( s =>{
-        surface.loadTexture( s.id )
-            .computeMap( formula )
-            .computePath()
-            .computePathString()
-        surfaceStore.tune({})
-    })
-
-    surfaceStore.subscribe( s => {
-        surface.params = s
-        surface.setVertices()
-                .loadTexture()
+        surface.params = params
+        pictureStore.subscribe( s =>{
+            surface.loadTexture( s.id )
                 .computeMap( formula )
-                // .evaluate( params.formula )
                 .computePath()
                 .computePathString()
-        }
-    )
-})
+            surfaceStore.tune({})
+        })
 
-const dispatch = createEventDispatcher()
+        surfaceStore.subscribe( s => {
+            surface.params = s
+            surface.setVertices()
+                    .loadTexture()
+                    .computeMap( formula )
+                    .computePath()
+                    .computePathString()
+            }
+        )
+    })
 
-const exportsvg = function(){
-    dispatch('exportSVG') 
-}
+    const dispatch = createEventDispatcher()
 
-let dragRef = {x: params.x, y: params.y}
+    const exportsvg = function(){
+        dispatch('exportSVG') 
+    }
+
+  let dragRef = {x: params.x, y: params.y}
   let locked = false
 
   function mousedown( e ){
     locked = true
-    dragRef = {x: e.x - params.x, y: e.y - params.y }
+    dragRef = {x: e.x/width - params.x, y: e.y/height - params.y }
   }
 
   function mouseup(e){
@@ -87,8 +91,8 @@ let dragRef = {x: params.x, y: params.y}
   
   function drag( e ) {
     if (locked) {
-        params.x = e.x - dragRef.x, 
-        params.y = e.y - dragRef.y
+        params.x = (e.x/width - dragRef.x)
+        params.y = (e.y/height - dragRef.y)
     }
   }
 
@@ -97,7 +101,9 @@ let dragRef = {x: params.x, y: params.y}
     params = {...params, ...{[e.detail.name]: e.detail.value} }
   }
 
- $: surfaceStore.tune( params )
+  $: surfaceStore.tune( params )
+  $: width = height * params.format.width/params.format.height
+  $: scale = height/(params.format.height * 3.779527559)
 
 </script>
 
@@ -116,8 +122,6 @@ let dragRef = {x: params.x, y: params.y}
     }
 
 	.surface{
-		width: calc(100vh/400 * 216);
-		height: calc(100vh/400 * 279);
 		padding: none;
 		background-color: white;	
 		border: 1px solid rgb(211, 211, 211);
@@ -125,16 +129,10 @@ let dragRef = {x: params.x, y: params.y}
         cursor: grab;
       }
       
-	path{
-		  fill : none;
-		  stroke-width: 1px;
-		  stroke : black;
-      }
-      
     .surface_params{
         background-color: rgb(237, 237, 237);
         width: calc(100vh/400 * 216 * 0.5 );
-        padding-left: 0.8em;
+        padding-left: 1em;
         padding-right: 0.5em;
 
         display: flex;
@@ -147,12 +145,10 @@ let dragRef = {x: params.x, y: params.y}
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        /* align-items: center; */
     }
+
     .surface_params_formula{
-        /* align-self: flex-start; */
         margin-top: 1em;
-        /* height: 34%; */
     }
 
     .surface_params_formula > span{
@@ -166,7 +162,6 @@ let dragRef = {x: params.x, y: params.y}
         padding: 0.5em;
         font-family: roboto, monospace;
         font-size: 0.85em;
-        /* margin-top: 0.5em; */
         margin-left: 1em;
         margin-right: 1em;
         width: 100%;
@@ -187,8 +182,6 @@ let dragRef = {x: params.x, y: params.y}
         font-size: 0.85em;
         letter-spacing: -1px;
         align-self: flex-start;
-        /* margin-top: 1em;
-        margin-bottom: 1.5em; */
     }
 
     
@@ -200,18 +193,16 @@ let dragRef = {x: params.x, y: params.y}
     }
 
     .savebutton{
-    position: absolute;
-    transform: translateY( -2.5em);
+        position: absolute;
+        transform: translateY( -2.5em);
     }
 
-    .pen{
-        margin-left: 1em;
-    }
+
 
     select{
         outline: none;
-        /* font-size: 0.9em; */
-        font-family: monospace;
+        font-size: 0.9em;
+        font-family: abel, roboto;
         border: none;
         height:  1.8em;
         padding: none;
@@ -219,7 +210,7 @@ let dragRef = {x: params.x, y: params.y}
         margin-left: 1em;
         display: inline-block;
         width :auto;
-
+        background-color: whitesmoke;
     }
     option{
         padding: none;  
@@ -235,30 +226,38 @@ let dragRef = {x: params.x, y: params.y}
 <div class="surfaceView" in:fade>
 
     <div class="surface"
-        bind:clientWidth={params.width} bind:clientHeight={params.height}
-    >
-        <svg id="svg"
-        viewbox="0 0 {params.width} {params.height}"
+        bind:clientHeight={height}
+        style="
+            width: {width};
+            height: 70vh;
+        "
         on:mousedown={ mousedown }
         on:mouseup={ mouseup }
         on:mouseout={ mouseup }
         on:mousemove={ drag }
-        style="background-color: {params.paper_color}"
-        >
-            <path id={params.id}
+    >
+        <svg id="svgmain"
+
+            width = {width}
+            height = {height}
+            viewBox = "0, 0, {params.format.width}, {params.format.height}"
             style="
-                fill : none;
-                stroke-width: {1/params.height}px;
-                stroke : {params.pen_color};
-                stroke-opacity:{ params.pen_opacity};
+            background-color:{params.paper_color};
             "
-            transform="
-                translate({params.x} {params.y})
-                scale({params.width} {params.height})
-            " 
-            d="M0.5 0 L1 0.5 L0 1 Z"
-            />
+            >
+
+                <path id={params.id}
+                    style="
+                        fill : none;
+                        stroke-width: {params.pen_stroke};
+                        stroke : {params.pen_color};
+                        stroke-opacity:{ params.pen_opacity};
+                    "
+                    d="M100 0 L200 100 L0 200 Z"
+                />
+
         </svg>
+        
         <div class="savebutton">
             <IconButton
             iconUrl="./assets/icons/export.png"
@@ -276,7 +275,7 @@ let dragRef = {x: params.x, y: params.y}
             <Fader
             name="resX"
             label="res_x"
-            range={{min: 2, max: params.width}}
+            range={{min: 2, max: Math.floor(params.format.width * params.scale)}}
             step={1}
             value={params.resX}
             on:input={ handleInput }
@@ -285,7 +284,7 @@ let dragRef = {x: params.x, y: params.y}
             <Fader
             name="resY"
             label="res_y"
-            range={{min: 2, max: params.height}}
+            range={{min: 2, max: Math.floor(params.format.height * params.scale)}}
             step={1}
             value={params.resY}
             on:input={ handleInput }
@@ -352,18 +351,18 @@ let dragRef = {x: params.x, y: params.y}
         </div>
 
         <div>
-            <span>pen stroke (mm) :</span><br>
+            <span>pen stroke [mm] :</span><br>
             {#each pen_strokes as stroke, id}
 
                  <InputRadio
                  id="penstroke-{id}"
                  bind:group={params.pen_stroke}
-                 size="{ (0.6 - 0.25) * stroke + 0.2 }em"
+                 size="{ (0.8 - 0.4) * stroke + 0.2 }em"
                  radius="50%"
                  value={stroke}
                  color={"black"}
                  />
-                 <span style="font-size: 0.7em">{stroke}</span>
+                 <span style="font-size: 0.8em">{stroke}</span>
 
             {/each}
         </div>
@@ -395,9 +394,9 @@ let dragRef = {x: params.x, y: params.y}
         <div>
             <span>paper format</span>
             <select bind:value={params.format}>
-            {#each paper_formats as item, id (item.name)}
-                <option value={item.format}>{item.name}</option>
-                {/each}
+            {#each paper_formats as item, i (item.name)}
+                <option id={item.name} value={item.format}>{item.name}</option>
+            {/each}
             </select>
         </div>
 

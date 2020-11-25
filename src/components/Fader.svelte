@@ -20,9 +20,9 @@
 
    .fader{
         display: flex;
-        flex-direction: row;
+        /* flex-direction: row;
         justify-content: space-between;
-        align-items: center;
+        align-items: center; */
         margin: 0.5em 0em 0.5em 0em;
    }
 
@@ -36,8 +36,9 @@
     text-align: center;
     border-radius: 0px;
     font-size: 0.9em;
-    width: 7ch;
+    width: 6.5ch;
     margin: 0em 0em 0em 0.5em;
+    padding: 0em;
   }
 
   input[type="number"]:focus{
@@ -45,8 +46,8 @@
   }
 
   label{
-      margin: 0em 0.5em 0.25em 0em;
-      width: 4.5ch;
+      margin: 0em 0em 0.25em 0em;
+      width: 7ch;
   }
 
   label > span {
@@ -58,8 +59,9 @@
   input[type="range"] {
     height: 12px;
     -webkit-appearance: none;
-    margin: 10px 0;
-    width: auto;
+    margin: 10px 0 0 10px;
+    padding: 0em;
+    width: 100%;
   }
   input[type="range"]:focus {
     outline: none;

@@ -3,11 +3,10 @@ const Surface = function (id) {
     id: 'elementRenderingId',
     x: 0,
     y: 0,
-    width: 216,
-    height: 279,
+    format:{width: 216, height: 260},
     resX: 216,
     resY: 279,
-    skew: 1,
+    scale: 1,
     crop: 0,
     q: 0,
     r:0,
@@ -57,10 +56,10 @@ Surface.prototype.loadTexture = function (id, option = 'luminance') {
       0,
       width,
       height
-      ).data;
+  ).data;
       
       
-this.texture = new Array(this.params.resX * this.params.resY).fill(0);
+  this.texture = new Array(this.params.resX * this.params.resY).fill(0);
       
       
   this.vertices.forEach((e, i, a) => {
@@ -99,26 +98,7 @@ Surface.prototype.computeMap = function (func) {
   return this;
 };
 
-Surface.prototype.evaluate = function ( formula ) {
 
-  let funk 
-  eval( "funk = function(x, y, l, i, a, q, w, h){ return " +  formula + "}" )
-
-  this.vertices.forEach((e, i, a) => {
-    this.vertices[i].z = funk(
-      e.x,
-      e.y,
-      this.texture[i],
-      i,
-      a,
-      this.params.q,
-      this.params.resX,
-      this.params.resY
-    );
-  }, this);
-
-  return this;
-};
 
 Surface.prototype.computePath = function () {
 
@@ -170,17 +150,19 @@ Surface.prototype.computePathString = function () {
         const scaleOffset = (1-this.params.scale)/2
 
         const X =
-          this.vertices[e].x * this.params.scale 
-          + scaleOffset;
+          this.vertices[e].x * this.params.scale + scaleOffset;
+
         const Y =
           (this.vertices[e].y + this.vertices[e].z) * this.params.scale
           + scaleOffset;
 
         let str =
-          i === 0
-            ? "M" + X + ", " + Y
-            : // : ( e === this.size-1 ) ? 'L' + X + ' ' + Y  + ' ' + 'Z'
-              "L" + X + ", " + Y + " ";
+          i === 0 ?
+            "M" + X * this.params.format.width + ", " + Y * this.params.format.height 
+            //:
+            //( e === this.size-1 ) ? 'L' + X + ' ' + Y  + ' ' + 'Z'
+            :
+            "L" + X * this.params.format.width + ", " + Y * this.params.format.height + " ";
 
         return str;
       })
