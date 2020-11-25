@@ -10,7 +10,6 @@
 	import { fly, fade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 
-
 	let title = 'none'
 	let currentProject, projects
 	let showprojects = false
@@ -19,12 +18,12 @@
 
 	currentProject = { ...defaultProject }
 
-	projects = localStorage.length ?
-					JSON.parse( localStorage.getItem( 'projects' ) )
-					:
-					{...defaultProjects};
+	// projects = localStorage.length ?
+	// 				JSON.parse( localStorage.getItem( 'projects' ) )
+	// 				:
+	// 				{...defaultProjects};
 	
-	// projects = {...defaultProjects};
+	projects = {...defaultProjects};
 
   	const saveProject = ()=>{
 		currentProject = {...currentProject, ...get(projectStore) }
@@ -61,7 +60,7 @@
 	}
 
 	const exportGCODE = ( message )=>{
-		const blob = new Blob([message.gcode], {type: "text/plain;charset=utf-8"});
+		const blob = new Blob([ message.detail ], {type: "text/plain;charset=utf-8"});
 		saveAs(blob, title + ".nc");
 	}
 

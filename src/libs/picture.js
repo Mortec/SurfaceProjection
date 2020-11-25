@@ -116,9 +116,12 @@ Picture.prototype.draw = function(){
         height: Math.floor( canvas.height/this.params.zoom )
     }
 
+    const dragX = this.params.x *  this.width / this.params.zoom
+    const dragY = this.params.y *  this.height / this.params.zoom
+
     const offset = {
-        x: (this.buffer.getContext('2d').canvas.width - area.width)/2 - this.params.x/this.params.zoom ,
-        y: (this.buffer.getContext('2d').canvas.height - area.height)/2 - this.params.y/this.params.zoom 
+        x: (this.buffer.getContext('2d').canvas.width - area.width)/2 - dragX ,
+        y: (this.buffer.getContext('2d').canvas.height - area.height)/2 - dragY 
     }
 
     this.ctxt.clearRect(0, 0, canvas.width,  canvas.height);

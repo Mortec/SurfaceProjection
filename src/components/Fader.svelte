@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
+
  
     export let id = Date.now() + Math.random();
     export let label = "fadr" //name as it appear in the ui
@@ -7,7 +8,10 @@
     export let value = "0.5"
     export let range = {min: 0.0, max: 1.0}
     export let step = 0.01
-    
+
+
+
+
     const dispatch = createEventDispatcher();
 
     $: dispatch( 'input', { name: name, value: value } )

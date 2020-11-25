@@ -7,7 +7,8 @@
   import { createEventDispatcher } from 'svelte'
   import {fade } from 'svelte/transition'
   import IconButton from './IconButton.svelte'
-
+	import DragLogger from './DragLogger.svelte'
+  
   
   const picture = new Picture()
   let width, height
@@ -40,25 +41,6 @@
     } )
     picture.load(params.imgUrl)
   })
-
-  let dragRef = {x: params.x, y: params.y}
-  let locked = false
-
-  function mousedown( e ){
-    locked = true
-    dragRef = {x: e.x - params.x, y: e.y - params.y }
-  }
-
-  function mouseup(e){
-    locked = false
-  }
-  
-  function drag( e ) {
-    if (locked) {
-      params.x = e.x - dragRef.x, 
-      params.y = e.y - dragRef.y
-    }
-  }
 
   const handleInput = e => {
     
@@ -113,7 +95,8 @@
 
   .savebutton{
     position: absolute;
-    transform: translateY( -2.2em)
+    transform: translateY( -2.2em);
+    z-index: 1010;
   }
 
   .input-image-container{
@@ -172,31 +155,28 @@
   height: 35vh;
   "
   >
-    <canvas id={params.id}
-      on:mousedown={ mousedown }
-      on:mouseup={ mouseup }
-      on:mouseout={ mouseup }
-      on:mousemove={ drag }
-    />
-    <div class="savebutton">
-      <IconButton
-      iconUrl="./assets/icons/export.png"
-      on:action={exportpng}
-      tip="Export PNG"
-      size= "1.2em"
-      opacity={0.5}
+  <DragLogger bind:x={params.x} bind:y={params.y}/>
+  <canvas id={params.id}/>
+      <div class="savebutton">
+        <IconButton
+        iconUrl="./assets/icons/export.png"
+        on:action={exportpng}
+        tip="Export PNG"
+        size= "1.2em"
+        opacity={0.5}
       />
+    
     </div>
-  </div>
-  
-  <div class="picture_params">
+</div>
 
-    <Vader
-    name="brightness"
-    label="brtnss"
-    range={{min: 0, max: 3}}
-    step={0.01}
-    value={params.brightness}
+<div class="picture_params">
+  
+  <Vader
+  name="brightness"
+  label="brtnss"
+  range={{min: 0, max: 3}}
+  step={0.01}
+  value={params.brightness}
     on:input={ handleInput }
     />
     <Vader

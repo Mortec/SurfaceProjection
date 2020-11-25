@@ -11,7 +11,7 @@
   import InputColorRadio from './InputColorRadio.svelte'
   import InputRadio from './InputRadio.svelte'
   import { buildSVG } from '../libs/svgFuncs'
-  import { saveAs } from 'file-saver'
+  import DragLogger from './DragLogger.svelte'
 
     export let params = {
         id: 'surfacePath',
@@ -85,24 +85,6 @@
         dispatch('exportSVG', SVGstring ) 
     }
 
-  let dragRef = {x: params.x, y: params.y}
-  let locked = false
-
-  function mousedown( e ){
-    locked = true
-    dragRef = {x: e.x/width - params.x, y: e.y/height - params.y }
-  }
-
-  function mouseup(e){
-    locked = false
-  }
-  
-  function drag( e ) {
-    if (locked) {
-        params.x = (e.x/width - dragRef.x)
-        params.y = (e.y/height - dragRef.y)
-    }
-  }
 
   const handleInput = e => {
     
@@ -138,7 +120,6 @@
 		background-color: white;	
 		border: 1px solid rgb(211, 211, 211);
         box-shadow: 1px 2px 4px rgba(0, 0, 0, .2);
-        cursor: grab;
       }
       
     .surface_params{
@@ -207,6 +188,7 @@
     .savebutton{
         position: absolute;
         transform: translateY( -2.5em);
+        z-index: 1010;
     }
 
 
@@ -245,11 +227,13 @@
         "
         
     >
+  <DragLogger bind:x={params.x} bind:y={params.y}/>
+
+  <!-- on:mousedown={ mousedown }
+  on:mouseup={ mouseup }
+  on:mouseout={ mouseup }
+  on:mousemove={ drag } -->
         <svg id="surfacesvg"
-        on:mousedown={ mousedown }
-        on:mouseup={ mouseup }
-        on:mouseout={ mouseup }
-        on:mousemove={ drag }
 
             width = {width}
             height = {height}

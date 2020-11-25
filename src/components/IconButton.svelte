@@ -33,6 +33,7 @@
     box-shadow: 1px 2px 4px rgba(180, 180, 180, 180);
     padding: 0px;
     /* background-color: transparent; */
+    cursor: pointer;
   }
 
   button:hover {

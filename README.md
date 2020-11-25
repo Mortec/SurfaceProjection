@@ -29,6 +29,8 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
     *    begin / end / pen up / pen down commands
     *    drawing speed & translate speed
 *  estimation of path length in millimeters -> estimation of drawing time
+*  isolate pieces of code that can be convert to component for later use
+*  load a picture from "store" (that was previously used for a another project currently in the storage)
 *  presentation mode (show drawing only at maximum available size)
 *  button tooltips improvement
 

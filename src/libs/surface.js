@@ -29,8 +29,8 @@ Surface.prototype.setVertices = function (resX, resY) {
     this.params.resX = resX;
     this.params.resY = resY;
   }
-  let vWidth = this.params.resX;
-  let vHeight = this.params.resY;
+  const vWidth = this.params.resX;
+  const vHeight = this.params.resY;
 
   this.vertices = new Array(vWidth * vHeight).fill(0).map( (e, i) => {
 
