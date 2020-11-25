@@ -2,6 +2,7 @@
   import Vader from "./Vader.svelte"
   import { onMount } from "svelte"
   import  { pictureStore }  from "../stores/stores.js"
+  import  { surfaceStore }  from "../stores/stores.js"
   import { Picture } from "../libs/picture.js"
   import { createEventDispatcher } from 'svelte'
   import {fade } from 'svelte/transition'
@@ -25,6 +26,10 @@
   }
 
   onMount(() => {
+    surfaceStore.subscribe( s => {
+      
+      width = Math.floor( s.format.width/s.format.height * height )
+    })
 
     picture.notifyLoaded = () => pictureStore.trig()
     picture.init(params.id)
@@ -66,8 +71,6 @@
     dispatch('exportPNG') 
   }
 
-
-
   $: pictureStore.tune( params )
   $: picture.load( params.imgUrl )
   $: picture.resize( width, height )
@@ -78,15 +81,24 @@
 <!-- STYLE -------------------------------------------------------- -->
 
 <style>
+
+  .pictureView{
+    width: 27vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
   .picture {
-    width: calc(100vh / 400 * 216 / 2 - 1px);
-    height: calc(100vh / 400 * 279 / 2 - 1px);
     border: 1px solid black;
     background-color: whitesmoke;
+    /* overflow: hidden; */
   }
 
   #pictureCanvas {
     cursor: grab;
+    width: 100%;
+    height: 100%;
   }
 
   .picture_params {  
@@ -154,7 +166,12 @@
 <!-- pseudoHTML -------------------------------------------------------- -->
 <div class="pictureView" in:fade>
 
-  <div class="picture" bind:clientWidth={width} bind:clientHeight={height}>
+  <div class="picture" bind:clientHeight={height}
+  style="
+  width: {width};
+  height: 35vh;
+  "
+  >
     <canvas id={params.id}
       on:mousedown={ mousedown }
       on:mouseup={ mouseup }

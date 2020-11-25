@@ -55,6 +55,7 @@ Picture.prototype.init = function( id ){
 Picture.prototype.resize = function( width, height ){
     this.width = width
     this.height = height
+    // this.draw()
 }
 
 Picture.prototype.reset = function(){

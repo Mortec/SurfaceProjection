@@ -36,6 +36,6 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 ### to do v2
 * multilayering
-* map the plotter feed commmand along specific aspect of the picture
+* map the plotter feed command along specific aspect of the picture
 * map dwell command along specific aspect of the picture
 * map z command along specific aspect of the picture
