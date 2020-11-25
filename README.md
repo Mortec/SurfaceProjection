@@ -19,7 +19,6 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
 *  refactoring of surface object to send all the computation to the graphic card
 *  on the fly evaluation of the oneliner formula in a fragment shader
-*  temporisation of mouse drag input events to prevent over-computing
 *  eased transition on changes (projects bar, playground div, svg canvas format, picture canvas format)
 *  surface ui :
     *    svg zoom at real scale for convenient exploration of the path
