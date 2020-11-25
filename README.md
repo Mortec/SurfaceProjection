@@ -17,7 +17,6 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 
 ## to do :
-*  drop out svg saver for custom made svg files
 *  refactoring of surface object for easy path calculation / easy vertices structure / easy drawing pattern
 *  refactoring of surface object to send all the computation to the graphic card
 *  on the fly evaluation of the oneliner formula in a fragment shader

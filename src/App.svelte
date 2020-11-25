@@ -6,8 +6,7 @@
 	import { get } from 'svelte/store';
 	import { onMount } from "svelte"
 	import { defaultProject, defaultProjects } from './configs/default.js'
-	import SvgSaver from 'svgsaver'
-	import { FileSaver, saveAs } from 'file-saver';	
+	import { saveAs } from 'file-saver';	
 	import { fly, fade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 
@@ -48,10 +47,10 @@
 	  loadProject( projects.last_project_title )
 	} )
  
-	const exportSVG = function(){
-		const svgsaver = new SvgSaver();                      
-		const svg = document.querySelector("#surfacesvg");        
-		svgsaver.asSvg(svg, title+".svg");   
+	const exportSVG = function ( message ){
+
+		const blob = new Blob([ message.detail ], {type: "text/plain;charset=utf-8"});
+    	saveAs(blob, title+".svg");  
 	}
 
 	const exportPNG = function(){
@@ -61,9 +60,9 @@
 		})
 	}
 
-	const exportGCODE = ( gcode )=>{
-		const file = new File([gcode], title+".nc", {type: "text/plain;charset=utf-8"});
-		FileSaver.saveAs(file);
+	const exportGCODE = ( message )=>{
+		const blob = new Blob([message.gcode], {type: "text/plain;charset=utf-8"});
+		saveAs(blob, title + ".nc");
 	}
 
 

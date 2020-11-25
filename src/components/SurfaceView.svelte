@@ -10,8 +10,8 @@
   import { paper_colors, paper_formats, pen_colors, pen_strokes } from '../configs/furnitures.js'
   import InputColorRadio from './InputColorRadio.svelte'
   import InputRadio from './InputRadio.svelte'
-
-
+  import { buildSVG } from '../libs/svgFuncs'
+  import { saveAs } from 'file-saver'
 
     export let params = {
         id: 'surfacePath',
@@ -74,8 +74,15 @@
 
     const dispatch = createEventDispatcher()
 
-    const exportsvg = function(){
-        dispatch('exportSVG') 
+    const exportSVG = function(){
+        const SVGstring = buildSVG( 
+          surface.pathString,
+          params.format.width,
+          params.format.height,
+          params.pen_stroke,
+          "test"
+      )
+        dispatch('exportSVG', SVGstring ) 
     }
 
   let dragRef = {x: params.x, y: params.y}
@@ -106,6 +113,9 @@
   $: width = height * params.format.width/params.format.height
   $: scale = height/(params.format.height * 3.779527559)
   $: params.format = paper_formats.filter( p => p.name === paper_name )[0]
+
+
+
 
 </script>
 
@@ -264,7 +274,7 @@
         <div class="savebutton">
             <IconButton
             iconUrl="./assets/icons/export.png"
-            on:action={exportsvg}
+            on:action={ ()=>exportSVG()}
             tip="Export SVG"
             size= "1.2em"
             opacity="0.4"
