@@ -11,7 +11,6 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 ## Dependencies :
 *  Svelte app classic [template](https://github.com/sveltejs/template)
-*  [SvgSaver.js](https://github.com/Hypercubed/svgsaver)
 *  [Filesaver.js](https://github.com/eligrey/FileSaver.js)
 
 
