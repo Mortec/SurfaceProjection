@@ -231,12 +231,13 @@
             width: {width};
             height: 70vh;
         "
+        
+    >
+        <svg id="svgmain"
         on:mousedown={ mousedown }
         on:mouseup={ mouseup }
         on:mouseout={ mouseup }
         on:mousemove={ drag }
-    >
-        <svg id="svgmain"
 
             width = {width}
             height = {height}

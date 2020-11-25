@@ -110,8 +110,8 @@ Surface.prototype.computePath = function () {
 
     sorted.forEach((e, i) => {
       const scaleOffset = (1-this.params.scale)/2
-      const x = e.x * this.params.scale + scaleOffset;
-      const y = (e.y + e.z) * this.params.scale + scaleOffset;
+      const x = e.x * this.params.scale + scaleOffset + this.params.x;
+      const y = (e.y + e.z) * this.params.scale + scaleOffset + this.params.y;
 
     if (
       this.texture[i] <= this.params.ceiling &&
@@ -150,11 +150,11 @@ Surface.prototype.computePathString = function () {
         const scaleOffset = (1-this.params.scale)/2
 
         const X =
-          this.vertices[e].x * this.params.scale + scaleOffset;
+          this.vertices[e].x * this.params.scale + scaleOffset + this.params.x;
 
         const Y =
           (this.vertices[e].y + this.vertices[e].z) * this.params.scale
-          + scaleOffset;
+          + scaleOffset + this.params.y;
 
         let str =
           i === 0 ?
