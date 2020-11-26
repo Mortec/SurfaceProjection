@@ -99,8 +99,8 @@
   });
 
   $: surfaceStore.tune( params )
-  $: width = height * params.format.width/params.format.height
   $: params.format = paper_formats.filter( p => p.name === paper_name )[0]
+  $: width = height * params.format.width/params.format.height
   $: easedWidth.set( width )
 
 

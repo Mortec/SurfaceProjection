@@ -8,7 +8,7 @@
     export let tiperror = "This button has an action that failed";
     export let size = "1.4em";
     export let status = "waiting";
-    export let tipPosition = "left";
+    // export let tipPosition = "left";
     export let opacity = 0.7;
     const dispatch = createEventDispatcher();
     const action = () => {  dispatch('action') };
@@ -32,7 +32,6 @@
     border-radius: 50%;
     box-shadow: 1px 2px 4px rgba(180, 180, 180, 180);
     padding: 0px;
-    /* background-color: transparent; */
     cursor: pointer;
   }
 
