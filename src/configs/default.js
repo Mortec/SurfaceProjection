@@ -11,7 +11,7 @@ export const defaultProject = {
         contrast: 1.0,
         saturation: 0.0,
         blur: 0,
-        zoom: 1.0,
+        zoom: 0.7,
         invert: 0.0,
     },
 

@@ -4,6 +4,7 @@
 
   export let x = 0;
   export let y = 0;
+  export let z = 1000;
   export let timing = 900;
 
   const easedX = tweened(0, {
@@ -52,18 +53,17 @@
     width: 100%;
     height: 100%;
     position: absolute;
-    z-index: 1000;
     cursor: grab;
   }
 </style>
 
 <div
-  class="dragzone"
+  class="dragzone" z-index={z}
   bind:clientWidth={width}
   bind:clientHeight={height}
   on:mousedown={mousedown}
   on:mouseup={mouseup}
   on:mouseout={mouseup}
   on:mousemove={drag}>
-  <slot />
+  
 </div>

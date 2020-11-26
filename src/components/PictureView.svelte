@@ -8,7 +8,8 @@
   import {fade } from 'svelte/transition'
   import IconButton from './IconButton.svelte'
 	import DragLogger from './DragLogger.svelte'
-  
+  import { tweened } from "svelte/motion";
+  import { quintOut } from "svelte/easing"; 
   
   const picture = new Picture()
   let width, height
@@ -26,10 +27,16 @@
     invert: 0.0,
   }
 
+  const easedWidth = tweened( undefined, {
+    duration: 1500,
+    easing: quintOut,
+  });
+
   onMount(() => {
     surfaceStore.subscribe( s => {
       
       width = ( s.format.width/s.format.height * height )
+      easedWidth.set( width )
     })
 
     picture.notifyLoaded = () => pictureStore.trig()
@@ -53,9 +60,10 @@
     dispatch('exportPNG') 
   }
 
+
   $: pictureStore.tune( params )
   $: picture.load( params.imgUrl )
-  $: (()=>{picture.resize( width, height ) ; pictureStore.trig()})()
+  $: (()=>{picture.resize( $easedWidth, height ) ; pictureStore.trig()})()
 
 </script>
 
@@ -74,7 +82,6 @@
   .picture {
     border: 1px solid black;
     background-color: whitesmoke;
-    /* overflow: hidden; */
   }
 
   #pictureCanvas {
@@ -150,10 +157,7 @@
 <div class="pictureView" in:fade>
 
   <div class="picture" bind:clientHeight={height}
-  style="
-  width: {width};
-  height: 35vh;
-  "
+  style="width: {$easedWidth}; height: 35vh;"
   >
   <DragLogger bind:x={params.x} bind:y={params.y}/>
   <canvas id={params.id}/>
@@ -226,10 +230,6 @@
             }"
       >    
     </div>
-    <!-- <input type="text"
-      placeholder="load from url"
-      on:change="{ e => params.imgUrl = e.target.value }"
-    /> -->
   </div>
 </div>
 

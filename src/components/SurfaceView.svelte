@@ -12,6 +12,9 @@
   import InputRadio from './InputRadio.svelte'
   import { buildSVG } from '../libs/svgFuncs'
   import DragLogger from './DragLogger.svelte'
+  import { tweened } from "svelte/motion";
+  import { quintOut } from "svelte/easing";
+
 
     export let params = {
         id: 'surfacePath',
@@ -37,7 +40,6 @@
 
     let width = 210
     let height = 279
-    let scale = 1
     let paper_name = "sLTR"
     /*nota:
     path: zig = unique snake path along the x axis
@@ -91,10 +93,15 @@
     params = {...params, ...{[e.detail.name]: e.detail.value} }
   }
 
+  const easedWidth = tweened(undefined, {
+    duration: 1500,
+    easing: quintOut,
+  });
+
   $: surfaceStore.tune( params )
   $: width = height * params.format.width/params.format.height
-  $: scale = height/(params.format.height * 3.779527559)
   $: params.format = paper_formats.filter( p => p.name === paper_name )[0]
+  $: easedWidth.set( width )
 
 
 
@@ -109,7 +116,6 @@
 <style>
 
     .surfaceView{
-        width: calc(100vh/400 * 216 * 1.5);
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
@@ -124,7 +130,7 @@
       
     .surface_params{
         background-color: rgb(237, 237, 237);
-        width: calc(100vh/400 * 216 * 0.5 );
+        width: 26vh;
         padding-left: 1em;
         padding-right: 0.5em;
 
@@ -222,7 +228,7 @@
     <div class="surface"
         bind:clientHeight={height}
         style="
-            width: {width};
+            width: {$easedWidth};
             height: 70vh;
         "
         
@@ -235,7 +241,7 @@
   on:mousemove={ drag } -->
         <svg id="surfacesvg"
 
-            width = {width}
+            width = {$easedWidth}
             height = {height}
             viewBox = "0, 0, {params.format.width}, {params.format.height}"
             style="
@@ -359,7 +365,7 @@
                  value={stroke}
                  color={"black"}
                  />
-                 <span style="font-size: 0.8em">{stroke}</span>
+                 <span style="font-size: 0.8em; margin-right: 0.5em;">{stroke}</span>
 
             {/each}
         </div>
