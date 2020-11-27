@@ -1,47 +1,46 @@
 <script>
   import { tweened } from "svelte/motion";
   import { quintOut } from "svelte/easing";
+ 
 
   export let x = 0;
   export let y = 0;
   export let z = 1000;
   export let timing = 900;
 
-  const easedX = tweened(0, {
-    duration: timing,
-    easing: quintOut,
-  });
-
-  const easedY = tweened(0, {
-    duration: timing,
-    easing: quintOut,
-  });
-
-
-  let dragRef = { x, y };
+  let easedX, easedY, dragRef
   let locked = false;
-  let width = 100;
-  let height = 100;
+  let width, height = 100;
 
-  function mousedown(e) {
+  easedX = tweened( 0, {
+      duration: timing,
+      easing: quintOut,
+  });
+
+  easedY = tweened( 0, {
+      duration: timing,
+      easing: quintOut,
+  });
+
+  
+  function lock(e) {
     locked = true;
-    dragRef = { x: e.x / width - x, y: e.y / height - y };
+    dragRef = { x: e.x - $easedX, y: e.y - $easedY };
   }
 
-  function mouseup(e) {
+  function unlock(e) {
     locked = false;
   }
 
   function drag(e) {
     if (locked) {
-      easedX.set( (e.x / width) - dragRef.x )
-      easedY.set( (e.y / height) - dragRef.y )
+      easedX.set( e.x - dragRef.x ) 
+      easedY.set( e.y - dragRef.y ) 
     }
-
   }
 
-  $: x = $easedX
-  $: y = $easedY
+  $: x += $easedX/width - x
+  $: y += $easedY/height - y
 
 </script>
 
@@ -61,9 +60,8 @@
   class="dragzone" z-index={z}
   bind:clientWidth={width}
   bind:clientHeight={height}
-  on:mousedown={mousedown}
-  on:mouseup={mouseup}
-  on:mouseout={mouseup}
+  on:mousedown={lock}
+  on:mouseup={unlock}
+  on:mouseout={unlock}
   on:mousemove={drag}>
-  
 </div>

@@ -83,7 +83,7 @@
           params.format.height,
           params.pen_stroke,
           "test"
-      )
+        )
         dispatch('exportSVG', SVGstring ) 
     }
 
@@ -122,7 +122,7 @@
     }
 
 	.surface{
-		padding: none;
+		padding: 0px;
 		background-color: white;	
 		border: 1px solid rgb(211, 211, 211);
         box-shadow: 1px 2px 4px rgba(0, 0, 0, .2);
@@ -131,12 +131,13 @@
     .surface_params{
         background-color: rgb(237, 237, 237);
         width: 26vh;
-        padding-left: 1em;
+        padding-left: 1.2em;
         padding-right: 0.5em;
-
         display: flex;
         flex-direction: column;
         justify-content: space-around;
+        margin: 0px;
+        margin-left: 10px;
         /* height: 100%; */
       }
 
@@ -201,20 +202,20 @@
 
     select{
         outline: none;
-        font-size: 0.9em;
+        font-size: 0.8em;
         font-family: abel, roboto;
         border: none;
         height:  1.8em;
-        padding: none;
-        margin: none;
+        padding: 0px;
+        margin: 0px;
         margin-left: 1em;
         display: inline-block;
         width :auto;
         background-color: whitesmoke;
     }
     option{
-        padding: none;  
-        margin: none;
+        padding: 0px;  
+        margin: 0px;
     }
 
 </style>
@@ -278,7 +279,7 @@
             <Fader
             name="resX"
             label="res_x"
-            range={{min: 2, max: params.format.width}}
+            range={{min: 2, max: params.format.width * 2}}
             step={1}
             value={params.resX}
             on:input={ handleInput }
@@ -354,7 +355,7 @@
         </div>
 
         <div>
-            <span>pen stroke [mm] :</span><br>
+            <span>pen stroke <span style="font-size:0.9em;">[mm]</span> :</span><br>
             {#each pen_strokes as stroke, id}
 
                  <InputRadio

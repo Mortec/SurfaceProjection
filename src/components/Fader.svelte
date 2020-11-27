@@ -19,9 +19,9 @@
 
    .fader{
         display: flex;
-        /* flex-direction: row;
+        flex-direction: row;
         justify-content: space-between;
-        align-items: center; */
+        align-items: center;
         margin: 0.5em 0em 0.5em 0em;
    }
 
@@ -58,8 +58,9 @@
   input[type="range"] {
     height: 12px;
     -webkit-appearance: none;
-    margin: 10px 0 0 10px;
-    padding: 0em;
+    margin: 0px;
+    margin-left: 5px;
+    padding: 0px;
     width: 100%;
   }
   input[type="range"]:focus {

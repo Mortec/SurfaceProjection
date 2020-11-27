@@ -57,8 +57,8 @@
    }
 
    label{
-    padding: none;
-    margin: none;
+    padding: 0px;
+    margin: 0px;
     text-align: center;
     width: 4em;
     height: 1em;

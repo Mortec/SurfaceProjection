@@ -225,7 +225,6 @@
 				iconUrl="./assets/icons/load.png"
 				on:action={()=> showprojects = !showprojects}
 				tip="Projects"
-				tipPosition="right"
 				size="1.7em"
 				/>
 			</div>
@@ -255,6 +254,7 @@
 			<PictureView params={currentProject.picture} on:exportPNG={exportPNG} />
 			<SurfaceView params={currentProject.surface} on:exportSVG={exportSVG}/>
 
+ 			
 			<div class="gcode"> 
 				<div class="title"> 
 					<label for="title">title:</label>
@@ -268,11 +268,13 @@
 					tip= "Save project"
 					tipsuccess="Project saved"
 					tiperror="error while saving, please retry"
-					tipPosition="left"
 					/>	
 
 				</div>
 			</div>
+
+
+
 		</div>
 
 	</main>

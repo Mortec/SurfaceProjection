@@ -22,7 +22,7 @@
   .IconButton {
     margin: 0.6em;
     display: inline-block;
-    padding: none;
+    padding: 0px;
   }
 
   button {
@@ -45,8 +45,8 @@
   button>img{
       width:100%;
       height: 100%;
-      margin: none;
-      padding: none;
+      margin: 0px;
+      padding: 0px;
       display: block;
   }
 
