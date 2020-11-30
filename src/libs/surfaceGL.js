@@ -5,7 +5,7 @@ import reglWrapper from 'regl'
 
 const Surface = function (id) {
     this.params = {
-      id: 'elementRenderingId',
+      id: 'surfacePath',
       x: 0,
       y: 0,
       format:{ name: "sLTR", width: 216, height: 260},
@@ -21,7 +21,8 @@ const Surface = function (id) {
       structure: "net",
       path: 'zig',
     };
-    this.sourceId = id;
+    this.glId = 'glcanvas'
+    this.sourceId = 'pictureCanvas';
     this.data = [];
     this.path = [];
     this.pathString = "M0, 0 L216 130, L108, 230 Z";
@@ -30,17 +31,17 @@ const Surface = function (id) {
   
 
 
-  Surface.prototype.init = function( sourceId ){
+  Surface.prototype.init = function( sourceId, glId ){
     
     if(sourceId) this.sourceId = sourceId
+    if(glId) this.glId = glId
 
-    let glcanvas = document.getElementById('glcanvas')
-        // const glctxt = glcanvas.getContext('webgl', {preserveDrawingBuffer: true} )
-        // glctxt.canvas.width = 600
-        // glctxt.canvas.height = 600
+
+    let glcanvas = document.getElementById( this.glId )
+        glcanvas.getContext('webgl').canvas.width = 600
+        glcanvas.getContext('webgl').canvas.height = 600
 
     this.regl = reglWrapper(
-        // {gl: glctxt,
         {canvas: glcanvas,
         extensions: ['oes_texture_float', 'oes_texture_float_linear']
         }
@@ -53,14 +54,13 @@ const Surface = function (id) {
   
       const newPath = [];
   
-      const sorted = this.data
-  
       // data.sort( (a, b) => a.l - b.l )
   
-      sorted.forEach((e, i) => {
+      this.data.forEach((e, i) => {
+        //   console.log(e.y)
         const scaleOffset = (1-this.params.scale)/2
         const x = e.x * this.params.scale + scaleOffset + this.params.x;
-        const y = (e.y + e.z) * this.params.scale + scaleOffset + this.params.y;
+        const y = (e.y + e.l) * this.params.scale + scaleOffset + this.params.y;
   
         if (
             e.l <= this.params.ceiling &&
@@ -74,7 +74,7 @@ const Surface = function (id) {
     
             //(snake unique path)
             const index = yCount % 2 === 0 ? i
-                : this.params.resX - 1 - (i % this.params.resX) + yCount * this.params.resX;
+                : this.params.resX - 1 - (i % this.params.resX) + (yCount * this.params.resX);
     
             newPath.push(index);
         }
@@ -82,6 +82,7 @@ const Surface = function (id) {
     }, this);
   
     this.path = newPath;
+
   
     return this;
   };
@@ -100,8 +101,7 @@ const Surface = function (id) {
             this.data[e].x * this.params.scale + scaleOffset + this.params.x;
   
           const Y =
-            (this.data[e].y + this.data[e].z) * this.params.scale
-            + scaleOffset + this.params.y;
+            (this.data[e].y + this.data[e].l) * this.params.scale + scaleOffset + this.params.y //+ this.data[e].z) ;
   
           let str =
             i === 0 ?
@@ -123,20 +123,44 @@ const Surface = function (id) {
   }
   
 
+  /*book of shader
+#ifdef
+GL_ES\nprecision mediump float;
+#endif
+attribute vec2 a_position;//[-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0]
+attribute vec2 a_texcoord;//[0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0]
+varying vec2 v_texcoord;
+void main() {
+        gl_Position = vec4(a_position, 0.0, 1.0);
+            v_texcoord = a_texcoord;
+        }
+    
+*/
+
 Surface.prototype.vertex = function(){
     return`
     precision mediump float;
     attribute vec2 position;
+    attribute vec2 tex_coords;
     varying vec2 coords;
     uniform vec2 u_resolution;
 
     void main () {
-      coords = vec2( 1.-position.x, position.y)/u_resolution*600.;
-      gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
+      coords = vec2(tex_coords.x, tex_coords.y);
+      gl_Position = vec4(position, 0., 1.);
     }
 `
 }
 
+/*Book of shader
+#ifdef GL_ES
+precision mediump float;
+#endif
+varying vec2 v_texcoord;
+void main(){
+    gl_FragColor = vec4(0.0);
+}'
+ */
 Surface.prototype.fragment = function(){
     return`
     precision mediump float;
@@ -148,10 +172,11 @@ Surface.prototype.fragment = function(){
 
 
     void main() {
-    vec4 tex = texture2D( u_texture, coords);
+        vec2 st = gl_FragCoord.xy/u_resolution;
+        st = vec2( st.x, st.y);
+        vec4 tex = texture2D( u_texture, st);
 
-
-	gl_FragColor = vec4( coords.x, coords.y, tex.r, 1.);
+	    gl_FragColor = vec4( st.x, st.y, tex.r*u_a, 1.);
     }
 `
 }
@@ -170,10 +195,12 @@ Surface.prototype.getData = function(){
     //   })
     
     const gl = document.getElementById('glcanvas').getContext('webgl')
+    // gl.canvas.width = 600
+    // gl.canvas.height = 600
 
     gl.readPixels(0, 0, this.params.resX, this.params.resY, gl.RGBA, gl.UNSIGNED_BYTE, rawdata);
 
-    // console.log( rawdata )
+    this.data = []
 
     for( let i = 0; i < rawdata.length; i+=4) {
 
@@ -184,6 +211,8 @@ Surface.prototype.getData = function(){
             z: rawdata[i+3] / 255,
         }
     }
+
+    // console.log(this.data)
     return this
 }
 
@@ -200,18 +229,22 @@ Surface.prototype.compute = function(){
         vert: this.vertex,
         frag: this.fragment,
 
-        // viewport: {
-        //     x: 0,
-        //     y: 0,
-        //     w: this.params.resX,
-        //     h: this.params.resY
-        // },
+        viewport: {
+            x: 0,
+            y: 0,
+            w: 600,
+            h: 600
+        },
 
         attributes: {
-            position: [
-              -2, 0,
-              0, -2,
-              2, 2]
+            position:
+            [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0]
+
+            // [ -2, 0, 0, -2, 2, 2]
+            ,
+            tex_coords:
+            [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0]
+
         },
 
         uniforms : {
@@ -221,7 +254,7 @@ Surface.prototype.compute = function(){
             u_f: this.params.f,
         },
 
-        count: 3
+        count: 6
     })
 
     cpt()

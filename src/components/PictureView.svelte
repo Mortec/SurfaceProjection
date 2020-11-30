@@ -40,7 +40,7 @@
       easedWidth.set( width )
     })
 
-    picture.notifyLoaded = () => pictureStore.trig()
+    picture.notifyLoaded = () => {pictureStore.trig(); console.log("loaded")}
     picture.init(params.id)
     picture.set( params )
     picture.resize(width, height)
@@ -63,7 +63,7 @@
 
 
   $: pictureStore.tune( params )
-  $: picture.load( params.imgUrl )
+  // $: picture.load( params.imgUrl ) <- see for something else // constantly reloading
   $: (
     ()=> {
       picture.resize( $easedWidth, height );

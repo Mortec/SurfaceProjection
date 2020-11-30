@@ -47,14 +47,14 @@
         d->l : unique path with sorting of vertices based on luminance, darkness to light 
     */
 
-    let surface = new Surface('pictureCanvas')
+    let surface = new Surface('surfacePath')
 
     const formula = (x, y, l, i, a, f, w, h ) => Math.sin( i/(w*h) * Math.PI * (l*w/2) ) * a
 
     onMount( () => {
 
         surface.params = params
-        surface.init()
+        surface.init('pictureCanvas')
         pictureStore.subscribe( s =>{
             // surface.compute()
             //     .getData()
@@ -71,8 +71,9 @@
                     .computePath()
                     .computePathString()
             
+                    // console.log(surface.data)
             }
-        )
+            )
     })
 
     const dispatch = createEventDispatcher()
