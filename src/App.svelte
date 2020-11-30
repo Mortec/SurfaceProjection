@@ -280,11 +280,13 @@
 					width: 100%; 
 					height: 100px;
 					border:	 1px solid red;
+					
 				">
 					<canvas id="glcanvas" 
 					style="
 					width: 600px;
 					height: 600px;
+					
 					"
 					></canvas>
 				</div>
