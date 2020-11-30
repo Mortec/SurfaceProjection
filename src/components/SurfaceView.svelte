@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte"
-  import { Surface } from "../libs/surface.js"
+  import { Surface } from "../libs/surfaceGL.js"
+
   import  { surfaceStore }  from "../stores/stores.js"
   import  { pictureStore }  from "../stores/stores.js"
   import Fader from './Fader.svelte'
@@ -15,7 +16,6 @@
   import { tweened } from "svelte/motion";
   import { quintOut } from "svelte/easing";
 
-
     export let params = {
         id: 'surfacePath',
         x: 0,
@@ -25,8 +25,8 @@
         resY: 7,
         scale: 0.7,
         crop: 0,
-        q: 0,
-        r:0,
+        a: 0,
+        f:0,
         threshold: 0,
         ceiling: 1,
         formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
@@ -47,29 +47,30 @@
         d->l : unique path with sorting of vertices based on luminance, darkness to light 
     */
 
-    let surface = new Surface()
+    let surface = new Surface('pictureCanvas')
 
-    const formula = (x, y, l, i, a, q, w, h ) => Math.sin( i/a.length * Math.PI * (l*w/2) ) * q
+    const formula = (x, y, l, i, a, f, w, h ) => Math.sin( i/(w*h) * Math.PI * (l*w/2) ) * a
 
     onMount( () => {
 
         surface.params = params
+        surface.init()
         pictureStore.subscribe( s =>{
-            surface.loadTexture( s.id )
-                .computeMap( formula )
-                .computePath()
-                .computePathString()
-            surfaceStore.tune({})
+            // surface.compute()
+            //     .getData()
+            //     .computePath()
+            //     .computePathString()
+            surfaceStore.trig()
         })
 
         surfaceStore.subscribe( s => {
             surface.params = s
             paper_name = s.format.name
-            surface.setVertices()
-                    .loadTexture()
-                    .computeMap( formula )
+            surface.compute()
+                    .getData()
                     .computePath()
                     .computePathString()
+            
             }
         )
     })
@@ -236,10 +237,6 @@
     >
   <DragLogger bind:x={params.x} bind:y={params.y}/>
 
-  <!-- on:mousedown={ mousedown }
-  on:mouseup={ mouseup }
-  on:mouseout={ mouseup }
-  on:mousemove={ drag } -->
         <svg id="surfacesvg"
 
             width = {$easedWidth}
@@ -257,7 +254,7 @@
                         stroke : {params.pen_color};
                         stroke-opacity:{ params.pen_opacity};
                     "
-                    d="M100 0 L200 100 L0 200 Z"
+                    d="M0 0 L{params.format.width} {params.format.height/2} L{params.format.width/2} {params.format.height} Z"
                 />
 
         </svg>
@@ -313,11 +310,11 @@
             />
 
             <Fader
-            name="q"
-            label="__q"
-            range={{min: 0, max: 1}}
+            name="a"
+            label="__a"
+            range={{min: -1, max: 1}}
             step={0.001}
-            value={params.q}
+            value={params.a}
             on:input={ handleInput }
             />
 
@@ -347,7 +344,7 @@
                  <InputColorRadio
                  id="pencolor-{id}"
                  bind:group={params.pen_color}
-                 size="0.7em"
+                 size="12px"
                  radius="50%"
                  value={color}
                  />
@@ -361,7 +358,7 @@
                  <InputRadio
                  id="penstroke-{id}"
                  bind:group={params.pen_stroke}
-                 size="{ (0.8 - 0.4) * stroke + 0.2 }em"
+                 size="{ (10 - 4) * stroke + 4 }px"
                  radius="50%"
                  value={stroke}
                  color={"black"}

@@ -8,8 +8,8 @@
   import {fade } from 'svelte/transition'
   import IconButton from './IconButton.svelte'
 	import DragLogger from './DragLogger.svelte'
-  import { tweened } from "svelte/motion";
-  import { quintOut } from "svelte/easing"; 
+  import { tweened } from "svelte/motion"
+  import { quintOut } from "svelte/easing" 
   
   const picture = new Picture()
   let width, height
@@ -18,7 +18,7 @@
     id: "pictureCanvas",
     imgUrl: "./assets/images/EM-portrait2.jpg",
     x : 0,
-    y: 0,
+    y : 0,
     brightness: 1.0,
     contrast: 1.0,
     saturation: 1.0,
@@ -33,6 +33,7 @@
   });
 
   onMount(() => {
+
     surfaceStore.subscribe( s => {
       
       width = ( s.format.width/s.format.height * height )
@@ -63,7 +64,12 @@
 
   $: pictureStore.tune( params )
   $: picture.load( params.imgUrl )
-  $: (()=>{picture.resize( $easedWidth, height ) ; pictureStore.trig()})()
+  $: (
+    ()=> {
+      picture.resize( $easedWidth, height );
+      pictureStore.trig()
+    }
+  )()
 
 </script>
 

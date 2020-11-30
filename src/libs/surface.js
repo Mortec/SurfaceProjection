@@ -3,13 +3,13 @@ const Surface = function (id) {
     id: 'elementRenderingId',
     x: 0,
     y: 0,
-    format:{width: 216, height: 260},
+    format:{ name: "sLTR", width: 216, height: 260},
     resX: 216,
     resY: 279,
     scale: 1,
     crop: 0,
-    q: 0,
-    r:0,
+    a: 0,
+    f: 0,
     threshold: 0,
     ceiling: 1,
     formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
@@ -20,7 +20,7 @@ const Surface = function (id) {
   this.vertices = [];
   this.texture = [];
   this.path = [];
-  this.pathString = "M0, 0 L50 100, L100, 50 Z";
+  this.pathString = "M0, 0 L216 130, L108, 230 Z";
 };
 
 Surface.prototype.setVertices = function (resX, resY) {
@@ -82,14 +82,14 @@ Surface.prototype.loadTexture = function (id, option = 'luminance') {
 Surface.prototype.computeMap = function (func) {
 
 
-  this.vertices.forEach((e, i, a) => {
+  this.vertices.forEach((e, i) => {
     this.vertices[i].z = func(
       e.x,
       e.y,
       this.texture[i],
       i,
-      a,
-      this.params.q,
+      this.params.a,
+      this.params.f,
       this.params.resX,
       this.params.resY
     );
@@ -140,6 +140,8 @@ Surface.prototype.computePath = function () {
 
   return this;
 };
+
+
 
 Surface.prototype.computePathString = function () {
 

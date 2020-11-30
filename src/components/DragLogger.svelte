@@ -6,11 +6,12 @@
   export let x = 0;
   export let y = 0;
   export let z = 1000;
-  export let timing = 900;
+  export let timing = 1000;
 
   let easedX, easedY, dragRef
   let locked = false;
-  let width, height = 100;
+  let width = 100;
+  let height = 100;
 
   easedX = tweened( 0, {
       duration: timing,
@@ -35,13 +36,18 @@
   function drag(e) {
     if (locked) {
       easedX.set( e.x - dragRef.x ) 
-      easedY.set( e.y - dragRef.y ) 
+      easedY.set( e.y - dragRef.y )
     }
   }
 
-  $: x += $easedX/width - x
-  $: y += $easedY/height - y
+  const update = ( newX, newY ) => {
+    x += newX/width - x
+    y += newY/height - y
+  }
 
+  $: update( $easedX, $easedY )
+
+  
 </script>
 
 <style>

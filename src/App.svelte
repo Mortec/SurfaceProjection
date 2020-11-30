@@ -20,12 +20,12 @@
 
 	currentProject = { ...defaultProject }
 
-	projects = localStorage.length ?
-					JSON.parse( localStorage.getItem( 'projects' ) )
-					:
-					{...defaultProjects};
+	// projects = localStorage.length ?
+	// 				JSON.parse( localStorage.getItem( 'projects' ) )
+	// 				:
+	// 				{...defaultProjects};
 	
-	// projects = {...defaultProjects};
+	projects = {...defaultProjects};
 
   	const saveProject = ()=>{
 		currentProject = {...currentProject, ...get(projectStore) }
@@ -51,19 +51,24 @@
 	const exportSVG = function ( message ){
 
 		const blob = new Blob([ message.detail ], {type: "text/plain;charset=utf-8"});
-    	saveAs(blob, title+".svg");  
+		const format = currentProject.surface.format.name
+    	saveAs(blob, title + "_" + format + ".svg");  
 	}
 
 	const exportPNG = function(){
+
 		const canvas = document.querySelector("#pictureCanvas");
+		const format = currentProject.surface.format.name
 		canvas.toBlob(function(blob) {
-    		saveAs(blob, title+".png");
+    		saveAs(blob, title + "_" + format +".png");
 		})
 	}
 
 	const exportGCODE = ( message )=>{
+		
 		const blob = new Blob([ message.detail ], {type: "text/plain;charset=utf-8"});
-		saveAs(blob, title + ".nc");
+		const format = currentProject.surface.format.name
+		saveAs(blob, title + "_" + format + ".nc");
 	}
 
 	const easedBar = tweened( 0, {
@@ -255,7 +260,7 @@
 			<SurfaceView params={currentProject.surface} on:exportSVG={exportSVG}/>
 
  			
-			<div class="gcode"> 
+			<div class="gcode" style = "width: 28vh;"> 
 				<div class="title"> 
 					<label for="title">title:</label>
 					<input type="text" bind:value={title} />
@@ -269,9 +274,22 @@
 					tipsuccess="Project saved"
 					tiperror="error while saving, please retry"
 					/>	
+				</div>
 
+				<div class="glview" style="
+					width: 100%; 
+					height: 100px;
+					border:	 1px solid red;
+				">
+					<canvas id="glcanvas" 
+					style="
+					width: 600px;
+					height: 600px;
+					"
+					></canvas>
 				</div>
 			</div>
+
 
 
 

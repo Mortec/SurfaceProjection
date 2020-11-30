@@ -42,12 +42,7 @@ Picture.prototype.init = function( id ){
         this.buffer.getContext('2d').canvas.height = height
         this.buffer.getContext('2d').drawImage( this.image, 0, 0, width, height )
         this.draw()
-        this.notifyLoaded()
-        // try {
-        //     this.buffer.toDataURL();
-        //   } catch (e) {
-        //     console.log("BUFFER TAINTED")
-        //   }
+        this.notifyLoaded( this.imgUrl )
     }
 }
 
