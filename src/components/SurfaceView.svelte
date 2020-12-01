@@ -17,7 +17,6 @@
   import { quintOut } from "svelte/easing";
 
     export let params = {
-        id: 'surfacePath',
         x: 0,
         y: 0,
         format: {name: "sLTR", width:  210, height: 260 },
@@ -47,19 +46,15 @@
         d->l : unique path with sorting of vertices based on luminance, darkness to light 
     */
 
-    let surface = new Surface('surfacePath')
+    let surface = new Surface()
 
     const formula = (x, y, l, i, a, f, w, h ) => Math.sin( i/(w*h) * Math.PI * (l*w/2) ) * a
 
     onMount( () => {
 
         surface.params = params
-        surface.init('pictureCanvas')
+        surface.init('surfacePath', 'glCanvas', 'pictureCanvas')
         pictureStore.subscribe( s =>{
-            // surface.compute()
-            //     .getData()
-            //     .computePath()
-            //     .computePathString()
             surfaceStore.trig()
         })
 
@@ -248,7 +243,7 @@
             "
             >
 
-                <path id={params.id}
+                <path id='surfacePath'
                     style="
                         fill : none;
                         stroke-width: {params.pen_stroke};

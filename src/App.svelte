@@ -282,7 +282,7 @@
 					border:	 1px solid red;
 					
 				">
-					<canvas id="glcanvas" 
+					<canvas id="glCanvas" 
 					style="
 					width: 600px;
 					height: 600px;

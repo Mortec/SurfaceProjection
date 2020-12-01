@@ -35,7 +35,6 @@ export const pictureStore = createStore( {
 } )
 
 export const surfaceStore = createStore({
-    id: 'surfacePath',
     x: 0,
     y: 0,
     format: {name:"sLTR", width: 216, height: 260},
@@ -47,7 +46,7 @@ export const surfaceStore = createStore({
     f: 0,
     threshold: 0,
     ceiling: 1,
-    formula: 'Math.sin(i/(w*h) * Math.PI * (l*w/2)) * a',
+    formula: 'sin(i/(w*h) * PI * (l*w/2.)) * a',
     structure: "net",
     path: 'zig',
     paper_color: "#FFFFFF",

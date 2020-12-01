@@ -1,9 +1,9 @@
 import reglWrapper from 'regl'
 
 
-const Surface = function (id) {
+const Surface = function () {
+
     this.params = {
-      id: 'surfacePath',
       x: 0,
       y: 0,
       format:{ name: "sLTR", width: 216, height: 260},
@@ -15,12 +15,14 @@ const Surface = function (id) {
       f: 0,
       threshold: 0,
       ceiling: 1,
-      formula: 'Math.sin(i/a.length * Math.PI * (l*w/2)) * q',
+      formula: 'sin(i/(w*h) * PI * (l*w/2.)) * a',
       structure: "net",
       path: 'zig',
     };
-    this.glId = 'glcanvas'
-    this.sourceId = 'pictureCanvas';
+
+    this.svgId = 'surfacePath'
+    this.glId = 'glCanvas'
+    this.textureSrcId = 'pictureCanvas'
     this.data = [];
     this.path = [];
     this.pathString = "M0, 0 L216 130, L108, 230 Z";
@@ -29,15 +31,15 @@ const Surface = function (id) {
   
 
 
-Surface.prototype.init = function( sourceId, glId ){
-    
-    if(sourceId) this.sourceId = sourceId
-    if(glId) this.glId = glId
+Surface.prototype.init = function( svgId, glId, textureSrcId ){
 
+    if (svgId) this.svgId = svgId
+    if (glId) this.glId = glId
+    if (textureSrcId) this.textureSrcId = textureSrcId
 
-    let glcanvas = document.getElementById( this.glId )
-        glcanvas.getContext('webgl').canvas.width = 600
-        glcanvas.getContext('webgl').canvas.height = 600
+    const glcanvas = document.getElementById( this.glId )
+    glcanvas.getContext('webgl').canvas.width = 600
+    glcanvas.getContext('webgl').canvas.height = 600
 
     this.regl = reglWrapper(
         {canvas: glcanvas,
@@ -94,6 +96,30 @@ Surface.prototype.fragment = function(){
     uniform vec2 u_resolution;
     uniform float u_a;
     uniform float u_f;
+    const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);
+    const vec4 bitDec = 1./bitEnc;
+
+    vec2 floatTo16int(float value){
+
+        float toFixed = 255. / 256.;
+
+        float hb = fract(value * toFixed * 1. )/255.;
+        float lb = fract(value * toFixed * 255. )/255.;
+        return vec2( hb, lb );
+    }
+
+    vec4 EncodeFloatRGBA (float v) {
+        vec4 enc = bitEnc * v;
+        enc = fract(enc);
+        enc -= enc.yzww * vec2(1./255., 0.).xxxy;
+        return enc;
+    }
+
+    vec2 PackDepth16( float depth ) {
+    float depthVal = depth * (256.0*256.0 - 1.0) / (256.0*256.0);
+    vec3 encode = fract( depthVal * vec3(1.0, 256.0, 256.0*256.0) );
+    return encode.xy - encode.yz / 256.0 + 1.0/512.0;
+    }
 
     vec2 compute( vec4 tex, vec2 coords){
 
@@ -106,8 +132,8 @@ Surface.prototype.fragment = function(){
         float i = coords.x + ( w * coords.y );
         float l = (tex.r + tex.g + tex.b) / 3.;
 
-        float z = sin( i/(w * h) * PI * (l * w/2.) ) * a;
-
+        float z = ${ this.params.formula };
+         
         return vec2( l, (z+1.) / 2.);
     }
 
@@ -118,7 +144,7 @@ Surface.prototype.fragment = function(){
         vec4 tex = texture2D( u_texture, st);
         vec2 res = compute(tex, st);
 
-	    gl_FragColor = vec4( st.x, st.y, res.x, res.y);
+	    gl_FragColor = vec4( PackDepth16(res.x).rg, PackDepth16(res.y).rg);
     }
 `
 }
@@ -127,7 +153,7 @@ Surface.prototype.fragment = function(){
 Surface.prototype.compute = function(){
 
     const texture = this.regl.texture(
-        document.getElementById(this.sourceId)
+        document.getElementById(this.textureSrcId)
     )
 
     const cpt = this.regl({
@@ -145,8 +171,6 @@ Surface.prototype.compute = function(){
         attributes: {
             position:
             [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0]
-
-            // [ -2, 0, 0, -2, 2, 2]
             ,
             tex_coords:
             [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0]
@@ -169,22 +193,25 @@ Surface.prototype.compute = function(){
 }
 
 //https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
+//https://www.gamedev.net/forums/topic/486847-encoding-16-and-32-bit-floating-point-value-into-rgba-byte-texture/
+
 Surface.prototype.getData = function(){
 
-    const rawdata =  new Uint8Array(this.params.resX * this.params.resY * 4);
-    const gl = document.getElementById('glcanvas').getContext('webgl')
-
+    const rawdata =  new Uint8Array(this.params.resX * this.params.resY * 4)
+    const gl = document.getElementById( this.glId ).getContext('webgl')
     gl.readPixels(0, 0, this.params.resX, this.params.resY, gl.RGBA, gl.UNSIGNED_BYTE, rawdata);
 
-    this.data = []
 
-    for( let i = 0; i < rawdata.length; i+=4) {
+    this.data = []
+    const fromFixed = 256/255;
+
+    for( let i = 0; i < rawdata.length; i+=4 ) {
 
         this.data[i/4] = {
             x: (i/4)%this.params.resX / (this.params.resX) + (1/this.params.resX/2),
             y: Math.floor( i/ 4 / this.params.resX) / (this.params.resY ) + (1/this.params.resY/2),
-            l: rawdata[i+2] / 255,
-            z: rawdata[i+3] / 255 - 0.5,
+            l: (rawdata[i] + rawdata[i+1]/256)  /256,
+            z: (rawdata[i+2] + rawdata[i+3]/256) /256 - 0.5,
         }
     }
 
@@ -251,7 +278,7 @@ Surface.prototype.computePathString = function () {
       })
       .join(" ");
 
-      const pathElement = document.getElementById(this.params.id)
+      const pathElement = document.getElementById( this.svgId )
       pathElement && pathElement.setAttribute('d', this.pathString)
     }
 

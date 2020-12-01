@@ -16,7 +16,6 @@ export const defaultProject = {
     },
 
     surface: {
-        id: 'surfacePath',
         x: 0,
         y: 0,
         format: {name: "sLTR", width:  210, height: 260 },
