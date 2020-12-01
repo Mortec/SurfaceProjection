@@ -44,7 +44,7 @@ export const surfaceStore = createStore({
     scale: 0.7,
     crop: 0,
     a: 0,
-    f:0,
+    f: 0,
     threshold: 0,
     ceiling: 1,
     formula: 'Math.sin(i/(w*h) * Math.PI * (l*w/2)) * a',
