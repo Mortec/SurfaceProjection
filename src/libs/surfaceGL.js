@@ -87,7 +87,9 @@ void main(){
     gl_FragColor = vec4(0.0);
 }'
  */
-Surface.prototype.fragment = function(){
+Surface.prototype.fragment = function( formula ){
+
+
     return`
     #define PI 3.1415926535897932384626433832795
     precision mediump float;
@@ -99,26 +101,11 @@ Surface.prototype.fragment = function(){
     const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);
     const vec4 bitDec = 1./bitEnc;
 
-    vec2 floatTo16int(float value){
-
-        float toFixed = 255. / 256.;
-
-        float hb = fract(value * toFixed * 1. )/255.;
-        float lb = fract(value * toFixed * 255. )/255.;
-        return vec2( hb, lb );
-    }
-
-    vec4 EncodeFloatRGBA (float v) {
-        vec4 enc = bitEnc * v;
-        enc = fract(enc);
-        enc -= enc.yzww * vec2(1./255., 0.).xxxy;
-        return enc;
-    }
 
     vec2 PackDepth16( float depth ) {
-    float depthVal = depth * (256.0*256.0 - 1.0) / (256.0*256.0);
-    vec3 encode = fract( depthVal * vec3(1.0, 256.0, 256.0*256.0) );
-    return encode.xy - encode.yz / 256.0 + 1.0/512.0;
+        float depthVal = depth * (256.0*256.0 - 1.0) / (256.0*256.0);
+        vec3 encode = fract( depthVal * vec3(1.0, 256.0, 256.0*256.0) );
+        return encode.xy - encode.yz / 256.0 + 1.0/512.0;
     }
 
     vec2 compute( vec4 tex, vec2 coords){
@@ -132,7 +119,7 @@ Surface.prototype.fragment = function(){
         float i = coords.x + ( w * coords.y );
         float l = (tex.r + tex.g + tex.b) / 3.;
 
-        float z = ${ this.params.formula };
+        float z = ${ formula };
          
         return vec2( l, (z+1.) / 2.);
     }
@@ -159,7 +146,7 @@ Surface.prototype.compute = function(){
     const cpt = this.regl({
 
         vert: this.vertex,
-        frag: this.fragment,
+        frag: ()=>this.fragment(this.params.formula),
 
         viewport: {
             x: 0,
@@ -194,6 +181,7 @@ Surface.prototype.compute = function(){
 
 //https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
 //https://www.gamedev.net/forums/topic/486847-encoding-16-and-32-bit-floating-point-value-into-rgba-byte-texture/
+//https://stackoverflow.com/questions/48288154/pack-depth-information-in-a-rgba-texture-using-mediump-precison
 
 Surface.prototype.getData = function(){
 
@@ -201,17 +189,15 @@ Surface.prototype.getData = function(){
     const gl = document.getElementById( this.glId ).getContext('webgl')
     gl.readPixels(0, 0, this.params.resX, this.params.resY, gl.RGBA, gl.UNSIGNED_BYTE, rawdata);
 
-
     this.data = []
-    const fromFixed = 256/255;
 
     for( let i = 0; i < rawdata.length; i+=4 ) {
 
         this.data[i/4] = {
             x: (i/4)%this.params.resX / (this.params.resX) + (1/this.params.resX/2),
             y: Math.floor( i/ 4 / this.params.resX) / (this.params.resY ) + (1/this.params.resY/2),
-            l: (rawdata[i] + rawdata[i+1]/256)  /256,
-            z: (rawdata[i+2] + rawdata[i+3]/256) /256 - 0.5,
+            l: (rawdata[i] + rawdata[i+1]/256)  / 256,
+            z: (rawdata[i+2] + rawdata[i+3]/256) / 256 - 0.5,
         }
     }
 
