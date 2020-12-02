@@ -16,8 +16,6 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 
 ## to do :
-*  refactoring of surface object to send all the computation to the graphic card
-*  on the fly evaluation of the oneliner formula in a fragment shader
 *  svg to gcode translation
 *  gcode ui :
     *    begin / end / pen up / pen down commands
@@ -25,13 +23,14 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  estimation of path length in millimeters -> estimation of drawing time
 *  projects bar : delete a project
 *  load a picture from "store" (that was previously used for a another project currently in the storage)
-*  presentation mode (show drawing only at maximum available size)
-*  svg zoom at real scale for convenient exploration of the path
 *  isolate pieces of code that can be convert to component for later use
 *  button tooltips improvement
+*  presentation mode (show drawing only at maximum available size)
+*  svg zoom at real scale for convenient exploration of the path
+*  formula code checking 
 
 ### to do v2
-* multilayering
+* multi-layer drawings with "concat" option
 * map the plotter feed command along specific aspect of the picture
 * map dwell command along specific aspect of the picture
 * map z command along specific aspect of the picture

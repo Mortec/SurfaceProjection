@@ -263,7 +263,7 @@
 			<div class="gcode" style = "width: 28vh;"> 
 				<div class="title"> 
 					<label for="title">title:</label>
-					<input type="text" bind:value={title} />
+					<input type="text" name="title" bind:value={title} />
 				</div>
 
 				<div class="save" style="align-self: flex-end;" >
@@ -280,13 +280,13 @@
 					width: 100%; 
 					height: 100px;
 					border:	 1px solid red;
-					
+					overflow: hidden;
 				">
 					<canvas id="glCanvas" 
 					style="
 					width: 600px;
 					height: 600px;
-					
+					transform: translate(-165px, -250px) scale(0.45, {-1/6});
 					"
 					></canvas>
 				</div>

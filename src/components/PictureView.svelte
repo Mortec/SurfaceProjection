@@ -40,7 +40,7 @@
       easedWidth.set( width )
     })
 
-    picture.notifyLoaded = () => {pictureStore.trig(); console.log("loaded")}
+    picture.notifyLoaded = () => {pictureStore.trig()}
     picture.init(params.id)
     picture.set( params )
     picture.resize(width, height)

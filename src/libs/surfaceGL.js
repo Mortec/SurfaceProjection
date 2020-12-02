@@ -87,6 +87,10 @@ void main(){
     gl_FragColor = vec4(0.0);
 }'
  */
+
+
+//https://stackoverflow.com/questions/48288154/pack-depth-information-in-a-rgba-texture-using-mediump-precison
+
 Surface.prototype.fragment = function( formula ){
 
 
@@ -126,8 +130,8 @@ Surface.prototype.fragment = function( formula ){
 
 
     void main() {
+        
         vec2 st = gl_FragCoord.xy/u_resolution;
-        st = vec2( st.x, st.y);
         vec4 tex = texture2D( u_texture, st);
         vec2 res = compute(tex, st);
 
@@ -179,8 +183,6 @@ Surface.prototype.compute = function(){
     return this
 }
 
-//https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
-//https://www.gamedev.net/forums/topic/486847-encoding-16-and-32-bit-floating-point-value-into-rgba-byte-texture/
 //https://stackoverflow.com/questions/48288154/pack-depth-information-in-a-rgba-texture-using-mediump-precison
 
 Surface.prototype.getData = function(){
