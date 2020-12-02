@@ -51,6 +51,7 @@
 	const exportSVG = function ( message ){
 
 		const blob = new Blob([ message.detail ], {type: "text/plain;charset=utf-8"});
+		currentProject = {...currentProject, ...get(projectStore) }
 		const format = currentProject.surface.format.name
     	saveAs(blob, title + "_" + format + ".svg");  
 	}
@@ -58,15 +59,15 @@
 	const exportPNG = function(){
 
 		const canvas = document.querySelector("#pictureCanvas");
-		const format = currentProject.surface.format.name
 		canvas.toBlob(function(blob) {
-    		saveAs(blob, title + "_" + format +".png");
+    		saveAs(blob, title + ".png");
 		})
 	}
 
 	const exportGCODE = ( message )=>{
 		
 		const blob = new Blob([ message.detail ], {type: "text/plain;charset=utf-8"});
+		currentProject = {...currentProject, ...get(projectStore) }
 		const format = currentProject.surface.format.name
 		saveAs(blob, title + "_" + format + ".nc");
 	}

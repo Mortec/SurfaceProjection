@@ -57,6 +57,10 @@ export const surfaceStore = createStore({
 
 export const gcodeStore = createStore({
     title: "surface_projection",
+    begin_sequence:"",
+    pen_up_sequence:"",
+    pen_down_sequence:"",
+    end_sequence:"",
 })
 
 export const projectStore = derived(

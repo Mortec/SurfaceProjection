@@ -102,14 +102,18 @@ Surface.prototype.fragment = function( formula ){
     uniform vec2 u_resolution;
     uniform float u_a;
     uniform float u_f;
-    const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);
-    const vec4 bitDec = 1./bitEnc;
 
 
     vec2 PackDepth16( float depth ) {
         float depthVal = depth * (256.0*256.0 - 1.0) / (256.0*256.0);
         vec3 encode = fract( depthVal * vec3(1.0, 256.0, 256.0*256.0) );
         return encode.xy - encode.yz / 256.0 + 1.0/512.0;
+    }
+
+    vec3 PackDepth24( float depth ) {
+        float depthVal = depth * (256.0*256.0*256.0 - 1.0) / (256.0*256.0*256.0);
+        vec4 encode = fract( depthVal * vec4(1.0, 256.0, 256.0*256.0, 256.0*256.0*256.0) );
+        return encode.xyz - encode.yzw / 256.0 + 1.0/768.0;
     }
 
     vec2 compute( vec4 tex, vec2 coords){
@@ -135,7 +139,7 @@ Surface.prototype.fragment = function( formula ){
         vec4 tex = texture2D( u_texture, st);
         vec2 res = compute(tex, st);
 
-	    gl_FragColor = vec4( PackDepth16(res.x).rg, PackDepth16(res.y).rg);
+	    gl_FragColor = vec4( res.x, PackDepth24(res.y).xyz);
     }
 `
 }
@@ -198,8 +202,8 @@ Surface.prototype.getData = function(){
         this.data[i/4] = {
             x: (i/4)%this.params.resX / (this.params.resX) + (1/this.params.resX/2),
             y: Math.floor( i/ 4 / this.params.resX) / (this.params.resY ) + (1/this.params.resY/2),
-            l: (rawdata[i] + rawdata[i+1]/256)  / 256,
-            z: (rawdata[i+2] + rawdata[i+3]/256) / 256 - 0.5,
+            l: rawdata[i]  / 256,
+            z: (rawdata[i+1] + rawdata[i+2]/256 + rawdata[i+3]/256/256) / 256 - 0.5,
         }
     }
 

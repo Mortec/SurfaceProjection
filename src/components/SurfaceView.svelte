@@ -1,20 +1,20 @@
 <script>
   import { onMount } from "svelte"
-  import { Surface } from "../libs/surfaceGL.js"
-
-  import  { surfaceStore }  from "../stores/stores.js"
-  import  { pictureStore }  from "../stores/stores.js"
-  import Fader from './Fader.svelte'
-  import { createEventDispatcher } from 'svelte'
-  import {fade } from 'svelte/transition'
-  import IconButton from './IconButton.svelte'
-  import { paper_colors, paper_formats, pen_colors, pen_strokes } from '../configs/furnitures.js'
-  import InputColorRadio from './InputColorRadio.svelte'
-  import InputRadio from './InputRadio.svelte'
-  import { buildSVG } from '../libs/svgFuncs'
-  import DragLogger from './DragLogger.svelte'
   import { tweened } from "svelte/motion";
   import { quintOut } from "svelte/easing";
+  import { createEventDispatcher } from 'svelte'
+  import {fade } from 'svelte/transition'
+
+  import { Surface } from "../libs/surfaceGL.js"
+  import  { surfaceStore }  from "../stores/stores.js"
+  import  { pictureStore }  from "../stores/stores.js"
+  import { buildSVG } from '../libs/svgFuncs'
+  import { paper_colors, paper_formats, pen_colors, pen_strokes } from '../configs/furnitures.js'
+  import Fader from './Fader.svelte'
+  import IconButton from './IconButton.svelte'
+  import InputColorRadio from './InputColorRadio.svelte'
+  import InputRadio from './InputRadio.svelte'
+  import DragLogger from './DragLogger.svelte'
 
     export let params = {
         x: 0,
