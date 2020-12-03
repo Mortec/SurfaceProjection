@@ -231,7 +231,7 @@ Surface.prototype.computePath = function () {
           e.x < 1
       ) {
 
-          //(snake unique path : zig )
+          //(snake unique path : zig ) !! -> cross zig
           const yCount = Math.floor(i / this.params.resX);
           const index = yCount % 2 === 0 ? i
               : this.params.resX - 1 - (i % this.params.resX) + (yCount * this.params.resX);

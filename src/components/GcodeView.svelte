@@ -24,10 +24,7 @@
       dispatch('saveProject')
   }
 
-  const handleInput = e => {
-    
-    params = {...params, ...{[e.detail.name]: e.detail.value} }
-  }
+
 
   $: $gcode.format = paper_formats.filter( p => p.name === paper_name )[0]
 
@@ -47,13 +44,17 @@
     width: 26vh;
 	}
 
-    .title {
+    .inline_feature {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
+    align-content: center;
     justify-self: flex-start;
     align-self: flex-start;
     margin: 0px;
+    width: 100%;
+    margin-top: 0.5em;
   }
 
   .gcode_params {
@@ -75,11 +76,12 @@
     height: 1.24em;
     border: none;
     width: 90%;
-  }
-
-  input[type="text"]:focus {
     outline: none;
   }
+
+  /* input[type="text"]:focus {
+    outline: none;
+  } */
 
   .savebutton {
     position: absolute;
@@ -119,7 +121,26 @@
   }
 
   .slot {
-    margin-top: 1em;;
+    margin-top: 2em;
+  }
+
+  .gcode{
+    width: 100%;
+  }
+
+  .inline_feature>label{
+
+    text-align: left;
+    padding-bottom: 0.5ch;
+  }
+  .inline_feature>input[type="text"]{
+    width: 70%;
+  }
+
+  .inline_feature>input[type="number"]{
+    width: 50%;
+    height: 2.5ex;
+    outline: none;
   }
 
 </style>
@@ -128,85 +149,125 @@
     
   <div class="gcode_params">
 
-    <div class="title">
-      <label for="title">title:</label>
-      <input type="text" name="title" bind:value={$gcode.title} on:blur={saveProject}/>
-      
-      <div class="save" >
-        <IconButton
-        iconUrl="./assets/icons/save.png"
-        on:action={saveProject}
-        bind:status={saveStatus}
-        tip="Save project"
-        tipsuccess="Project saved"
-        tiperror="error while saving, please retry" />
+      <div class="inline_feature">
+        <label for="title">title:</label>
+        <input type="text" name="title" bind:value={$gcode.title} on:blur={saveProject}/>
+        
+        <div class="save" >
+          <IconButton
+          iconUrl="./assets/icons/save.png"
+          on:action={saveProject}
+          bind:status={saveStatus}
+          tip="Save project"
+          tipsuccess="Project saved"
+          tiperror="error while saving, please retry" />
+        </div>
       </div>
+
+      <div class="pen">
+        <div class="slot">
+          <span>pen color: </span><br />
+          {#each pen_colors as color, id}
+            <InputColorRadio
+              id="pencolor-{id}"
+              bind:group={$gcode.pen_color}
+              size="12px"
+              radius="50%"
+              value={color} />
+          {/each}
+        </div>
+
+        <div class="slot">
+          <span>pen stroke: <span style="font-size:0.9em;">[mm]</span> :</span><br />
+          {#each pen_strokes as stroke, id}
+            <InputRadio
+              id="penstroke-{id}"
+              bind:group={$gcode.pen_stroke}
+              size="{(10 - 4) * stroke + 4}px"
+              radius="50%"
+              value={stroke}
+              color={'black'} />
+            <span style="font-size: 0.8em; margin-right: 0.5em;">{stroke}</span>
+          {/each}
+        </div>
+
+        <div class="slot">
+          <Fader
+            name="pen_opacity"
+            label="ink_op."
+            range={{ min: 0, max: 1 }}
+            step={0.01}
+            bind:value={$gcode.pen_opacity}
+          />
+        </div>
     </div>
 
-    <div class="pen">
-    <div class="slot">
-      <span>pen color: </span><br />
-      {#each pen_colors as color, id}
-        <InputColorRadio
-          id="pencolor-{id}"
-          bind:group={$gcode.pen_color}
-          size="12px"
-          radius="50%"
-          value={color} />
-      {/each}
-    </div>
-
-    <div class="slot">
-      <span>pen stroke: <span style="font-size:0.9em;">[mm]</span> :</span><br />
-      {#each pen_strokes as stroke, id}
-        <InputRadio
-          id="penstroke-{id}"
-          bind:group={$gcode.pen_stroke}
-          size="{(10 - 4) * stroke + 4}px"
-          radius="50%"
-          value={stroke}
-          color={'black'} />
-        <span style="font-size: 0.8em; margin-right: 0.5em;">{stroke}</span>
-      {/each}
-    </div>
-
-    <div class="slot">
-      <Fader
-        name="pen_opacity"
-        label="ink_op."
-        range={{ min: 0, max: 1 }}
-        step={0.01}
-        value={$gcode.pen_opacity}
-        on:input={handleInput} />
-    </div>
-  </div>
-
-  <div class="paper">
-    <div class="slot">
-      <span>paper color: </span>
-      {#each paper_colors as color, id}
-        <InputColorRadio
-          id="papercolor-{id}"
-          bind:group={$gcode.paper_color}
-          size="0.7em"
-          radius="0%"
-          value={color} />
-      {/each}
-    </div>
-
-    <div class="slot">
-      <span>paper format: </span>
-      <select id="paper_formats" bind:value={paper_name}>
-        {#each paper_formats as item, i}
-          <option value={item.name}>{item.name}</option>
+    <div class="paper">
+      <div class="slot">
+        <span>paper color: </span>
+        {#each paper_colors as color, id}
+          <InputColorRadio
+            id="papercolor-{id}"
+            bind:group={$gcode.paper_color}
+            size="0.7em"
+            radius="0%"
+            value={color} />
         {/each}
-      </select>
+      </div>
+
+      <div class="slot">
+        <span>paper format: </span>
+        <select id="paper_formats" bind:value={paper_name}>
+          {#each paper_formats as item, i}
+            <option value={item.name}>{item.name}</option>
+          {/each}
+        </select>
+      </div>
+
     </div>
 
-  </div>
+    <div class="gcode">
+
+      <span>gcode cmds. :</span>
+
+      <div class="inline_feature">
+        <label for="drawing_speed">drawing speed: </label>
+        <input type="number" name="drawing_speed"
+          min={500} max={10000} step={1}
+          bind:value={$gcode.gcode.drawing_speed}
+        >
+      </div>
+
+      <div class="inline_feature">
+        <label for="translates_peed">translate speed: </label>
+        <input type="number" name="translates_peed" min="500" max="10000" step="1">
+      </div>
+
+      <div class="inline_feature">
+          <label for="begin_cmd">begin: </label>
+          <input type="text" name="begin_cmd">
+      </div>
+
+      <div class="inline_feature">
+          <label for="pen_up">pen up: </label>
+          <input type="text" name="pen_up">
+      </div>
+
+      <div class="inline_feature">
+          <label for="pen_down">pen down: </label>
+          <input type="text" name="pen_down">
+      </div>
+
+      <div class="inline_feature">
+          <label for="end_cmd">end: </label>
+          <input type="text" name="end_cmd">
+      </div>
+
+    </div>
 
     <div class="path_infos slot">
-      <span>path_length: {"..."}_mm</span>
+        <span>path_length: {"..."}_mm</span><br>
+        <span>drawing_time: {"..."}_min</span>
     </div>
 
   </div>

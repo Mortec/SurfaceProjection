@@ -19,6 +19,7 @@
     let width = 210
     let height = 279
     let formula = $surfaceStore.formula
+    let pathLength = 0
     /*nota:
     path options : zig = unique snake path along the x axis
         zag: unique snake path along the y axis
@@ -38,7 +39,11 @@
             surfaceStore.trig()
         })
 
-        surfaceStore.subscribe( s => surface.update( s ) )
+        surfaceStore.subscribe( s => {
+            surface.update( s )
+            pathLength = surface.path.length
+            formula = $surfaceStore.formula
+        } )
         gcodeStore.subscribe( s => surface.update( {format: s.format } ) )
 
     })
@@ -73,7 +78,6 @@
   $: easedWidth.set( width )
 
 
-
 </script>
 
 
@@ -99,11 +103,10 @@
     .surface_params{
         background-color: rgb(237, 237, 237);
         width: 26vh;
-        padding-left: 1.2em;
-        padding-right: 0.5em;
+        padding: 1em 0em 1em 1em;
         display: flex;
         flex-direction: column;
-        justify-content: space-around;
+        justify-content: space-between;
         margin: 0px;
         margin-left: 10px;
         /* height: 100%; */
@@ -113,6 +116,8 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
+        margin: 0px;
+        padding: 0px;
     }
 
     .surface_params_pathFeedback{
@@ -301,7 +306,7 @@
                 />
 
                 <div class="surface_params_pathFeedback">
-                    <span >path_length: {surface.path.length}_pts</span>
+                    <span >path_length: {pathLength}_pts</span>
                 </div>
                 
                 <Fader

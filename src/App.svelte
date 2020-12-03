@@ -21,7 +21,7 @@
 	// projects = localStorage.length ?
 	// 				JSON.parse( localStorage.getItem( 'projects' ) )
 	// 				:
-	// 				{...defaultProjects};
+	// 				cloneDeep(defaultProjects);
 	
 	projects = cloneDeep(defaultProjects);
 
