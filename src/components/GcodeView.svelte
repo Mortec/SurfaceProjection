@@ -54,7 +54,7 @@
     align-self: flex-start;
     margin: 0px;
     width: 100%;
-    margin-top: 0.5em;
+    margin-top: 0.2em;
   }
 
   .gcode_params {
@@ -121,7 +121,7 @@
   }
 
   .slot {
-    margin-top: 2em;
+    margin-top: 0.8em;
   }
 
   .gcode{
@@ -132,6 +132,9 @@
 
     text-align: left;
     padding-bottom: 0.5ch;
+  }
+  .inline_feature>input{
+    font-size: 0.9em;
   }
   .inline_feature>input[type="text"]{
     width: 70%;
