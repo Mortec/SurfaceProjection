@@ -37,7 +37,6 @@ export const pictureStore = createStore( {
 export const surfaceStore = createStore({
     x: 0,
     y: 0,
-    format: {name:"sLTR", width: 216, height: 260},
     resX: 7,
     resY: 7,
     scale: 0.7,
@@ -49,14 +48,15 @@ export const surfaceStore = createStore({
     formula: 'sin(i/(w*h) * PI * (l*w/2.)) * a',
     structure: "net",
     path: 'zig',
-    paper_color: "#FFFFFF",
-    pen_color: "#000000",
-    pen_stroke: 0.5,
-    pen_opacity: 1
 })
 
 export const gcodeStore = createStore({
-    title: "surface_projection",
+    title: "surface_projection_store",
+    pen_color: "#000000",
+    pen_stroke: 0.5,
+    pen_opacity: 1,
+    format: {name:"sLTR", width: 216, height: 260},
+    paper_color: "#FFFFFF",
     begin_sequence:"",
     pen_up_sequence:"",
     pen_down_sequence:"",
@@ -65,8 +65,8 @@ export const gcodeStore = createStore({
 
 export const projectStore = derived(
     [pictureStore, surfaceStore, gcodeStore],
-        ( ([$pictureStore, $surfaceStore, $gcodeStore]) => (
-            { ...{picture: $pictureStore, surface: $surfaceStore, gcode: $gcodeStore} }
-            )
+    ( ([$pictureStore, $surfaceStore, $gcodeStore]) => (
+        { ...{picture: $pictureStore, surface: $surfaceStore, gcode: $gcodeStore } }
         )
     )
+)

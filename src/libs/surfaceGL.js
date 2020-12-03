@@ -203,7 +203,7 @@ Surface.prototype.getData = function(){
             x: (i/4)%this.params.resX / (this.params.resX) + (1/this.params.resX/2),
             y: Math.floor( i/ 4 / this.params.resX) / (this.params.resY ) + (1/this.params.resY/2),
             l: rawdata[i]  / 256,
-            z: (rawdata[i+1] + rawdata[i+2]/256 + rawdata[i+3]/256/256) / 256 - 0.5,
+            z: ((rawdata[i+1] + rawdata[i+2]/256 + rawdata[i+3]/256/256) / 256 - 0.5) * 2.0,
         }
     }
 
@@ -231,7 +231,7 @@ Surface.prototype.computePath = function () {
           e.x < 1
       ) {
 
-          //(snake unique path)
+          //(snake unique path : zig )
           const yCount = Math.floor(i / this.params.resX);
           const index = yCount % 2 === 0 ? i
               : this.params.resX - 1 - (i % this.params.resX) + (yCount * this.params.resX);
@@ -277,6 +277,16 @@ Surface.prototype.computePathString = function () {
     return this;
 }
 
+
+Surface.prototype.update = function( p ){
+
+    this.params = {...this.params, ...p }
+
+    this.compute()
+    .getData()
+    .computePath()
+    .computePathString()
+}
 
 
 export { Surface };

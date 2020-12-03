@@ -1,6 +1,4 @@
-export const defaultProject = {
-
-    title: "surface_projection",
+const defaultProject = {
 
     picture: {
         id: "pictureCanvas",
@@ -18,7 +16,6 @@ export const defaultProject = {
     surface: {
         x: 0,
         y: 0,
-        format: {name: "sLTR", width:  210, height: 260 },
         resX: 10,
         resY: 10,
         scale: 0.7,
@@ -30,14 +27,15 @@ export const defaultProject = {
         formula: 'sin(i/(w*h) * PI * (l*w/2.)) * a',
         structure: "net",
         path: 'zig',
-        paper_color: "#FFFFFF",
-        pen_color: "#000000",
-        pen_stroke: 0.5,
-        pen_opacity: 1
     },
 
     gcode: {
         title: "surface_projection",
+        pen_color: "#000000",
+        pen_stroke: 0.5,
+        pen_opacity: 1,
+        format: {name:"sLTR", width: 216, height: 260},
+        paper_color: "#FFFFFF",
         begin_sequence:"",
         pen_up_sequence:"",
         pen_down_sequence:"",
@@ -46,6 +44,6 @@ export const defaultProject = {
 }
 
 export const defaultProjects = {
-    last_project_title: defaultProject.title,
-    projects: [defaultProject]
+    last_project_title: defaultProject.gcode.title,
+    projects: [{...{},...defaultProject}]
 }

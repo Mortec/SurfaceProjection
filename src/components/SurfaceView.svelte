@@ -8,39 +8,17 @@
   import { Surface } from "../libs/surfaceGL.js"
   import  { surfaceStore }  from "../stores/stores.js"
   import  { pictureStore }  from "../stores/stores.js"
+  import  { gcodeStore }  from "../stores/stores.js"
+
   import { buildSVG } from '../libs/svgFuncs'
-  import { paper_colors, paper_formats, pen_colors, pen_strokes } from '../configs/furnitures.js'
   import Fader from './Fader.svelte'
   import IconButton from './IconButton.svelte'
-  import InputColorRadio from './InputColorRadio.svelte'
-  import InputRadio from './InputRadio.svelte'
   import DragLogger from './DragLogger.svelte'
 
-    export let params = {
-        x: 0,
-        y: 0,
-        format: {name: "sLTR", width:  210, height: 260 },
-        resX: 7,
-        resY: 7,
-        scale: 0.7,
-        crop: 0,
-        a: 0,
-        f: 0,
-        threshold: 0,
-        ceiling: 1,
-        formula: 'sin(i/(w*h) * PI * (l*w/2)) * a',
-        structure: "net",
-        path: 'zig',
-        paper_color: "#FFFFFF",
-        pen_color: "#000000",
-        pen_stroke: 0.5,
-        pen_opacity: 1
-    }
 
     let width = 210
     let height = 279
-    let paper_name = "sLTR"
-    let formula = params.formula
+    let formula = $surfaceStore.formula
     /*nota:
     path: zig = unique snake path along the x axis
         zag: unique snake path along the y axis
@@ -52,21 +30,15 @@
 
     onMount( () => {
 
-        surface.params = params
         surface.init('surfacePath', 'glCanvas', 'pictureCanvas')
+
         pictureStore.subscribe( s =>{
             surfaceStore.trig()
         })
 
-        surfaceStore.subscribe( s => {
-            surface.params = s
-            paper_name = s.format.name
-            surface.compute()
-                    .getData()
-                    .computePath()
-                    .computePathString()
-            }
-            )
+        surfaceStore.subscribe( s => surface.update( s ) )
+        gcodeStore.subscribe( s => surface.update( {format: s.format } ) )
+
     })
 
     const dispatch = createEventDispatcher()
@@ -74,19 +46,14 @@
     const exportSVG = function(){
         const SVGstring = buildSVG( 
           surface.pathString,
-          params.format.width,
-          params.format.height,
-          params.pen_stroke,
+          $gcodeStore.format.width,
+          $gcodeStore.format.height,
+          $gcodeStore.pen_stroke,
           "test"
         )
         dispatch('exportSVG', SVGstring ) 
     }
 
-
-  const handleInput = e => {
-    
-    params = {...params, ...{[e.detail.name]: e.detail.value} }
-  }
 
   const easedWidth = tweened(undefined, {
     duration: 1500,
@@ -95,15 +62,13 @@
 
   const handleformula = e => {
       if (e.keyCode == 13){
-        params.formula = formula
+        $surfaceStore.formula = formula
       }
   }
 
-  $: surfaceStore.tune( params )
-  $: params.format = paper_formats.filter( p => p.name === paper_name )[0]
-  $: width = height * params.format.width/params.format.height
-  $: easedWidth.set( width )
 
+  $: width = height * $gcodeStore.format.width/$gcodeStore.format.height
+  $: easedWidth.set( width )
 
 
 
@@ -153,6 +118,9 @@
         font-size: 0.85em;
         letter-spacing: -1px;
         align-self: flex-start;
+        margin-top: 1em;
+        margin-bottom: 1em;
+
     }
 
     
@@ -171,7 +139,7 @@
 
 
 
-    select{
+   select{
         outline: none;
         font-size: 0.8em;
         font-family: abel, roboto;
@@ -184,9 +152,24 @@
         width :auto;
         background-color: whitesmoke;
     }
+
     option{
         padding: 0px;  
         margin: 0px;
+    }
+
+    .glview{
+            width: calc(100% - 1em); 
+            height: 3em;
+            margin: 0px;
+            padding: 0px;
+            overflow: hidden;
+    }
+
+    .glview>span{
+        font-family: 'Cutive Mono', monospace;
+        /* font-size: 0.85em; */
+        letter-spacing: -1px;
     }
 
     .surface_formula{
@@ -234,27 +217,30 @@
             "
             
         >
-            <DragLogger bind:x={params.x} bind:y={params.y}/>
+            <DragLogger bind:x={$surfaceStore.x} bind:y={$surfaceStore.y}/>
 
             <svg id="surfacesvg"
 
                 width = {$easedWidth}
                 height = {height}
-                viewBox = "0, 0, {params.format.width}, {params.format.height}"
+                viewBox = "0, 0, {$gcodeStore.format.width}, {$gcodeStore.format.height}"
                 style="
-                background-color:{params.paper_color};
+                background-color:{$gcodeStore.paper_color};
                 "
                 >
 
                     <path id='surfacePath'
                         style="
                             fill : none;
-                            stroke-width: {params.pen_stroke};
-                            stroke : {params.pen_color};
-                            stroke-opacity:{ params.pen_opacity};
+                            stroke-width: {$gcodeStore.pen_stroke};
+                            stroke : {$gcodeStore.pen_color};
+                            stroke-opacity:{ $gcodeStore.pen_opacity};
                         "
-                        d="M0 0 L{params.format.width} {params.format.height/2} L{params.format.width/2} {params.format.height} Z"
-                    />
+                        d={
+                            surface.pathString ||
+                        "M0 0 L{$gcodeStore.format.width} {$gcodeStore.format.height/2} L{$gcodeStore.format.width/2} {$gcodeStore.format.height} Z"
+                        }
+                        />
 
             </svg>
             
@@ -275,28 +261,33 @@
                 <Fader
                 name="resX"
                 label="res_x"
-                range={{min: 2, max: params.format.width * 2}}
+                range={{min: 2, max: $gcodeStore.format.width * 2}}
                 step={1}
-                value={params.resX}
-                on:input={ handleInput }
+                bind:value={$surfaceStore.resX}
                 />
 
                 <Fader
                 name="resY"
                 label="res_y"
-                range={{min: 2, max: params.format.height}}
+                range={{min: 2, max: $gcodeStore.format.height}}
                 step={1}
-                value={params.resY}
-                on:input={ handleInput }
+                bind:value={$surfaceStore.resY}
                 />
-
+                
                 <Fader
-                name="scale"
-                label="scale"
-                range={{min: 0.25, max: 1.5}}
+                name="threshold"
+                label="floor"
+                range={{min: 0, max: 1}}
                 step={0.01}
-                value={params.scale}
-                on:input={ handleInput }
+                bind:value={$surfaceStore.threshold}
+                />
+                
+                <Fader
+                name="ceiling"
+                label="ceil."
+                range={{min: 0, max: 1}}
+                step={0.01}
+                bind:value={$surfaceStore.ceiling}
                 />
 
                 <Fader
@@ -304,115 +295,59 @@
                 label="crop"
                 range={{min: 0, max: 1}}
                 step={0.01}
-                value={params.crop}
-                on:input={ handleInput }
+                bind:value={$surfaceStore.crop}
                 />
 
+                <div class="surface_params_pathFeedback">
+                    <span >path_length: {surface.path.length}_pts</span>
+                </div>
+                
                 <Fader
                 name="a"
                 label="__a"
                 range={{min: -1, max: 1}}
                 step={0.001}
-                value={params.a}
-                on:input={ handleInput }
+                bind:value={$surfaceStore.a}
                 />
 
                 <Fader
-                name="threshold"
-                label="thrsh."
-                range={{min: 0, max: 1}}
-                step={0.01}
-                value={params.threshold}
-                on:input={ handleInput }
+                name="f"
+                label="__f"
+                range={{min: 1, max: 1000}}
+                step={1}
+                bind:value={$surfaceStore.f}
                 />
 
                 <Fader
-                name="ceiling"
-                label="ceil."
-                range={{min: 0, max: 1}}
+                name="scale"
+                label="scale"
+                range={{min: 0.25, max: 1.5}}
                 step={0.01}
-                value={params.ceiling}
-                on:input={ handleInput }
+                bind:value={$surfaceStore.scale}
                 />
+
                 
             </div>
-
-            <div>
-                <span>pen color</span><br>
-                {#each pen_colors as color, id}
-                    <InputColorRadio
-                    id="pencolor-{id}"
-                    bind:group={params.pen_color}
-                    size="12px"
-                    radius="50%"
-                    value={color}
-                    />
-                {/each}
-            </div>
-
-            <div>
-                <span>pen stroke <span style="font-size:0.9em;">[mm]</span> :</span><br>
-                {#each pen_strokes as stroke, id}
-
-                    <InputRadio
-                    id="penstroke-{id}"
-                    bind:group={params.pen_stroke}
-                    size="{ (10 - 4) * stroke + 4 }px"
-                    radius="50%"
-                    value={stroke}
-                    color={"black"}
-                    />
-                    <span style="font-size: 0.8em; margin-right: 0.5em;">{stroke}</span>
-
-                {/each}
-            </div>
-
-            <div> 
-            <Fader
-                name="pen_opacity"
-                label="ink_op."
-                range={{min: 0, max: 1}}
-                step={0.01}
-                value={params.pen_opacity}
-                on:input={ handleInput }
-            />
+                
+                <div class="glview" >
+                    <span>gpu_ops.:</span>
+                    <canvas id="glCanvas" 
+                    style="
+                    width: 600px;
+                    height: 600px;
+                    transform: translate(-165px, -245px) scale(0.45, {-1/6});
+                    "
+                    ></canvas>
+                </div>
         </div>
-
-            <div>
-                <span>paper color</span>
-                {#each paper_colors as color, id}
-                    <InputColorRadio
-                    id="papercolor-{id}"
-                    bind:group={params.paper_color}
-                    size="0.7em"
-                    radius="0%"
-                    value={color}
-                    />
-                {/each}
-            </div>
-
-            <div>
-                <span>paper format</span>
-                <select id="paper_formats" bind:value={paper_name}>
-                {#each paper_formats as item, i }
-                    <option  value={item.name}>{item.name}</option>
-                {/each}
-                </select>
-            </div>
-
             
-            <div class="surface_params_pathFeedback">
-                <span >path_length: {surface.path.length}_pts</span>
-            </div>
-            
-        </div>
         
         
         
     </div>
 
     <div class = "surface_formula">
-        <label for="formula">formula: </label>
+        <label for="formula">magick: </label>
             <input type="text" name="formula" id="formula" bind:value={formula} on:keydown="{handleformula}">
     </div>
 

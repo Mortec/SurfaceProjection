@@ -2,7 +2,7 @@
   import Vader from "./Vader.svelte"
   import { onMount } from "svelte"
   import  { pictureStore }  from "../stores/stores.js"
-  import  { surfaceStore }  from "../stores/stores.js"
+  import  { gcodeStore }  from "../stores/stores.js"
   import { Picture } from "../libs/picture.js"
   import { createEventDispatcher } from 'svelte'
   import {fade } from 'svelte/transition'
@@ -12,20 +12,9 @@
   import { quintOut } from "svelte/easing" 
   
   const picture = new Picture()
-  let width, height
+  let width = 100
+  let height = 100
 
-  export let params = {
-    id: "pictureCanvas",
-    imgUrl: "./assets/images/EM-portrait2.jpg",
-    x : 0,
-    y : 0,
-    brightness: 1.0,
-    contrast: 1.0,
-    saturation: 1.0,
-    blur: 0,
-    zoom: 1.0,
-    invert: 0.0,
-  }
 
   const easedWidth = tweened( undefined, {
     duration: 1500,
@@ -33,27 +22,14 @@
   });
 
   onMount(() => {
-
-    surfaceStore.subscribe( s => {
-      
-      width = ( s.format.width/s.format.height * height )
-      easedWidth.set( width )
-    })
-
     picture.notifyLoaded = () => {pictureStore.trig()}
-    picture.init(params.id)
-    picture.set( params )
+    picture.init($pictureStore.id)
+    picture.set( $pictureStore )
     picture.resize(width, height)
-    pictureStore.subscribe( s => {
-      picture.set( s )
-    } )
-    picture.load(params.imgUrl)
+    pictureStore.subscribe( s => {picture.set( s )} )
+    picture.load($pictureStore.imgUrl)
   })
 
-  const handleInput = e => {
-    
-    params = {...params, ...{[e.detail.name]: e.detail.value} }
-  }
 
   const dispatch = createEventDispatcher()
 
@@ -61,9 +37,10 @@
     dispatch('exportPNG') 
   }
 
+  $: width = ( $gcodeStore.format.width/$gcodeStore.format.height * height )
 
-  $: pictureStore.tune( params )
-  // $: picture.load( params.imgUrl ) <- see for something else // constantly reloading
+  $: easedWidth.set( width )
+
   $: (
     ()=> {
       picture.resize( $easedWidth, height );
@@ -165,8 +142,8 @@
   <div class="picture" bind:clientHeight={height}
   style="width: {$easedWidth}; height: 35vh;"
   >
-  <DragLogger bind:x={params.x} bind:y={params.y}/>
-  <canvas id={params.id}/>
+  <DragLogger bind:x={$pictureStore.x} bind:y={$pictureStore.y}/>
+  <canvas id={$pictureStore.id}/>
       <div class="savebutton">
         <IconButton
         iconUrl="./assets/icons/export.png"
@@ -186,40 +163,35 @@
   label="brtnss"
   range={{min: 0, max: 3}}
   step={0.01}
-  value={params.brightness}
-    on:input={ handleInput }
+  bind:value={$pictureStore.brightness}
     />
     <Vader
     name="contrast"
     label="ctrst"
     range={{min: 0, max: 3}}
     step={0.01}
-    value={params.contrast}
-    on:input={ handleInput }
+    bind:value={$pictureStore.contrast}
     />
     <Vader
     name="blur"
     label="blur"
     range={{min: 0, max: 1}}
     step={0.01}
-    value={params.blur}
-    on:input={ handleInput }
+    bind:value={$pictureStore.blur}
     />
     <Vader
     name="zoom"
     label="zoom"
     range={{min: 0, max: 2}}
     step={0.01}
-    value={params.zoom}
-    on:input={ handleInput }
+    bind:value={$pictureStore.zoom}
     />
     <Vader
     name="invert"
     label="inv."
     range={{min: 0, max: 1}}
     step={1}
-    value={params.invert}
-    on:input={ handleInput }
+    bind:value={$pictureStore.invert}
     />
   </div>
 
@@ -231,7 +203,7 @@
             accept="image/png, image/jpeg"
             on:change="{
               
-              e => picture.loadLocal(e.target.files[0], ( url )=>params.imgUrl = url )
+              e => picture.loadLocal(e.target.files[0], ( url )=>$pictureStore.imgUrl = url )
             
             }"
       >    

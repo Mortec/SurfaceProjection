@@ -1,75 +1,68 @@
 <script>
 	import PictureView from "./components/PictureView.svelte";
 	import SurfaceView from "./components/SurfaceView.svelte";
+	import GcodeView from "./components/GcodeView.svelte";
 	import IconButton from "./components/IconButton.svelte";
-	import { projectStore } from './stores/stores'
+	import { projectStore, pictureStore, surfaceStore, gcodeStore } from './stores/stores'
 	import { get } from 'svelte/store';
 	import { onMount } from "svelte"
-	import { defaultProject, defaultProjects } from './configs/default.js'
+	import { defaultProjects } from './configs/default.js'
 	import { saveAs } from 'file-saver';	
 	import { fly, fade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 	import { tweened } from "svelte/motion";
   	import { quintOut } from "svelte/easing";
+	import cloneDeep from 'lodash/cloneDeep';
 
-	let title = 'none'
-	let currentProject, projects
+	let projects
 	let showprojects = false
-
 	let saveStatus = "waiting"
-
-	currentProject = { ...defaultProject }
 
 	// projects = localStorage.length ?
 	// 				JSON.parse( localStorage.getItem( 'projects' ) )
 	// 				:
 	// 				{...defaultProjects};
 	
-	projects = {...defaultProjects};
+	projects = cloneDeep(defaultProjects);
 
   	const saveProject = ()=>{
-		currentProject = {...currentProject, ...get(projectStore) }
-		currentProject.title = title
-		projects.projects = projects.projects.filter( p => p.title != currentProject.title )
-		projects.projects.push( currentProject )
-		projects.last_project_title = currentProject.title
+		const savedProject = cloneDeep( get(projectStore) )
+		projects.projects = projects.projects.filter( p => p.gcode.title != savedProject.gcode.title )
+		projects.projects.push( savedProject )
+		projects.last_project_title = savedProject.gcode.title
 		localStorage.setItem( 'projects', JSON.stringify( projects ) )
 		saveStatus = "success"
 	}
   
-  	const loadProject = ( loadtitle )=>{
-	  const loadedProject = projects.projects.filter( p => p.title === loadtitle )[0]
-	  currentProject = { ...currentProject, ...loadedProject }	
-	  title = currentProject.title
+  	const loadProject = ( title )=>{
+		let loadedProject = projects.projects.filter( p => p.gcode.title === title )[0]
+		loadedProject = cloneDeep(loadedProject)
+		pictureStore.tune(loadedProject.picture)
+		surfaceStore.tune(loadedProject.surface)
+		gcodeStore.tune(loadedProject.gcode)
 	}
 
   	onMount( ()=>{
-
-	  loadProject( projects.last_project_title )
+		loadProject( projects.last_project_title )
 	} )
  
 	const exportSVG = function ( message ){
-
 		const blob = new Blob([ message.detail ], {type: "text/plain;charset=utf-8"});
-		currentProject = {...currentProject, ...get(projectStore) }
-		const format = currentProject.surface.format.name
-    	saveAs(blob, title + "_" + format + ".svg");  
+		const format = $projectStore.gcode.format.name
+    	saveAs(blob, $projectStore.gcode.title + "_" + format + ".svg");  
 	}
 
 	const exportPNG = function(){
-
 		const canvas = document.querySelector("#pictureCanvas");
 		canvas.toBlob(function(blob) {
-    		saveAs(blob, title + ".png");
+    		saveAs(blob, $projectStore.gcode.title + ".png");
 		})
 	}
 
 	const exportGCODE = ( message )=>{
-		
 		const blob = new Blob([ message.detail ], {type: "text/plain;charset=utf-8"});
-		currentProject = {...currentProject, ...get(projectStore) }
-		const format = currentProject.surface.format.name
-		saveAs(blob, title + "_" + format + ".nc");
+		const format = $projectStore.gcode.format.name
+		saveAs(blob, $projectStore.gcode.title + "_" + format + ".nc");
 	}
 
 	const easedBar = tweened( 0, {
@@ -174,37 +167,6 @@
 		padding-right: 2em;
 	}
 
-	.gcode {
-		display: flex;
-		flex-direction: column;
-		align-items:center;
-		justify-self: flex-start;
-		align-self: flex-start;
-		margin: 0px;
-		padding: 0px;
-	}
-
-	.title{
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-self: flex-start;
-		align-self: flex-start;
-		margin: 0px;
-	}
-
-	input[type="text"] {
-		font-family: "Cutive Mono", monospace;
-		letter-spacing: -1px;
-		margin: 1em;
-		height: 1.5em;
-		border: none;
-	}
-
-	input[type="text"]:focus {
-		outline: none;
-	}
-
 	.colophon{
 		color: #bbb;
 		font-size:0.9em;
@@ -221,7 +183,7 @@
 <div class="container">
 	
 	<header>
-		<h1>{title}</h1>
+		<h1>{$projectStore.gcode.title}</h1>
 	</header>
 	<main>
 
@@ -243,11 +205,11 @@
 			>
 				<ul>
 					{#each projects.projects as p, index (p)}
-					<li on:click={()=>loadProject(p.title)}
+					<li on:click={()=>loadProject(p.gcode.title)}
 						transition:fade
 						animate:flip="{{ delay: 1000 }}"
 					> 
-						{p.title}
+						{p.gcode.title}
 					</li>
 					{/each}
 				</ul>
@@ -257,44 +219,9 @@
 		</nav>
 
 		<div class="playground">
-			<PictureView params={currentProject.picture} on:exportPNG={exportPNG} />
-			<SurfaceView params={currentProject.surface} on:exportSVG={exportSVG}/>
-
- 			
-			<div class="gcode" style = "width: 28vh;"> 
-				<div class="title"> 
-					<label for="title">title:</label>
-					<input type="text" name="title" bind:value={title} />
-				</div>
-
-				<div class="save" style="align-self: flex-end;" >
-					<IconButton iconUrl="./assets/icons/save.png"
-					on:action={saveProject}
-					bind:status={saveStatus}
-					tip= "Save project"
-					tipsuccess="Project saved"
-					tiperror="error while saving, please retry"
-					/>	
-				</div>
-
-				<div class="glview" style="
-					width: 100%; 
-					height: 100px;
-					border:	 1px solid red;
-					overflow: hidden;
-				">
-					<canvas id="glCanvas" 
-					style="
-					width: 600px;
-					height: 600px;
-					transform: translate(-165px, -250px) scale(0.45, {-1/6});
-					"
-					></canvas>
-				</div>
-			</div>
-
-
-
+			<PictureView on:exportPNG={exportPNG} />
+			<SurfaceView on:exportSVG={exportSVG}/>
+			<GcodeView bind:saveStatus={saveStatus} on:exportGCODE={exportGCODE} on:saveProject={saveProject}/>
 
 		</div>
 

@@ -16,21 +16,19 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 
 ## to do :
-*  svg to gcode translation
 *  gcode ui :
     *    begin / end / pen up / pen down commands
     *    drawing speed & translate speed
 *  estimation of path length in millimeters -> estimation of drawing time
-*  projects bar : delete a project
+*  svg to gcode translation + export gcode
+*  projects bar : delete a project / export-import projects (json files outside of local storage)
 *  load a picture from "store" (that was previously used for a another project currently in the storage)
-*  isolate pieces of code that can be convert to component for later use
 *  button tooltips improvement
 *  presentation mode (show drawing only at maximum available size)
 *  svg zoom at real scale for convenient exploration of the path
 *  formula code checking 
+*  isolate pieces of code that can be convert to component for later use
 
 ### to do v2
 * multi-layer drawings with "concat" option
-* map the plotter feed command along specific aspect of the picture
-* map dwell command along specific aspect of the picture
-* map z command along specific aspect of the picture
+* map the plotter feed, dwell & z command along specific aspect of the picture
