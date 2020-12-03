@@ -170,7 +170,7 @@
 
     .glview>span{
         font-family: 'Cutive Mono', monospace;
-        /* font-size: 0.85em; */
+        font-size: 0.9em;
         letter-spacing: -1px;
     }
 

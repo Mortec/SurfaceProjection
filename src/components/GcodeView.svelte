@@ -43,8 +43,8 @@
 		align-self: flex-start;
 		margin: 0px;
 		padding: 0px;
-        height: 70vh;
-
+    height: 70vh;
+    width: 26vh;
 	}
 
     .title {
@@ -56,12 +56,25 @@
     margin: 0px;
   }
 
+  .gcode_params {
+    background-color: rgb(237, 237, 237);
+    width: 28vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0px;
+    padding: 1em;
+    height: 100%;
+    width: 100%;
+  }
+
   input[type="text"] {
     font-family: "Cutive Mono", monospace;
-    letter-spacing: -1px;
-    margin: 1em;
-    height: 1.5em;
+    letter-spacing: -2px;
+    margin: 0px 0px 0px 0.5em;
+    height: 1.24em;
     border: none;
+    width: 90%;
   }
 
   input[type="text"]:focus {
@@ -70,21 +83,7 @@
 
   .savebutton {
     position: absolute;
-    transform: translateY(-2.5em);
     z-index: 1010;
-  }
-
-  .gcode_params {
-    background-color: rgb(237, 237, 237);
-    width: 26vh;
-    padding-left: 1.2em;
-    padding-right: 0.5em;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    margin: 0px;
-    margin-left: 10px;
-    height: 100%;
   }
 
   label {
@@ -114,10 +113,15 @@
   }
   .path_infos {
     font-family: "Cutive Mono", monospace;
-    font-size: 0.85em;
+    font-size: 0.9em;
     letter-spacing: -1px;
     align-self: flex-start;
   }
+
+  .slot {
+    margin-top: 1em;;
+  }
+
 </style>
 
 <div class="gcodeView">
@@ -127,20 +131,21 @@
     <div class="title">
       <label for="title">title:</label>
       <input type="text" name="title" bind:value={$gcode.title} on:blur={saveProject}/>
-    </div>
-
-    <div class="save" style="align-self: flex-end;">
-      <IconButton
+      
+      <div class="save" >
+        <IconButton
         iconUrl="./assets/icons/save.png"
         on:action={saveProject}
         bind:status={saveStatus}
         tip="Save project"
         tipsuccess="Project saved"
         tiperror="error while saving, please retry" />
+      </div>
     </div>
 
-    <div>
-      <span>pen color</span><br />
+    <div class="pen">
+    <div class="slot">
+      <span>pen color: </span><br />
       {#each pen_colors as color, id}
         <InputColorRadio
           id="pencolor-{id}"
@@ -151,8 +156,8 @@
       {/each}
     </div>
 
-    <div>
-      <span>pen stroke <span style="font-size:0.9em;">[mm]</span> :</span><br />
+    <div class="slot">
+      <span>pen stroke: <span style="font-size:0.9em;">[mm]</span> :</span><br />
       {#each pen_strokes as stroke, id}
         <InputRadio
           id="penstroke-{id}"
@@ -165,7 +170,7 @@
       {/each}
     </div>
 
-    <div>
+    <div class="slot">
       <Fader
         name="pen_opacity"
         label="ink_op."
@@ -174,9 +179,11 @@
         value={$gcode.pen_opacity}
         on:input={handleInput} />
     </div>
+  </div>
 
-    <div>
-      <span>paper color</span>
+  <div class="paper">
+    <div class="slot">
+      <span>paper color: </span>
       {#each paper_colors as color, id}
         <InputColorRadio
           id="papercolor-{id}"
@@ -187,8 +194,8 @@
       {/each}
     </div>
 
-    <div>
-      <span>paper format</span>
+    <div class="slot">
+      <span>paper format: </span>
       <select id="paper_formats" bind:value={paper_name}>
         {#each paper_formats as item, i}
           <option value={item.name}>{item.name}</option>
@@ -196,7 +203,9 @@
       </select>
     </div>
 
-    <div class="surface_params_pathFeedback">
+  </div>
+
+    <div class="path_infos slot">
       <span>path_length: {"..."}_mm</span>
     </div>
 
