@@ -1,9 +1,5 @@
 <script>
-  import { onMount } from "svelte";
-  import { tweened } from "svelte/motion";
-  import { quintOut } from "svelte/easing";
   import { createEventDispatcher } from "svelte";
-  import { fade } from "svelte/transition";
 
   import IconButton from "./IconButton.svelte";
   import InputColorRadio from "./InputColorRadio.svelte";
@@ -130,7 +126,7 @@
 
     <div class="title">
       <label for="title">title:</label>
-      <input type="text" name="title" bind:value={$gcode.title} />
+      <input type="text" name="title" bind:value={$gcode.title} on:blur={saveProject}/>
     </div>
 
     <div class="save" style="align-self: flex-end;">

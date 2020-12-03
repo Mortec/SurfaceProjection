@@ -2,7 +2,7 @@
 (work in progress)
 
 
-Svelte app to map pictures to SVG paths prepared to be sent as GCODE to a pen plotter.
+Svelte app to map pictures to SVG paths then prepared to be sent as GCODE to a pen plotter.
 
 This turns out to be some kind of oneliner with a bunch of parameters to generate a crazy SVG from a picture.
 
@@ -10,10 +10,10 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 
 ## Dependencies :
-*  Svelte app classic [template](https://github.com/sveltejs/template)
+*  Svelte app [template](https://github.com/sveltejs/template)
 *  [Filesaver.js](https://github.com/eligrey/FileSaver.js)
 *  [regl](https://github.com/regl-project/regl)
-
+*  [lodash](https://lodash.com/)
 
 ## to do :
 *  gcode ui :
@@ -24,9 +24,8 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  projects bar : delete a project / export-import projects (json files outside of local storage)
 *  load a picture from "store" (that was previously used for a another project currently in the storage)
 *  button tooltips improvement
-*  presentation mode (show drawing only at maximum available size)
-*  svg zoom at real scale for convenient exploration of the path
-*  formula code checking 
+*  presentation mode (show drawing at real scale for convenient exploration of the path)
+*  magick formula code checking 
 *  isolate pieces of code that can be convert to component for later use
 
 ### to do v2

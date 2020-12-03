@@ -30,7 +30,6 @@
     picture.load($pictureStore.imgUrl)
   })
 
-
   const dispatch = createEventDispatcher()
 
   const exportpng = function(){

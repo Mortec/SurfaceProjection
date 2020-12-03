@@ -20,9 +20,11 @@
     let height = 279
     let formula = $surfaceStore.formula
     /*nota:
-    path: zig = unique snake path along the x axis
+    path options : zig = unique snake path along the x axis
         zag: unique snake path along the y axis
-        d->l : unique path with sorting of vertices based on luminance, darkness to light 
+        darken_1st : unique path with sorting of vertices based on luminance, darkness to light
+        lightnen_1st : unique path with sorting of vertices based on luminance, darkness to light
+        random
     */
 
     let surface = new Surface()
