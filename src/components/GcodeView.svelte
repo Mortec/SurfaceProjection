@@ -234,33 +234,44 @@
         <label for="drawing_speed">drawing speed: </label>
         <input type="number" name="drawing_speed"
           min={500} max={10000} step={1}
-          bind:value={$gcode.gcode.drawing_speed}
+          bind:value={$gcode.gcode_cmds.drawing_speed}
         >
       </div>
 
       <div class="inline_feature">
-        <label for="translates_peed">translate speed: </label>
-        <input type="number" name="translates_peed" min="500" max="10000" step="1">
+        <label for="translate_speed">translate speed: </label>
+        <input type="number" name="translate_speed"
+        min={500} max={10000} step={1}
+        bind:value={$gcode.gcode_cmds.translate_speed}
+      >
       </div>
 
       <div class="inline_feature">
           <label for="begin_cmd">begin: </label>
-          <input type="text" name="begin_cmd">
+          <input type="text" name="begin_cmd"
+          bind:value={$gcode.gcode_cmds.begin}
+        >
       </div>
 
       <div class="inline_feature">
           <label for="pen_up">pen up: </label>
-          <input type="text" name="pen_up">
+          <input type="text" name="pen_up"
+          bind:value={$gcode.gcode_cmds.pen_up}
+          >
       </div>
 
       <div class="inline_feature">
           <label for="pen_down">pen down: </label>
-          <input type="text" name="pen_down">
+          <input type="text" name="pen_down"
+          bind:value={$gcode.gcode_cmds.pen_down}
+          >
       </div>
 
       <div class="inline_feature">
           <label for="end_cmd">end: </label>
-          <input type="text" name="end_cmd">
+          <input type="text" name="end_cmd"
+          bind:value={$gcode.gcode_cmds.end}
+          >
       </div>
 
     </div>
