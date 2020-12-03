@@ -83,10 +83,7 @@
     outline: none;
   } */
 
-  .savebutton {
-    position: absolute;
-    z-index: 1010;
-  }
+
 
   label {
     display: flex;
@@ -118,6 +115,13 @@
     font-size: 0.9em;
     letter-spacing: -1px;
     align-self: flex-start;
+    width: 100%;
+  }
+
+  .export {
+    z-index: 1010;
+    display: inline;
+    padding-left: 3em;
   }
 
   .slot {
@@ -231,7 +235,7 @@
 
     <div class="gcode">
 
-      <span>gcode cmds. :</span>
+      <!-- <span>gcode cmds. :</span> -->
 
       <div class="inline_feature">
         <label for="drawing_speed">drawing speed: </label>
@@ -282,8 +286,17 @@
     <div class="path_infos slot">
         <span>path_length: {"..."}_mm</span><br>
         <span>drawing_time: {"..."}_min</span>
+        <div class="export">
+          <IconButton
+          iconUrl="./assets/icons/export.png"
+          on:action={ ()=>exportGCODE()}
+          tip="Export GCODE"
+          size= "1.2em"
+          opacity="0.4"
+          />
+        </div>
     </div>
 
+    
   </div>
-
 </div>

@@ -138,7 +138,7 @@
         align-items: center;
     }
 
-    .savebutton{
+    .export{
         position: absolute;
         transform: translateY( -2.5em);
         z-index: 1010;
@@ -251,7 +251,7 @@
 
             </svg>
             
-            <div class="savebutton">
+            <div class="export">
                 <IconButton
                 iconUrl="./assets/icons/export.png"
                 on:action={ ()=>exportSVG()}
