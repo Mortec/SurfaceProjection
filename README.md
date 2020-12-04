@@ -20,7 +20,9 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  svg to gcode translation + export gcode
 *  estimation of path length in millimeters -> estimation of drawing time
 *  map the plotter feed, dwell & z command along specific aspect of the picture
-*  projects bar : delete a project / export-import projects (json files outside of local storage)
+*  projects bar : 
+    *    delete a project
+    *    export-import projects (json files outside of local storage)
 *  load a picture from storage (that was previously used for a another project currently in the storage)
 *  button tooltips improvement
 *  presentation mode (show drawing at real scale for convenient exploration of the path)
