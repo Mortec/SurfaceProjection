@@ -17,7 +17,7 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 
 ## to do :
 *  magick formula code checking
-*  svg to gcode translation + export gcode
+*  svg to gcode translation
 *  estimation of path length in millimeters -> estimation of drawing time
 *  map the plotter feed, dwell & z command along specific aspect of the picture
 *  projects bar : 
