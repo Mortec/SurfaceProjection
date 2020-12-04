@@ -16,18 +16,15 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  [lodash](https://lodash.com/)
 
 ## to do :
-*  gcode ui :
-    *    begin / end / pen up / pen down commands
-    *    drawing speed & translate speed
-*  estimation of path length in millimeters -> estimation of drawing time
+*  magick formula code checking
 *  svg to gcode translation + export gcode
+*  estimation of path length in millimeters -> estimation of drawing time
+*  map the plotter feed, dwell & z command along specific aspect of the picture
 *  projects bar : delete a project / export-import projects (json files outside of local storage)
-*  load a picture from "store" (that was previously used for a another project currently in the storage)
+*  load a picture from storage (that was previously used for a another project currently in the storage)
 *  button tooltips improvement
 *  presentation mode (show drawing at real scale for convenient exploration of the path)
-*  magick formula code checking 
 *  isolate pieces of code that can be convert to component for later use
 
 ### to do v2
 * multi-layer drawings with "concat" option
-* map the plotter feed, dwell & z command along specific aspect of the picture
