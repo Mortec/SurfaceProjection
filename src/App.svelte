@@ -18,12 +18,12 @@
 	let showprojects = false
 	let saveStatus = "waiting"
 
-	// projects = localStorage.length ?
-	// 				JSON.parse( localStorage.getItem( 'projects' ) )
-	// 				:
-	// 				cloneDeep(defaultProjects);
+	projects = localStorage.length ?
+					JSON.parse( localStorage.getItem( 'projects' ) )
+					:
+					cloneDeep(defaultProjects);
 	
-	projects = cloneDeep(defaultProjects);
+	// projects = cloneDeep(defaultProjects);
 
   	const saveProject = ()=>{
 		const savedProject = cloneDeep( get(projectStore) )
@@ -34,7 +34,7 @@
 		saveStatus = "success"
 	}
   
-  	const loadProject = ( title )=>{
+  	const loadProject = ( title ) => {
 		let loadedProject = projects.projects.filter( p => p.gcode.title === title )[0]
 		loadedProject = cloneDeep(loadedProject)
 		pictureStore.tune(loadedProject.picture)

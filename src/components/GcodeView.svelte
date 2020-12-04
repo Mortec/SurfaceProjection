@@ -158,7 +158,7 @@
 
       <div class="inline_feature">
         <label for="title">title:</label>
-        <input type="text" name="title" bind:value={$gcode.title} on:blur={saveProject}/>
+        <input type="text" name="title" bind:value={$gcode.title}/>
         
         <div class="save" >
           <IconButton
@@ -289,7 +289,7 @@
         <div class="export">
           <IconButton
           iconUrl="./assets/icons/export.png"
-          on:action={ ()=>exportGCODE()}
+          on:action={ exportGCODE }
           tip="Export GCODE"
           size= "1.2em"
           opacity="0.4"

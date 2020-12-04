@@ -3,7 +3,6 @@
   import { tweened } from "svelte/motion";
   import { quintOut } from "svelte/easing";
   import { createEventDispatcher } from 'svelte'
-  import {fade } from 'svelte/transition'
 
   import { Surface } from "../libs/surfaceGL.js"
   import  { surfaceStore }  from "../stores/stores.js"
@@ -35,9 +34,7 @@
 
         surface.init('surfacePath', 'glCanvas', 'pictureCanvas')
 
-        pictureStore.subscribe( s =>{
-            surfaceStore.trig()
-        })
+        pictureStore.subscribe( s => surface.update() )
 
         surfaceStore.subscribe( s => {
             surface.update( s )
@@ -56,7 +53,7 @@
           $gcodeStore.format.width,
           $gcodeStore.format.height,
           $gcodeStore.pen_stroke,
-          "test"
+          $gcodeStore.title
         )
         dispatch('exportSVG', SVGstring ) 
     }
@@ -214,7 +211,7 @@
 <!-- pseudoHTML -------------------------------------------------------- -->
 <!-- https://oreillymedia.github.io/Using_SVG/guide/units.html } -->
 <div>
-    <div class="surfaceView" in:fade>
+    <div class="surfaceView">
 
         <div class="surface"
             bind:clientHeight={height}
@@ -254,7 +251,7 @@
             <div class="export">
                 <IconButton
                 iconUrl="./assets/icons/export.png"
-                on:action={ ()=>exportSVG()}
+                on:action={ exportSVG }
                 tip="Export SVG"
                 size= "1.2em"
                 opacity="0.4"
@@ -320,8 +317,8 @@
                 <Fader
                 name="f"
                 label="__f"
-                range={{min: 1, max: 1000}}
-                step={1}
+                range={{min: -1, max: 1}}
+                step={0.001}
                 bind:value={$surfaceStore.f}
                 />
 

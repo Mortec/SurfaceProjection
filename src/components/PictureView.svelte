@@ -1,43 +1,52 @@
 <script>
   import Vader from "./Vader.svelte"
   import { onMount } from "svelte"
-  import  { pictureStore }  from "../stores/stores.js"
+  import  { pictureStore, surfaceStore }  from "../stores/stores.js"
   import  { gcodeStore }  from "../stores/stores.js"
   import { Picture } from "../libs/picture.js"
   import { createEventDispatcher } from 'svelte'
-  import {fade } from 'svelte/transition'
   import IconButton from './IconButton.svelte'
 	import DragLogger from './DragLogger.svelte'
   import { tweened } from "svelte/motion"
   import { quintOut } from "svelte/easing" 
   
-  const picture = new Picture()
+  const picture = new Picture('pictureCanvas')
   let width = 100
   let height = 100
-
-
+  
+  
   const easedWidth = tweened( undefined, {
     duration: 1500,
     easing: quintOut,
   });
-
+  
   onMount(() => {
-    picture.notifyLoaded = () => {pictureStore.trig()}
-    picture.init($pictureStore.id)
-    picture.set( $pictureStore )
+    picture.init()
     picture.resize(width, height)
-    pictureStore.subscribe( s => {picture.set( s )} )
+    picture.set( $pictureStore )
     picture.load($pictureStore.imgUrl)
+    picture.notifyRedraw = () => surfaceStore.trig()
+    pictureStore.subscribe( s => {
+      picture.set( s )
+    } )
   })
 
   const dispatch = createEventDispatcher()
 
-  const exportpng = function(){
+  const exportPNG = function(){
     dispatch('exportPNG') 
   }
 
-  $: width = ( $gcodeStore.format.width/$gcodeStore.format.height * height )
+  const fr =  new FileReader();
+  fr.onload = ()=>{
+    $pictureStore.imgUrl = fr.result
+  }
 
+  const loadLocal = function(e){
+    fr.readAsDataURL( e.target.files[0] )
+  }
+
+  $: width = ( $gcodeStore.format.width/$gcodeStore.format.height * height )
   $: easedWidth.set( width )
 
   $: (
@@ -136,17 +145,18 @@
 
 
 <!-- pseudoHTML -------------------------------------------------------- -->
-<div class="pictureView" in:fade>
+<div class="pictureView"
+  ondblclick={()=>console.log($pictureStore.imgUrl, picture.imgUrl)}>
 
   <div class="picture" bind:clientHeight={height}
   style="width: {$easedWidth}; height: 35vh;"
   >
   <DragLogger bind:x={$pictureStore.x} bind:y={$pictureStore.y}/>
-  <canvas id={$pictureStore.id}/>
+  <canvas id="pictureCanvas"/>
       <div class="savebutton">
         <IconButton
         iconUrl="./assets/icons/export.png"
-        on:action={exportpng}
+        on:action={exportPNG}
         tip="Export PNG"
         size= "1.2em"
         opacity={0.5}
@@ -200,11 +210,7 @@
       <input type="file"
             id="image" name="temp"
             accept="image/png, image/jpeg"
-            on:change="{
-              
-              e => picture.loadLocal(e.target.files[0], ( url )=>$pictureStore.imgUrl = url )
-            
-            }"
+            on:change="{loadLocal}"
       >    
     </div>
   </div>

@@ -63,7 +63,7 @@
       position: absolute;
       z-index: 10;
       transform: translateY(-130%) translateX(-35%);
-      width: 6em;
+      width: 14ch;
 }
 
 </style>
@@ -76,7 +76,7 @@
 >
             {#if showtip}
             <span class="tooltip"
-                transition:fade="{{duration:3000}}"
+                transition:fade="{{duration:2000}}"
                 on:introend="{() => showtip = false}"
             >
             {tip}
@@ -102,9 +102,9 @@
             <button type="submit"
                 on:click={action}
                 on:mouseover="{( ) => tiprequest = true}"
-                on:mouseleave="{( ) => tiprequest = false}"
+                on:mouseleave="{( ) => {    }}"
                 on:mouseenter="{() =>
-                    setTimeout( ()=>{ if (tiprequest) showtip=true }, 5000)
+                    setTimeout( ()=>{ if (tiprequest) showtip=true }, 3000)
                 }"
             >
             <img src={iconUrl} alt={tip}/>

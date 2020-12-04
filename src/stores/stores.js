@@ -22,7 +22,6 @@ const createStore = function( object ) {
 }
 
 export const pictureStore = createStore( {
-    id: "pictureCanvas",
     imgUrl: "./assets/images/EM-portrait2.jpg",
     x : 0,
     y : 0,

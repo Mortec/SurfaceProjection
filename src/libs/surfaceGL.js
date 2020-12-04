@@ -118,14 +118,22 @@ Surface.prototype.fragment = function( formula ){
 
     vec2 compute( vec4 tex, vec2 coords){
 
+        float l = (tex.r + tex.g + tex.b) / 3.;
         float a = u_a;
         float f = u_f;
         float w = u_resolution.x;
         float h = u_resolution.y;
         float x = floor( coords.x * w );
         float y = floor( coords.y * h );
-        float i = coords.x + ( w * coords.y );
-        float l = (tex.r + tex.g + tex.b) / 3.;
+        float i = 0.;
+
+        float m =  mod( floor(y), 2.);
+        if ( m != 0. ) {
+            i = 1.- coords.x + ( w * coords.y );
+        }
+        else{
+            i = coords.x + ( w * coords.y );
+        }
 
         float z = ${ formula };
          

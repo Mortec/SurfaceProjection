@@ -1,8 +1,8 @@
-const Picture = function (  ){
+const Picture = function ( id ){
 
+    this.targetId = id;
 
     this.params = {
-        id: 'pictureCanvas',
         imgUrl: "./assets/images/IMG_0406.jpg",
         x : 0,
         y: 0,
@@ -13,6 +13,7 @@ const Picture = function (  ){
         zoom: 1.0,
         invert: 0.0
     }
+
     this.width = 100
     this.height = 100
     this.buffer = {}
@@ -21,16 +22,15 @@ const Picture = function (  ){
 
     this.image = new Image()
 
-    this.notifyLoaded = function(){}
+    this.notifyRedraw = function(){}
 }
 
-Picture.prototype.init = function( id ){
+Picture.prototype.init = function(){
 
-    this.params.id = id
-    
+
     this.buffer = document.createElement('canvas')
     
-    this.ctxt = document.getElementById( id ).getContext("2d")
+    this.ctxt = document.getElementById( this.targetId ).getContext("2d")
 
     this.image = new Image()
 
@@ -42,7 +42,6 @@ Picture.prototype.init = function( id ){
         this.buffer.getContext('2d').canvas.height = height
         this.buffer.getContext('2d').drawImage( this.image, 0, 0, width, height )
         this.draw()
-        this.notifyLoaded( this.imgUrl )
     }
 }
 
@@ -68,36 +67,24 @@ Picture.prototype.reset = function(){
 
 Picture.prototype.set = function( params ){
 
-    this.params = {...this.params, ...params }
-    this.draw()
+    if (params.imgUrl != this.params.imgUrl){
+        this.params = {...this.params, ...params }
+        this.load( this.params.imgUrl )
+    }
+
+    else {
+        this.params = {...this.params, ...params }
+        this.draw()
+    }
 }
 
 Picture.prototype.load = function( url ){
 
-    this.imgUrl = url
+    if(url) this.params.imgUrl = url
     this.image.crossOrigin='anonymous'
-    this.image.src = url
+    this.image.src = this.params.imgUrl
 }
 
-Picture.prototype.loadLocal = function( file, callback ){
-
-        const fr =  new FileReader();
-
-        fr.onload = ()=>{
-
-            const localUrl = fr.result;
-            callback( localUrl )
-            this.load( localUrl )
-        }
-
-        fr.readAsDataURL(file)
-}
-
-Picture.prototype.loadURL = function( url ){
-
-
-    
-}
 
 Picture.prototype.draw = function(){
 
@@ -132,6 +119,8 @@ Picture.prototype.draw = function(){
             offset.x, offset.y, area.width, area.height,
             0, 0, canvas.width, canvas.height
     )
+
+    this.notifyRedraw()
 }
 
 Picture.prototype.getPixel = function( x, y) {

@@ -1,7 +1,6 @@
 const defaultProject = {
 
     picture: {
-        id: "pictureCanvas",
         imgUrl: "./assets/images/EM-Portrait2.jpg",
         x : 0,
         y : 0,
