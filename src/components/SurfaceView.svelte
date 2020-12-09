@@ -2,6 +2,7 @@
   import { onMount } from "svelte"
   import { tweened } from "svelte/motion";
   import { quintOut } from "svelte/easing";
+  import { fade } from 'svelte/transition';
   import { createEventDispatcher } from 'svelte'
 
   import { Surface } from "../libs/surfaceGL.js"
@@ -9,7 +10,7 @@
   import  { pictureStore }  from "../stores/stores.js"
   import  { gcodeStore }  from "../stores/stores.js"
 
-  import { buildSVG } from '../libs/svgFuncs'
+  import { buildSVG } from '../libs/pathFuncs'
   import Fader from './Fader.svelte'
   import IconButton from './IconButton.svelte'
   import DragLogger from './DragLogger.svelte'
@@ -19,6 +20,12 @@
     let height = 279
     let formula = $surfaceStore.formula
     let pathLength = 0
+    let pathString =
+    `M0 0
+     L${$gcodeStore.format.width} ${$gcodeStore.format.height/2}
+     L${$gcodeStore.format.width/2} ${$gcodeStore.format.height}
+     Z`
+    let error   
     /*nota:
     path options : zig = unique snake path along the x axis
         zag: unique snake path along the y axis
@@ -32,7 +39,8 @@
 
     onMount( () => {
 
-        surface.init('surfacePath', 'glCanvas', 'pictureCanvas')
+        surface.init('glCanvas', 'pictureCanvas')
+        surface.notifyError = ( v )=> error = v
 
         pictureStore.subscribe( s => surface.update() )
 
@@ -40,6 +48,7 @@
             surface.update( s )
             pathLength = surface.path.length
             formula = $surfaceStore.formula
+            pathString = surface.pathString
         } )
         gcodeStore.subscribe( s => surface.update( {format: s.format } ) )
 
@@ -73,7 +82,6 @@
 
   $: width = height * $gcodeStore.format.width/$gcodeStore.format.height
   $: easedWidth.set( width )
-
 
 </script>
 
@@ -205,6 +213,12 @@
         outline: none;
 
     }
+    hr{
+        border: none;
+    }
+    .error{
+        border-bottom: 1px solid red;
+    }
 </style>
 
 
@@ -240,10 +254,7 @@
                             stroke : {$gcodeStore.pen_color};
                             stroke-opacity:{ $gcodeStore.pen_opacity};
                         "
-                        d={
-                            surface.pathString ||
-                        "M0 0 L{$gcodeStore.format.width} {$gcodeStore.format.height/2} L{$gcodeStore.format.width/2} {$gcodeStore.format.height} Z"
-                        }
+                        d={pathString}
                         />
 
             </svg>
@@ -343,6 +354,7 @@
                     "
                     ></canvas>
                 </div>
+
         </div>
             
         
@@ -352,7 +364,26 @@
 
     <div class = "surface_formula">
         <label for="formula">magick: </label>
-            <input type="text" name="formula" id="formula" bind:value={formula} on:keydown="{handleformula}">
+        <div style="width:100%">
+        <input
+        type="text" name="formula" id="formula" 
+        bind:value={formula} 
+        on:keydown="{handleformula}"
+        >
+        {#if error}
+        <hr class="error"
+        in:fade={{duration: 500}}
+        on:introend="{
+            setTimeout(
+            () => error = false,
+            1000
+            )
+        }"
+        out:fade={{duration: 500}}
+        >
+        {/if}
+        </div>
     </div>
+
 
 </div>

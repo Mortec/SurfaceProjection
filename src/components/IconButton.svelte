@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte';
     import {fade} from 'svelte/transition'
-
+    
     export let iconUrl = "./assets/icons/save.png";  
     export let tip = "This button has an action";
     export let tipsuccess = "This button has an action that was successful";
@@ -54,6 +54,7 @@
       line-height: 0.5em;
       padding: 0.25em;
       font-size: 0.9em;
+      font-family: Abel, Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
       text-align: center;
       color: black;
       background: rgb(255, 255, 255);
@@ -63,7 +64,6 @@
       position: absolute;
       z-index: 10;
       transform: translateY(-130%) translateX(-35%);
-      width: 14ch;
 }
 
 </style>
@@ -75,25 +75,42 @@
 
 >
             {#if showtip}
-            <span class="tooltip"
+            <span class="tooltip" style="width:{tip.length+"ch"};"
                 transition:fade="{{duration:2000}}"
-                on:introend="{() => showtip = false}"
+                on:introend="{
+                    setTimeout(
+                    () => showtip = false,
+                    2000
+                    )
+                }"
             >
             {tip}
             </span>
             {/if}
 
             {#if status==='success'}
-            <span class="tooltip" transition:fade="{{duration:1000}}"
-            on:introend="{() => status = 'waiting'}"
+            <span class="tooltip" style="width:{tipsuccess.length+"ch"};"
+            transition:fade="{{duration:1000}}"
+            on:introend="{
+                setTimeout(
+                () => status = 'waiting',
+                2000,
+                )
+            }"
             >
             {tipsuccess} 
             </span>
             {/if}
 
             {#if status==='error'}
-            <span class="tooltip" transition:fade="{{duration:3000}}"
-            on:introend="{() => status = 'waiting'}"
+            <span class="tooltip" style="width:{tiperror.length+"ch"};"
+            transition:fade="{{duration:3000}}"
+            on:introend="{
+                setTimeout(
+                () => status = 'waiting',
+                2000
+                )
+            }"
             >
             {tiperror}
             </span>

@@ -1,18 +1,21 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
 
   import IconButton from "./IconButton.svelte";
   import InputColorRadio from "./InputColorRadio.svelte";
   import InputRadio from "./InputRadio.svelte";
   import Fader from "./Fader.svelte";
 
-  import { gcodeStore as gcode } from "../stores/stores.js";
+  import { gcodeStore } from "../stores/stores.js";
   import { paper_colors,  paper_formats, pen_colors, pen_strokes, } from "../configs/furnitures.js";
 
+  import { buildGCODE } from '../libs/pathFuncs'
 
-  let paper_name = "sLTR" 
+
   export let saveStatus = "waiting"
   
+  let paper_name = $gcodeStore.format.name 
+
   const dispatch = createEventDispatcher()
 
   const exportGCODE = function(){
@@ -24,10 +27,14 @@
       dispatch('saveProject')
   }
 
+  onMount( () => {
+      gcodeStore.subscribe(  s => {
+        if (paper_name != s.format.name)  paper_name = s.format.name
+      })
+    }
+  )
 
-
-  $: $gcode.format = paper_formats.filter( p => p.name === paper_name )[0]
-
+  $: $gcodeStore.format = paper_formats.filter( p => p.name === paper_name )[0];
 
 </script>
 
@@ -158,7 +165,7 @@
 
       <div class="inline_feature">
         <label for="title">title:</label>
-        <input type="text" name="title" bind:value={$gcode.title}/>
+        <input type="text" name="title" bind:value={$gcodeStore.title}/>
         
         <div class="save" >
           <IconButton
@@ -177,7 +184,7 @@
           {#each pen_colors as color, id}
             <InputColorRadio
               id="pencolor-{id}"
-              bind:group={$gcode.pen_color}
+              bind:group={$gcodeStore.pen_color}
               size="12px"
               radius="50%"
               value={color} />
@@ -189,7 +196,7 @@
           {#each pen_strokes as stroke, id}
             <InputRadio
               id="penstroke-{id}"
-              bind:group={$gcode.pen_stroke}
+              bind:group={$gcodeStore.pen_stroke}
               size="{(10 - 4) * stroke + 4}px"
               radius="50%"
               value={stroke}
@@ -204,7 +211,7 @@
             label="ink_op."
             range={{ min: 0, max: 1 }}
             step={0.01}
-            bind:value={$gcode.pen_opacity}
+            bind:value={$gcodeStore.pen_opacity}
           />
         </div>
     </div>
@@ -215,7 +222,7 @@
         {#each paper_colors as color, id}
           <InputColorRadio
             id="papercolor-{id}"
-            bind:group={$gcode.paper_color}
+            bind:group={$gcodeStore.paper_color}
             size="0.7em"
             radius="0%"
             value={color} />
@@ -241,7 +248,7 @@
         <label for="drawing_speed">drawing speed: </label>
         <input type="number" name="drawing_speed"
           min={500} max={10000} step={1}
-          bind:value={$gcode.gcode_cmds.drawing_speed}
+          bind:value={$gcodeStore.gcode_cmds.drawing_speed}
         >
       </div>
 
@@ -249,35 +256,35 @@
         <label for="translate_speed">translate speed: </label>
         <input type="number" name="translate_speed"
         min={500} max={10000} step={1}
-        bind:value={$gcode.gcode_cmds.translate_speed}
+        bind:value={$gcodeStore.gcode_cmds.translate_speed}
       >
       </div>
 
       <div class="inline_feature">
           <label for="begin_cmd">begin: </label>
           <input type="text" name="begin_cmd"
-          bind:value={$gcode.gcode_cmds.begin}
+          bind:value={$gcodeStore.gcode_cmds.begin}
         >
       </div>
 
       <div class="inline_feature">
           <label for="pen_up">pen up: </label>
           <input type="text" name="pen_up"
-          bind:value={$gcode.gcode_cmds.pen_up}
+          bind:value={$gcodeStore.gcode_cmds.pen_up}
           >
       </div>
 
       <div class="inline_feature">
           <label for="pen_down">pen down: </label>
           <input type="text" name="pen_down"
-          bind:value={$gcode.gcode_cmds.pen_down}
+          bind:value={$gcodeStore.gcode_cmds.pen_down}
           >
       </div>
 
       <div class="inline_feature">
           <label for="end_cmd">end: </label>
           <input type="text" name="end_cmd"
-          bind:value={$gcode.gcode_cmds.end}
+          bind:value={$gcodeStore.gcode_cmds.end}
           >
       </div>
 

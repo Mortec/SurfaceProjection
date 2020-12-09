@@ -103,7 +103,7 @@
     width: 100%;
     height: 2px;
     cursor: pointer;
-    animate: 0.2s;
+    /* animate: 0.2s; */
     box-shadow: 0px 0px 1px #000000;
     background: #C9C9C9;
     border-radius: 2px;
@@ -127,7 +127,7 @@
     width: 100%;
     height: 2px;
     cursor: pointer;
-    animate: 0.2s;
+    /* animate: 0.2s; */
     box-shadow: 0px 0px 1px #000000;
     background: #C9C9C9;
     border-radius: 2px;
@@ -146,7 +146,7 @@
     width: 100%;
     height: 2px;
     cursor: pointer;
-    animate: 0.2s;
+    /* animate: 0.2s; */
     background: transparent;
     border-color: transparent;
     color: transparent;

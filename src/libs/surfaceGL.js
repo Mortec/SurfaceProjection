@@ -20,20 +20,19 @@ const Surface = function () {
       path: 'zig',
     };
 
-    this.svgId = 'surfacePath'
     this.glId = 'glCanvas'
     this.textureSrcId = 'pictureCanvas'
     this.data = [];
     this.path = [];
     this.pathString = "M0, 0 L216 130, L108, 230 Z";
     this.regl =  {}
+    this.notifyError=()=>{}
 };
   
 
 
-Surface.prototype.init = function( svgId, glId, textureSrcId ){
+Surface.prototype.init = function( glId, textureSrcId ){
 
-    if (svgId) this.svgId = svgId
     if (glId) this.glId = glId
     if (textureSrcId) this.textureSrcId = textureSrcId
 
@@ -103,13 +102,38 @@ Surface.prototype.fragment = function( formula ){
     uniform float u_a;
     uniform float u_f;
 
-
-    vec2 PackDepth16( float depth ) {
-        float depthVal = depth * (256.0*256.0 - 1.0) / (256.0*256.0);
-        vec3 encode = fract( depthVal * vec3(1.0, 256.0, 256.0*256.0) );
-        return encode.xy - encode.yz / 256.0 + 1.0/512.0;
+    // 2D Random
+    float random (in vec2 st) {
+        return fract(sin(dot(st.xy,
+                            vec2(12.9898,78.233)))
+                    * 43758.5453123);
     }
 
+    // 2D Noise based on Morgan McGuire @morgan3d
+    // https://www.shadertoy.com/view/4dS3Wd
+    float noise (in vec2 st) {
+        vec2 i = floor(st);
+        vec2 f = fract(st);
+
+        // Four corners in 2D of a tile
+        float a = random(i);
+        float b = random(i + vec2(1.0, 0.0));
+        float c = random(i + vec2(0.0, 1.0));
+        float d = random(i + vec2(1.0, 1.0));
+
+        // Smooth Interpolation
+
+        // Cubic Hermine Curve.  Same as SmoothStep()
+        vec2 u = f*f*(3.0-2.0*f);
+        // u = smoothstep(0.,1.,f);
+
+        // Mix 4 coorners percentages
+        return mix(a, b, u.x) +
+                (c - a)* u.y * (1.0 - u.x) +
+                (d - b) * u.x * u.y;
+    }
+
+    //encode a 24bit float on rgb channels 
     vec3 PackDepth24( float depth ) {
         float depthVal = depth * (256.0*256.0*256.0 - 1.0) / (256.0*256.0*256.0);
         vec4 encode = fract( depthVal * vec4(1.0, 256.0, 256.0*256.0, 256.0*256.0*256.0) );
@@ -125,14 +149,14 @@ Surface.prototype.fragment = function( formula ){
         float h = u_resolution.y;
         float x = floor( coords.x * w );
         float y = floor( coords.y * h );
-        float i = 0.;
-
+        float oi = coords.x + ( w * coords.y );
+        float nz = noise(coords);
+        float rnd = random(coords);
+        
         float m =  mod( floor(y), 2.);
+        float i = oi;
         if ( m != 0. ) {
             i = 1.- coords.x + ( w * coords.y );
-        }
-        else{
-            i = coords.x + ( w * coords.y );
         }
 
         float z = ${ formula };
@@ -154,6 +178,8 @@ Surface.prototype.fragment = function( formula ){
 
 
 Surface.prototype.compute = function(){
+    
+    this.isError = false
 
     const texture = this.regl.texture(
         document.getElementById(this.textureSrcId)
@@ -190,8 +216,12 @@ Surface.prototype.compute = function(){
         count: 6
     })
 
-    cpt()
-
+    try {
+        cpt();
+        this.notifyError(false)
+    } catch (error) {
+        this.notifyError(true)
+    }
     return this
 }
 
@@ -277,9 +307,6 @@ Surface.prototype.computePathString = function () {
         return str;
       })
       .join(" ");
-
-      const pathElement = document.getElementById( this.svgId )
-      pathElement && pathElement.setAttribute('d', this.pathString)
     }
 
     return this;

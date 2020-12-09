@@ -16,17 +16,13 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  [lodash](https://lodash.com/)
 
 ## to do :
-*  magick formula code checking
-*  svg to gcode translation
-*  estimation of path length in millimeters -> estimation of drawing time
+*  path to gcode translation
 *  map the plotter feed(plot speed), dwell & z command along specific aspect of the picture
+*  estimation of path length in millimeters -> estimation of drawing time
 *  projects bar : 
-    *    delete a project
     *    export-import projects (json files outside of local storage)
 *  load a picture from storage (that was previously used for a another project currently in the storage)
-*  button tooltips improvement
 *  presentation mode (show drawing at real scale for convenient exploration of the path)
-*  isolate pieces of code that can be convert to component for later use
 
 ### to do v2
 * multi-layer drawings with "concat" option

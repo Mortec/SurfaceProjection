@@ -197,7 +197,7 @@
     />
     <Vader
     name="invert"
-    label="inv."
+    label="neg."
     range={{min: 0, max: 1}}
     step={1}
     bind:value={$pictureStore.invert}
