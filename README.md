@@ -16,13 +16,12 @@ Inspired by Paul Butler's [article](https://nb.paulbutler.org/surface-projection
 *  [lodash](https://lodash.com/)
 
 ## to do :
-*  path to gcode translation
-*  map the plotter feed(plot speed), dwell & z command along specific aspect of the picture
+*  path to gcode translation with speed mapping along lum.
 *  estimation of path length in millimeters -> estimation of drawing time
-*  projects bar : 
-    *    export-import projects (json files outside of local storage)
+*  export-import projects (json files outside of local storage)
 *  load a picture from storage (that was previously used for a another project currently in the storage)
 *  presentation mode (show drawing at real scale for convenient exploration of the path)
 
 ### to do v2
 * multi-layer drawings with "concat" option
+*  map the plotter dwell & z command along specific aspect of the picture

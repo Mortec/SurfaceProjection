@@ -84,7 +84,8 @@ const path = coords.map( c, i, a => {
             `
             : 
             i === 1 ? 
-                pendown + `G01 X${c.x} Y${c.y} F${speed}
+                pendown + `
+                G01 X${c.x} Y${c.y} F${speed}
                 `
                 :
                 i === (a.length - 1) ?
