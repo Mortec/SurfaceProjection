@@ -71,7 +71,7 @@
 <!-- pseudoHTML -------------------------------------------------------- -->
 <!-- http://csstooltip.com/ -->
 <div class="IconButton"
-    style= "width:{size}; height:{size}; opacity: {opacity}"
+    style= "width:{size}; height:{size};"
 
 >
             {#if showtip}
@@ -117,11 +117,12 @@
             {/if}
 
             <button type="submit"
+                style="opacity: {opacity};"
                 on:click={action}
                 on:mouseover="{( ) => tiprequest = true}"
                 on:mouseleave="{( ) => {    }}"
                 on:mouseenter="{() =>
-                    setTimeout( ()=>{ if (tiprequest) showtip=true }, 3000)
+                    setTimeout( ()=>{ if (tiprequest && status==="waiting") showtip=true }, 3000)
                 }"
             >
             <img src={iconUrl} alt={tip}/>

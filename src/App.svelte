@@ -11,7 +11,6 @@
 	import cloneDeep from 'lodash/cloneDeep';
 
 	let projects
-	let showprojects = false
 	let saveStatus = "waiting"
 
 	projects = localStorage.length ?
@@ -160,12 +159,12 @@
 			/>
 		</nav>
 
-		<div class="playground">
+		<section class="playground">
 			<PictureView on:exportPNG={exportPNG} />
 			<SurfaceView on:exportSVG={exportSVG}/>
 			<GcodeView bind:saveStatus={saveStatus} on:exportGCODE={exportGCODE} on:saveProject={saveProject}/>
 
-		</div>
+		</section>
 
 	</main>
 	<footer>

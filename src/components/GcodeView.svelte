@@ -157,6 +157,12 @@
     outline: none;
   }
 
+  .inline_feature>input:checked {
+  background: #000000;
+}
+
+  
+
 </style>
 
 <div class="gcodeView">
@@ -243,15 +249,7 @@
     <div class="gcode">
 
       <!-- <span>gcode cmds. :</span> -->
-
-      <div class="inline_feature">
-        <label for="drawing_speed">drawing speed: </label>
-        <input type="number" name="drawing_speed"
-          min={500} max={10000} step={1}
-          bind:value={$gcodeStore.gcode_cmds.drawing_speed}
-        >
-      </div>
-
+      
       <div class="inline_feature">
         <label for="translate_speed">translate speed: </label>
         <input type="number" name="translate_speed"
@@ -259,11 +257,27 @@
         bind:value={$gcodeStore.gcode_cmds.translate_speed}
       >
       </div>
+      
+      <div class="inline_feature">
+        <label for="min_speed">min speed: </label>
+        <input type="number" name="min_speed"
+          min={500} max={10000} step={1}
+          bind:value={$gcodeStore.gcode_cmds.min_speed}
+        >
+      </div>
 
       <div class="inline_feature">
-          <label for="begin_cmd">begin: </label>
-          <input type="text" name="begin_cmd"
-          bind:value={$gcodeStore.gcode_cmds.begin}
+        <label for="max_speed">max speed: </label>
+        <input type="number" name="max_speed"
+          min={500} max={10000} step={1}
+          bind:value={$gcodeStore.gcode_cmds.max_speed}
+        >
+      </div>
+
+      <div class="inline_feature">
+        <label for="map_l">map lum. to speed: </label>
+        <input type="checkbox" name="map_l"
+          bind:value={$gcodeStore.gcode_cmds.map_l}
         >
       </div>
 
@@ -281,14 +295,9 @@
           >
       </div>
 
-      <div class="inline_feature">
-          <label for="end_cmd">end: </label>
-          <input type="text" name="end_cmd"
-          bind:value={$gcodeStore.gcode_cmds.end}
-          >
-      </div>
 
     </div>
+
 
     <div class="path_infos slot">
         <span>path_length: {"..."}_mm</span><br>

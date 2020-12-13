@@ -191,7 +191,7 @@
     <Vader
     name="zoom"
     label="zoom"
-    range={{min: 0, max: 2}}
+    range={{min: 0.1, max: 2}}
     step={0.01}
     bind:value={$pictureStore.zoom}
     />

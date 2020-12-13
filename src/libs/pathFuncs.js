@@ -71,7 +71,10 @@ G00 X0 Y0 F10000
 
 const path = coords.map( c, i, a => {
 
-    const speed = c.z * ( params.max_speed - params.min_speed ) + params.min_speed
+    const speed = params.map_l ? 
+                c.z * ( params.max_speed - params.min_speed ) + params.min_speed
+                :
+                params.max_speed
 
     speed = Math.round(speed)
 

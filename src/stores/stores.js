@@ -57,12 +57,12 @@ export const gcodeStore = createStore({
     format: {name:"sLTR", width: 216, height: 260},
     paper_color: "#FFFFFF",
     gcode_cmds: {
-        drawing_speed: 5000,
         translate_speed: 10000,
-        begin:"(BEGIN);G17;G90;G00 Z1;G00 X0 Y0;",
-        pen_up:";(PEN_UP);G00 Z0.25;M03 S80;G01 F10000;(TRANSLATE)",
-        pen_down:";(PEN_DOWN);G01 Z0 F1000;M05;G04 P0.20000000298023224;G01 F5000;(DRAW)",
-        end:";(END);G00 Z0.25;M3S80;G04 P0.20000000298023224;(HOME);G00 X0 Y0 F10000;",
+        min_speed: 5000,
+        max_speed: 5000,
+        pen_up:"M03 S80",
+        pen_down:"M05",
+        map_l: false
     }
 })
 
